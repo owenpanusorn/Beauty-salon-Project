@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Users | Beautiful Salon</title>
+  <title>Booking Approve | Beautiful Salon</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -175,7 +175,7 @@
           </ul> -->
         </li>
       
-        <li class="treeview">
+        <li class="treeview active">
           <a href="#">
             <i class="fa fa-calendar"></i>
             <span>การจองคิว</span>            
@@ -185,7 +185,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-            <li><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+            <li class="active"><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
               <span class="pull-right-container">
                 <span class="label label-primary pull-right">4</span>               
               </span> 
@@ -202,7 +202,7 @@
             </a>            
           </li>
 
-          <li class="active">
+          <li>
             <a href="#">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>             
             </a>            
@@ -252,12 +252,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Users
-        <small>รายชื่อลูกค้า</small>
+        Booking Approve
+        <small>อนุมัติการจอง</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">Users</li>
+        <li class="active">ฺBooking Approve</li>
       </ol>
     </section>
 
@@ -268,7 +268,7 @@
 
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Data Table Users</h3>
+              <h3 class="box-title">Data Table Booking Approve</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                       <i class="fa fa-minus"></i>

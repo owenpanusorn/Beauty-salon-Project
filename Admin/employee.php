@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Users | Beautiful Salon</title>
+  <title>Employees | Beautiful Salon</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -34,7 +34,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
-  <header class="main-header">
+<header class="main-header">
     <!-- Logo -->
     <a href="index.php" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -53,8 +53,9 @@
       </a>
 
       <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-             <!-- Notifications: style can be found in dropdown.less -->
+        <ul class="nav navbar-nav"> 
+         
+          <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-bell-o"></i>
@@ -97,6 +98,7 @@
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
+       
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -139,6 +141,7 @@
               </li>
             </ul>
           </li>
+          <!-- Control Sidebar Toggle Button -->         
         </ul>
       </div>
     </nav>
@@ -202,13 +205,13 @@
             </a>            
           </li>
 
-          <li class="active">
-            <a href="#">
+          <li>
+            <a href="users.php">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>             
             </a>            
           </li>
 
-          <li>
+          <li class="active">
             <a href="employee.php">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>             
             </a>            
@@ -252,12 +255,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Users
-        <small>รายชื่อลูกค้า</small>
+        Employees
+        <small>รายชื่อพนักงาน</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">Users</li>
+        <li class="active">Employees</li>
       </ol>
     </section>
 
@@ -268,11 +271,12 @@
 
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Data Table Users</h3>
+              <h3 class="box-title">Data Table Employees</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                       <i class="fa fa-minus"></i>
                     </button>
+                    <button type="button" class='btn btn-success' onclick="window.location.href='/-Beauty-salon-Project/Admin/addemployee.php'" > <i class="fa fa-user-plus"></i> Employee</button>
                 </div>
             </div>
            
@@ -728,6 +732,7 @@
     reserved.
   </footer>
 
+  <!-- /.control-sidebar -->
   <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
