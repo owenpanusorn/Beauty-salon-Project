@@ -1,95 +1,98 @@
+<!DOCTYPE html>
+<html>
 <?php
 require_once('config.php');
 
-// if(!empty($_FILES)){
-//   $path = "images/";
-//   $name = $_FILES['filUpload']['name'];
-//   $tmp = $_FILES['filUpload']['tmp_name'];
-//     if(strlen($name)){
-//     list($txt, $ext) = explode(".", $name);
-//           $new_file_name = $emp.".".$ext;
-//           move_uploaded_file($tmp,$path.$new_file_name);
-//           $strSQL = "INSERT INTO document ";
-//           $strSQL .="(type,efrom,subject,date_receive,FilesName,date_upload) VALUES ('".$_POST["type"]."','".$_POST["efrom"]."','".$_POST["subject"]."','".$_POST["date_receive"]."',
-//           '".$new_file_name."',now())";
-//           $objQuery = mysqli_query($strSQL);	
-//           echo "Copy/Upload Complete<br>";
-//     }
-//   } 
+
+
+//echo $fileupload;
 
 if (isset($_REQUEST['btn_insert'])) {
   $username = $_REQUEST['username'];
   $password = $_REQUEST['password'];
   $role = 201;
-  // $fname = $_REQUEST['fname'];
-  // $lname = $_REQUEST['lname'];
-  // $gender = $_REQUEST['gender'];
-  // $birthday = $_REQUEST['birthday'];
-  // $numberphone = $_REQUEST['numberphone'];
-  // $idcard = $_REQUEST['idcard'];
-  // $address = $_REQUEST['address'];
-  // $fileupload = $_REQUEST['fileupload'];
+  $fname = $_REQUEST['fname'];
+  $lname = $_REQUEST['lname'];
+  $gender = $_REQUEST['gender'];
+  $birthday = $_REQUEST['birthday'];
+  $numberphone = $_REQUEST['numberphone'];
+  $idcard = $_REQUEST['idcard'];
+  $address = $_REQUEST['address'];
 
   if (empty($username)) {
     $errorMsg = "Please Enter Username";
   } else if (empty($password)) {
     $errorMsg = "Please Enter Password";
-  } else {
+  } else if (empty($fname)) {
+    $errorMsg = "Please Enter Firstname";
+  } else if (empty($lname)) {
+    $errorMsg = "Please Enter Lastname";
+  } else if (empty($gender)) {
+    $errorMsg = "Please Select Gender";
+  } else if (empty($birthday)) {
+    $errorMsg = "Please Select Birthday";
+  } else if (empty($numberphone)) {
+    $errorMsg = "Please Enter Number Phone";
+  } else if (empty($idcard)) {
+    $errorMsg = "Please Enter Number IDCard";
+  } else if (empty($address)) {
+    $errorMsg = "Please Enter Address";
+    // } else if (empty($fileupload)) {
+    //   $errorMsg = "Please Upload File";
+  } else if (empty($_FILES['image']['name'])) {
+    $errorMsg = "Please Select Images";
+  }else {
     try {
       if (!isset($errorMsg)) {
         $insert_login = $db->prepare("INSERT INTO tb_login(username, password, role) VALUES (:user, :password, :role)");
         $insert_login->bindParam(':user', $username);
         $insert_login->bindParam(':password', $password);
         $insert_login->bindParam(':role', $role);
-      //   $db-> exec("INSERT INTO tb_login(username, password, role) VALUES ('test', 123456, 201)");
-      // header("refresh:2;employee.php");  
-         if ($insert_login->execute()) {
-          // echo "Insert Successfully . . ."; 
-          $insertMsg = "Insert Successfully . . .";   
-          header("refresh:2;employee.php");                 
+
+        if (isset($_FILES['image'])) {
+          $file_name = $_FILES['image']['name'];
+          $file_size = $_FILES['image']['size'];
+          $file_tmp = $_FILES['image']['tmp_name'];
+          $file_type = $_FILES['image']['type'];
+          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+          
+          if (!move_uploaded_file($file_tmp, "images/" . $file_ext)){
+            $$errorMsg = "Wrong! i . . .";
+          }           
+          // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
+        
+
+          // if(in_array($file_ext,$extensions)=== false){
+          //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+          // }
+
+          // if ($file_size > 2097152) {
+          //   $errors[] = 'File size must be excately 2 MB';   // }
+
         }
-        //  $insert_emp = $db->prepare("INSERT INTO tb_employee(fname, lname, gender, birthday, nphone, idcard, address, images) VALUES (:fname, :lname, :gender, :birthday, :nphone, :idcard, :address, :images)");
-        //  $insert_emp -> bindParam(':fname', $fname);
-        //  $insert_emp -> bindParam(':lname', $lname);
-        //  $insert_emp -> bindParam(':gender', $gender);
-        //  $insert_emp -> bindParam(':birthday', $birthday);
-        //  $insert_emp -> bindParam(':nphone', $nphone);
-        //  $insert_emp -> bindParam(':idcard', $idcard);
-        //  $insert_emp -> bindParam(':address', $address);
-        //  $insert_emp -> bindParam(':images', $fileupload);
 
-        //  if ($insert_emp->execute()) {               
-        //    header("refresh:2;employee.php");        
-        //  }
+        $insert_emp = $db->prepare("INSERT INTO tb_employee(fname, lname, gender, birthday, nphone, idcard, address, images) VALUES (:firname, :lasname, :ggender, :bbirthday, :nnphone, :iidcard, :aaddress, :iimages)");
+        $insert_emp->bindParam(':firname', $fname);
+        $insert_emp->bindParam(':lasname', $lname);
+        $insert_emp->bindParam(':ggender', $gender);
+        $insert_emp->bindParam(':bbirthday', $birthday);
+        $insert_emp->bindParam(':nnphone', $numberphone);
+        $insert_emp->bindParam(':iidcard', $idcard);
+        $insert_emp->bindParam(':aaddress', $address);
+        $insert_emp->bindParam(':iimages', $file_ext);
 
+        if ($insert_login->execute() && $insert_emp->execute()) {   
+          $insertMsg = "Insert Successfully . . .";
+          header("refresh:2;employee.php");
+        }
       }
     } catch (PDOException $e) {
       echo $e->getMessage();
     }
   }
-  //  } else if (empty($fname)) {
-  //    $errorMsg = "Please Enter Firstname";
-  //  } else if (empty($lname)) {
-  //    $errorMsg = "Please Enter Lastname";
-  //  } else if (empty($gender)) {
-  //    $errorMsg = "Please Select Gender";
-  //  } else if (empty($birthday)) {
-  //    $errorMsg = "Please Select Birthday";
-  //  } else if (empty($numberphone)) {
-  //    $errorMsg = "Please Enter Number Phone";
-  //  } else if (empty($idcard)) {
-  //    $errorMsg = "Please Enter Number IDCard";
-  //  } else if (empty($address)) {
-  //    $errorMsg = "Please Enter Address";
-  //  } else if (empty($fileupload)) {
-  //    $errorMsg = "Please Upload File";
-  //  }
 }
 
 ?>
-
-<!DOCTYPE html>
-<html>
 
 <head>
   <meta charset="utf-8">
@@ -367,25 +370,24 @@ if (isset($_REQUEST['btn_insert'])) {
       </section>
 
       <!-- Main content -->
-      <section class="content">       
-      <?php
-                  if (isset($errorMsg)) {
-                  ?>  
-                    <div class="alert alert-danger alert-dismissible">
-                      <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
-                    </div>
+      <section class="content">
+        <?php
+        if (isset($errorMsg)) {
+        ?>
+          <div class="alert alert-danger alert-dismissible">
+            <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
+          </div>
 
-                  <?php } ?>
+        <?php } ?>
 
-                  <?php
-                  if (isset($insertMsg)) {
-                  ?>
-                    <div class="alert alert-success alert-dismissible">
-                      <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
-                    </div>
-      <?php } ?>
-
-        <form role="form" method="POST">
+        <?php
+        if (isset($insertMsg)) {
+        ?>
+          <div class="alert alert-success alert-dismissible">
+            <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
+          </div>
+        <?php } ?>
+        <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
             <div class="col-xs-12">
 
@@ -479,7 +481,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="fa fa-phone"></i>
                       </div>
-                      <input type="text" class="form-control" data-inputmask='"mask": "(99) 9999-9999"' data-mask name="numberphone">
+                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask>
                     </div>
                   </div>
                   <!-- /.input group -->
@@ -504,14 +506,13 @@ if (isset($_REQUEST['btn_insert'])) {
                   </div>
                   <div class="form-group">
                     <label for="fileupload">Profile picture</label>
-                    <input type="file" class="form-control" id="name" name="filetoupload">
+                    <input type="file" class="form-control" name="image">
                   </div>
                 </div>
                 <!-- /.box-body -->
 
-
                 <div class="box-footer">
-                <button type="submit" name="btn_insert" class="btn btn-success">Add Employee</button>
+                  <button type="submit" name="btn_insert" class="btn btn-success">Add Employee</button>
                 </div>
               </div>
               <!-- /ข้อมูลส้วนตัว -->

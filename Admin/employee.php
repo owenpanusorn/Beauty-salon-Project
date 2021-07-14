@@ -13,6 +13,7 @@
   <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
@@ -151,7 +152,7 @@
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
+  <aside class="main-sidebar kanitB">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
@@ -290,9 +291,9 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>id</th>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
+                  <th>ID</th>
+                  <th class="col-md-2">Firstname</th>
+                  <th class="col-md-2">Lastname</th>
                   <th>Gender</th>
                   <th>Birthday</th>
                   <th>Number Phone</th>
@@ -308,7 +309,7 @@
                         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         
                   ?>                    
-                      <tr>
+                      <tr class="kanitB">
                         <td><?php echo $row["id"]?></td>
                         <td><?php echo $row["fname"]?></td>
                         <td><?php echo $row["lname"]?></td>
@@ -317,17 +318,20 @@
                         <td><?php echo $row["nphone"]?></td>
                         <td><?php echo $row["idcard"]?></td>
                         <td><?php echo $row["address"]?></td>
-                        <td><?php echo $row["image"]?></td>
+                        <td><?php echo '<img src="images/'.$row["images"].'" height="30">'?></td>
                       </tr>
                   <?php } ?>
                 </tbody>
                 <tfoot>
                 <tr>
-                  <th>Rendering engine</th>
-                  <th>Browser</th>
-                  <th>Platform(s)</th>
-                  <th>Engine version</th>
-                  <th>CSS grade</th>
+                  <th>ID</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
+                  <th>Gender</th>
+                  <th>Birthday</th>
+                  <th>Number Phone</th>
+                  <th>Address</th>
+                  <th>Image</th>
                 </tr>
                 </tfoot>
               </table>
