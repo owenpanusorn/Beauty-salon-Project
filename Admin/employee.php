@@ -1,5 +1,19 @@
 <?php
-    require_once('config.php');
+    require_once('require/config.php');
+
+    if (isset($_REQUEST['del_id'])){
+      $id = $_REQUEST['del_id'];
+
+      $del_login = $db -> prepare("DELETE FROM tb_login WHERE id = :id ");
+      $del_login -> bindParam(":id",$id);
+      $del_login -> execute();
+
+      $del_emp = $db -> prepare("DELETE FROM tb_employee WHERE id = :id ");
+      $del_emp -> bindParam(":id",$id);
+      $del_emp -> execute();
+      header('Location:employee.php');
+
+    }
 ?>
 
 <!DOCTYPE html>
@@ -24,6 +38,8 @@
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
+  <!-- sweetalert -->
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -261,7 +277,7 @@
     <section class="content-header">
       <h1>
         Employees
-        <small>รายชื่อพนักงาน</small>
+        <small class="kanitB"><b>รายชื่อพนักงาน</b></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
@@ -273,10 +289,9 @@
     <section class="content">
       <div class="row">
         <div class="col-xs-12">      
-
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Data Table Employees</h3>
+              <h3 class="box-title kanitB">ตารางข้อมูลพนักงาน</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                       <i class="fa fa-minus"></i>
@@ -292,13 +307,18 @@
                 <thead>
                 <tr>
                   <th>ID</th>
-                  <th class="col-md-2">Firstname</th>
-                  <th class="col-md-2">Lastname</th>
+                  <th>Firstname</th>
+                  <th>Lastname</th>
                   <th>Gender</th>
                   <th>Birthday</th>
                   <th>Number Phone</th>
+                  <th>ID Card</th>
                   <th>Address</th>
                   <th>Image</th>
+                  <th>Crete date</th>
+                  <th>Crete time</th>                  
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -318,7 +338,12 @@
                         <td><?php echo $row["nphone"]?></td>
                         <td><?php echo $row["idcard"]?></td>
                         <td><?php echo $row["address"]?></td>
-                        <td><?php echo '<img src="images/'.$row["images"].'" height="30">'?></td>
+                        <td><?php echo '<img src="images/'.$row["images"].'" height="50">'?></td>
+                        <td><?php echo $row["cre_emp_date"]?></td>
+                        <td><?php echo $row["cre_emp_time"]?></td>                        
+                        <td><a href="editemp.php?update_id=<?php echo $row['id']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
+                        <td><a href="?del_id=<?php echo $row['id']?>" class='btn btn-danger' > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
+                        
                       </tr>
                   <?php } ?>
                 </tbody>
@@ -330,8 +355,13 @@
                   <th>Gender</th>
                   <th>Birthday</th>
                   <th>Number Phone</th>
+                  <th>ID Card</th>
                   <th>Address</th>
                   <th>Image</th>
+                  <th>Crete date</th>
+                  <th>Crete time</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
                 </tfoot>
               </table>
@@ -384,7 +414,7 @@
     $('#example2').DataTable({
       'paging'      : true,
       'lengthChange': false,
-      'searching'   : false,
+      'searching'   : true,
       'ordering'    : true,
       'info'        : true,
       'autoWidth'   : false

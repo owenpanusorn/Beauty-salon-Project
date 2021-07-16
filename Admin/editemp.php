@@ -3,118 +3,46 @@
 <?php
 require_once('require/config.php');
 
-if (isset($_REQUEST['btn_insert'])) {
-  $data = $data ?? random_bytes(16);
-  assert(strlen($data) == 16);
+if (isset($_REQUEST['update_id'])) {
+  try {
+    $id = $_REQUEST['update_id'];
+    $qry = $db->prepare("select * from tb_employee where id = :id");
+    $qry->bindParam(":id", $id);
+    $qry->execute();
+    $row = $qry->fetch(PDO::FETCH_ASSOC);
+    extract($row);
 
-  // Set version to 0100
-  $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-  // Set bits 6-7 to 10
-  $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+    $qry1 = $db->prepare("select * from tb_login where id = :id");
+    $qry1->bindParam(":id", $id);
+    $qry1->execute();
+    $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+    extract($row1);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
 
-  // Output the 36 character UUID.
-  $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-
-  $username = $_REQUEST['username'];
-  $password = $_REQUEST['password'];
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  $role = 201;
-
-  $fname = $_REQUEST['fname'];
-  $lname = $_REQUEST['lname'];
-  $gender = $_REQUEST['gender'];
-  $birthday = $_REQUEST['birthday'];
-  $numberphone = $_REQUEST['numberphone'];
-  $idcard = $_REQUEST['idcard'];
-  $address = $_REQUEST['address'];
-  $date = date("d/m/Y");
-  $time = date("h:i:sa");
-  $newtime = str_replace(['pm', 'am'], '', $time);
-  $newphone = str_replace(['(', ')',' ','-','_'], '', $numberphone);
-  $newcard = str_replace(['(', ')',' ','-','_'], '', $idcard);
-  $lenphone = strlen($newphone);
-  $lencard = strlen($newcard);
-
-  if (empty($username)) {
-    $errorMsg = "Please Enter Username";
-  } else if (empty($password)) {
-    $errorMsg = "Please Enter Password";
-  } else if (empty($fname)) {
-    $errorMsg = "Please Enter Firstname";
-  } else if (empty($lname)) {
-    $errorMsg = "Please Enter Lastname";
-  } else if (empty($gender)) {
-    $errorMsg = "Please Select Gender";
-  } else if (empty($birthday)) {
-    $errorMsg = "Please Select Birthday";
-  } else if (empty($numberphone)) {
-    $errorMsg = "Please Enter Number Phone";
-  } else if ($lenphone < 10) {
-    $errorMsg = "Please Enter Number Phone To Complete 10 Digits ";
-  } else if ($lencard < 13) { 
-    $errorMsg = "Please Enter ID Card To Complete 13 Digits ";
-  } else if (empty($idcard)) {
-    $errorMsg = "Please Enter Number IDCard";
-  } else if (empty($address)) {
-    $errorMsg = "Please Enter Address";
-    // } else if (empty($fileupload)) {
-    //   $errorMsg = "Please Upload File";
-  } else if (empty($_FILES['image']['name'])) {
-    $errorMsg = "Please Select Images";
-  } else {
-    try {
-      if (!isset($errorMsg)) {
-        $insert_login = $db->prepare("INSERT INTO tb_login(uuid, username, password, role , cre_login_date, cre_login_time) VALUES (:uuid, :user, :password, :role, :cre_login_date, :cre_login_time)");
-        $insert_login->bindParam(':uuid', $myuuid);
-        $insert_login->bindParam(':user', $username);
-        $insert_login->bindParam(':password', $hashed_password);
-        $insert_login->bindParam(':role', $role);
-        $insert_login->bindParam(':cre_login_date', $date);
-        $insert_login->bindParam(':cre_login_time', $newtime);
-
-        if (isset($_FILES['image'])) {
-          $file_name = $_FILES['image']['name'];
-          $file_size = $_FILES['image']['size'];
-          $file_tmp = $_FILES['image']['tmp_name'];
-          $file_type = $_FILES['image']['type'];
-          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
-
-          if (!move_uploaded_file($file_tmp, "images/" . $file_ext)) {
-            $$errorMsg = "Wrong! i . . .";
-          }
-          // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
-
-
-          // if(in_array($file_ext,$extensions)=== false){
-          //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
-          // }
-
-          // if ($file_size > 2097152) {
-          //   $errors[] = 'File size must be excately 2 MB';   // }
-
-        }
-
-        $insert_emp = $db->prepare("INSERT INTO tb_employee(uuid, fname, lname, gender, birthday, nphone, idcard, address, images, cre_emp_date, cre_emp_time) VALUES (:uuid, :firname, :lasname, :ggender, :bbirthday, :nnphone, :iidcard, :aaddress, :iimages, :cre_emp_date, :cre_emp_time)");
-        $insert_emp->bindParam(':uuid', $myuuid);
-        $insert_emp->bindParam(':firname', $fname);
-        $insert_emp->bindParam(':lasname', $lname);
-        $insert_emp->bindParam(':ggender', $gender);
-        $insert_emp->bindParam(':bbirthday', $birthday);
-        $insert_emp->bindParam(':nnphone', $numberphone);
-        $insert_emp->bindParam(':iidcard', $idcard);
-        $insert_emp->bindParam(':aaddress', $address);
-        $insert_emp->bindParam(':iimages', $file_ext);
-        $insert_emp->bindParam(':cre_emp_date', $date);
-        $insert_emp->bindParam(':cre_emp_time', $newtime);
-
-        if ($insert_login->execute() && $insert_emp->execute()) {
-          $insertMsg = "Insert Successfully . . .";
-          header("refresh:2;employee.php");
-        }
-      }
-    } catch (PDOException $e) {
-      echo $e->getMessage();
+  if (isset($_REQUEST['btn_update'])) {
+    $username = $_REQUEST['username'];    
+   
+    if (empty($_REQUEST['password'])) {
+        $pass = $password;
+    } else {
+      $pass = $_REQUEST['password'];
     }
+
+    $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+    $role = 201;
+
+    $fname = $_REQUEST['fname'];
+    $lname = $_REQUEST['lname'];
+    $gender = $_REQUEST['gender'];
+    $birthday = $_REQUEST['birthday'];
+    $numberphone = $_REQUEST['numberphone'];
+    $idcard = $_REQUEST['idcard'];
+    $address = $_REQUEST['address'];
+    $date = date("d/m/Y");
+    $time = date("h:i:sa");
+    $newtime = str_replace(['pm', 'am'], '', $time);
   }
 }
 
@@ -123,13 +51,14 @@ if (isset($_REQUEST['btn_insert'])) {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Add Employee | Beautiful Salon</title>
+  <title>Edit Employee | Beautiful Salon</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
   <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
@@ -385,8 +314,8 @@ if (isset($_REQUEST['btn_insert'])) {
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Add Employees
-          <small>Beautiful Salon</small>
+          Edit Employees
+          <small class="kanitB"><b>แก้ไขรายชื่อพนักงาน</b></small>
         </h1>
         <ol class="breadcrumb">
           <li><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
@@ -413,6 +342,7 @@ if (isset($_REQUEST['btn_insert'])) {
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
         <?php } ?>
+
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
             <div class="col-xs-12">
@@ -436,7 +366,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="fa fa-user"></i>
                       </div>
-                      <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
+                      <input type="text" class="form-control" id="username" name="username" value="<?php echo $username; ?>">
                     </div>
                   </div>
                   <!-- /.input group -->
@@ -447,7 +377,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-lock"></i>
                       </div>
-                      <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+                      <input type="password" class="form-control" id="password" name="password" value="<?php echo $password; ?>">
                     </div>
                   </div>
 
@@ -468,20 +398,20 @@ if (isset($_REQUEST['btn_insert'])) {
                 <div class="box-body">
                   <div class="form-group">
                     <label for="title">Firstname</label>
-                    <input type="text" class="form-control" id="fname" name="fname" placeholder="Enter Firstname">
+                    <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $fname; ?>">
                   </div>
                   <div class="form-group">
                     <label for="description">Lastname</label>
-                    <input type="text" class="form-control" id="lname" name="lname" placeholder="Enter Lastname">
+                    <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $lname; ?>">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">Gender</label><br>
-                    <input type="radio" name="gender" class="minimal" value='male' checked>
+                    <input type="radio" name="gender" class="minimal" value='male' <?php echo $gender == "male" ? "checked" : "" ?>>
                     <label>
                       Male
                     </label>
-                    <input type="radio" name="gender" class="minimal-red" value='female'>
+                    <input type="radio" name="gender" class="minimal-red" value='female' <?php echo $gender == "female" ? "checked" : "" ?>>
                     <label>
                       Female
                     </label>
@@ -495,7 +425,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                       </div>
-                      <input type="text" class="form-control pull-right selector" id="datepicker" name="birthday">
+                      <input type="text" class="form-control pull-right" id="datepicker" name="birthday" value="<?php echo $birthday; ?>">
                     </div>
                     <!-- /.input group -->
                   </div>
@@ -507,7 +437,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="fa fa-phone"></i>
                       </div>
-                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask>
+                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask value="<?php echo $nphone; ?>">
                     </div>
                   </div>
                   <!-- /.input group -->
@@ -520,7 +450,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-credit-card"></i>
                       </div>
-                      <input type="text" class="form-control" data-inputmask='"mask": "9-9999-99999-99-9"' data-mask name="idcard">
+                      <input type="text" class="form-control" data-inputmask='"mask": "9-9999-99999-99-9"' data-mask name="idcard" value="<?php echo $idcard; ?>">
                     </div>
                     <!-- /.input group -->
                   </div>
@@ -528,17 +458,17 @@ if (isset($_REQUEST['btn_insert'])) {
                   <!-- Text area -->
                   <div class="form-group">
                     <label>Address</label>
-                    <textarea class="form-control" name="address" rows="3" placeholder="Enter ..."></textarea>
+                    <textarea class="form-control" name="address" rows="3"><?php echo $address; ?></textarea>
                   </div>
                   <div class="form-group">
-                    <label for="fileupload">Profile picture</label>
+                    <label for="fileupload">Profile picture</label><br>
+                    <img src="images/<?php echo $images; ?>" height="100">
                     <input type="file" class="form-control" name="image">
                   </div>
                 </div>
                 <!-- /.box-body -->
-
                 <div class="box-footer">
-                  <button type="submit" name="btn_insert" class="btn btn-success">Add Employee</button>
+                  <button type="submit" name="btn_update" class="btn btn-success"><i class="fa fa-pencil-square-o"></i> Update</button>
                 </div>
               </div>
               <!-- /ข้อมูลส้วนตัว -->
@@ -611,8 +541,8 @@ if (isset($_REQUEST['btn_insert'])) {
         'placeholder': 'dd/mm/yyyy'
       })
       //Datemask2 mm/dd/yyyy
-      $('#datemask2').inputmask('dd/mm/yyyy', {
-        'placeholder': 'dd/mm/yyyy'
+      $('#datemask2').inputmask('mm/dd/yyyy', {
+        'placeholder': 'mm/dd/yyyy'
       })
       //Money Euro
       $('[data-mask]').inputmask()
@@ -645,15 +575,8 @@ if (isset($_REQUEST['btn_insert'])) {
 
       //Date picker
       $('#datepicker').datepicker({
-        format: 'dd/mm/yyyy',
         autoclose: true
       })
-
-      $(".selector").datepicker("setDate", new Date());
-      // Or on the init
-      $(".selector").datepicker({
-        defaultDate: new Date()
-      });
 
       //iCheck for checkbox and radio inputs
       $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
