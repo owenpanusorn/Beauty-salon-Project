@@ -5,15 +5,15 @@ require_once('require/config.php');
 
 if (isset($_REQUEST['update_id'])) {
   try {
-    $id = $_REQUEST['update_id'];
-    $qry = $db->prepare("select * from tb_employee where id = :id");
-    $qry->bindParam(":id", $id);
+    $uuid = $_REQUEST['update_id'];
+    $qry = $db->prepare("select * from tb_employee where uuid = :uuid");
+    $qry->bindParam(":uuid", $uuid);
     $qry->execute();
     $row = $qry->fetch(PDO::FETCH_ASSOC);
     extract($row);
 
-    $qry1 = $db->prepare("select * from tb_login where id = :id");
-    $qry1->bindParam(":id", $id);
+    $qry1 = $db->prepare("select * from tb_login where uuid = :uuid");
+    $qry1->bindParam(":uuid", $uuid);
     $qry1->execute();
     $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
     extract($row1);

@@ -341,7 +341,7 @@
                         <td><?php echo '<img src="images/'.$row["images"].'" height="50">'?></td>
                         <td><?php echo $row["cre_emp_date"]?></td>
                         <td><?php echo $row["cre_emp_time"]?></td>                        
-                        <td><a href="editemp.php?update_id=<?php echo $row['id']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
+                        <td><a href="editemp.php?update_id=<?php echo $row['uuid']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
                         <td><a href="?del_id=<?php echo $row['id']?>" class='btn btn-danger' > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
                         
                       </tr>
