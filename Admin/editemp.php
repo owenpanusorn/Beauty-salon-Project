@@ -42,33 +42,28 @@ if (isset($_REQUEST['btn_update'])) {
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 
-        $update_login = $db->prepare(`update tb_login set username = :usernameup
- ,password = :passup, where uuid = :uuid
-`);
+        $update_login = $db->prepare('update tb_login set username = :usernameup,password = :passup where uuid = :uuidedit');
         $update_login->bindParam(':usernameup', $username);
         $update_login->bindParam(':passup', $pass);
-        $update_login->bindParam(':uuid', $uuid);
+        $update_login->bindParam(':uuidedit', $uuid);
 
-        $update_employee = $db->prepare(`update tb_employee set fname = :fnameup
- ,lname = :lnameup,gender = :genderup,birthday = :birthdayup,numberphone = :numberphoneup
- ,idcard = :idcardup,address = :addressup,up_emp_date = :up_emp_dateup,up_emp_time = :up_emp_timeup
- , where uuid = :uuid
-`);
+        $update_employee = $db->prepare('update tb_employee set fname = :fnameup,lname = :lnameup,gender = :genderup,birthday = :birthdayup,nphone = :numberphoneup,idcard = :idcardup,address = :addressup,up_emp_date = :up_emp_dateup,up_emp_time = :up_emp_timeup where uuid = :uuidedit');
 
-        $update_employee->bindParam(':lnameup', $fname);
-        $update_employee->bindParam(':genderup', $lname);
+        $update_employee->bindParam(':fnameup', $fname);
+        $update_employee->bindParam(':lnameup', $lname);
+        $update_employee->bindParam(':genderup', $gender);
         $update_employee->bindParam(':birthdayup', $birthday);
         $update_employee->bindParam(':numberphoneup', $numberphone);
         $update_employee->bindParam(':idcardup', $idcard);
         $update_employee->bindParam(':addressup', $address);
         $update_employee->bindParam(':up_emp_dateup', $date);
         $update_employee->bindParam(':up_emp_timeup', $newtime);
-        $update_employee->bindParam(':uuid', $uuid);
+        $update_employee->bindParam(':uuidedit', $uuid);
 
-        if ($update_login->execute() ) {
+        if ($update_login->execute() && $update_employee->execute()) {
 
             $insertMsg = "update Successfully . . .";
-            // header("refresh:2;employee.php");
+            header("refresh:2;employee.php");
         }
 
     } catch (PDOException $e) {
