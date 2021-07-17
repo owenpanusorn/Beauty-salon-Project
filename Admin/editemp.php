@@ -1,49 +1,75 @@
 <!DOCTYPE html>
 <html>
 <?php
-require_once('require/config.php');
+require_once 'require/config.php';
 
 if (isset($_REQUEST['update_id'])) {
-  try {
-    $uuid = $_REQUEST['update_id'];
-    $qry = $db->prepare("select * from tb_employee where uuid = :uuid");
-    $qry->bindParam(":uuid", $uuid);
-    $qry->execute();
-    $row = $qry->fetch(PDO::FETCH_ASSOC);
-    extract($row);
+    try {
+        $uuid = $_REQUEST['update_id'];
+        $qry = $db->prepare("select * from tb_employee where uuid = :uuid");
+        $qry->bindParam(":uuid", $uuid);
+        $qry->execute();
+        $row = $qry->fetch(PDO::FETCH_ASSOC);
+        extract($row);
 
-    $qry1 = $db->prepare("select * from tb_login where uuid = :uuid");
-    $qry1->bindParam(":uuid", $uuid);
-    $qry1->execute();
-    $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
-    extract($row1);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
+        $qry1 = $db->prepare("select * from tb_login where uuid = :uuid");
+        $qry1->bindParam(":uuid", $uuid);
+        $qry1->execute();
+        $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+        extract($row1);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
-  if (isset($_REQUEST['btn_update'])) {
-    $username = $_REQUEST['username'];    
-   
-    if (empty($_REQUEST['password'])) {
-        $pass = $password;
-    } else {
-      $pass = $_REQUEST['password'];
+if (isset($_REQUEST['btn_update'])) {
+    try {
+        $username = $_REQUEST['username'];
+        if (empty($_REQUEST['password'])) {
+            $pass = $password;
+        } else {
+            $pass = password_hash($$_REQUEST['password'], PASSWORD_DEFAULT);
+        }
+        $uuidup = $_REQUEST['uuid'];
+        $fname = $_REQUEST['fname'];
+        $lname = $_REQUEST['lname'];
+        $gender = $_REQUEST['gender'];
+        $birthday = $_REQUEST['birthday'];
+        $numberphone = $_REQUEST['numberphone'];
+        $idcard = $_REQUEST['idcard'];
+        $address = $_REQUEST['address'];
+        $date = date("d/m/Y");
+        $time = date("h:i:sa");
+        $newtime = str_replace(['pm', 'am'], '', $time);
+
+        $update_login = $db->prepare('update tb_login set username = :usernameup,password = :passup where uuid = :uuidedit');
+        $update_login->bindParam(':usernameup', $username);
+        $update_login->bindParam(':passup', $pass);
+        $update_login->bindParam(':uuidedit', $uuid);
+
+        $update_employee = $db->prepare('update tb_employee set fname = :fnameup,lname = :lnameup,gender = :genderup,birthday = :birthdayup,nphone = :numberphoneup,idcard = :idcardup,address = :addressup,up_emp_date = :up_emp_dateup,up_emp_time = :up_emp_timeup where uuid = :uuidedit');
+
+        $update_employee->bindParam(':fnameup', $fname);
+        $update_employee->bindParam(':lnameup', $lname);
+        $update_employee->bindParam(':genderup', $gender);
+        $update_employee->bindParam(':birthdayup', $birthday);
+        $update_employee->bindParam(':numberphoneup', $numberphone);
+        $update_employee->bindParam(':idcardup', $idcard);
+        $update_employee->bindParam(':addressup', $address);
+        $update_employee->bindParam(':up_emp_dateup', $date);
+        $update_employee->bindParam(':up_emp_timeup', $newtime);
+        $update_employee->bindParam(':uuidedit', $uuid);
+
+        if ($update_login->execute() && $update_employee->execute()) {
+
+            $insertMsg = "update Successfully . . .";
+            header("refresh:2;employee.php");
+        }
+
+    } catch (PDOException $e) {
+        echo $e->getMessage();
     }
 
-    $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
-    $role = 201;
-
-    $fname = $_REQUEST['fname'];
-    $lname = $_REQUEST['lname'];
-    $gender = $_REQUEST['gender'];
-    $birthday = $_REQUEST['birthday'];
-    $numberphone = $_REQUEST['numberphone'];
-    $idcard = $_REQUEST['idcard'];
-    $address = $_REQUEST['address'];
-    $date = date("d/m/Y");
-    $time = date("h:i:sa");
-    $newtime = str_replace(['pm', 'am'], '', $time);
-  }
 }
 
 ?>
@@ -327,21 +353,21 @@ if (isset($_REQUEST['update_id'])) {
       <!-- Main content -->
       <section class="content">
         <?php
-        if (isset($errorMsg)) {
-        ?>
+if (isset($errorMsg)) {
+    ?>
           <div class="alert alert-danger alert-dismissible">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php } ?>
+        <?php }?>
 
         <?php
-        if (isset($insertMsg)) {
-        ?>
+if (isset($insertMsg)) {
+    ?>
           <div class="alert alert-success alert-dismissible">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php } ?>
+        <?php }?>
 
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
@@ -377,7 +403,7 @@ if (isset($_REQUEST['update_id'])) {
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-lock"></i>
                       </div>
-                      <input type="password" class="form-control" id="password" name="password" value="<?php echo $password; ?>">
+                      <input type="password" class="form-control" id="password" name="password" placeholder="password">
                     </div>
                   </div>
 
@@ -396,6 +422,7 @@ if (isset($_REQUEST['update_id'])) {
                 <!-- /.box-header -->
                 <!-- form start -->
                 <div class="box-body">
+                <input  type="hidden" class="form-control" id="uuid" name="uuid" value="<?php echo $uuid; ?>">
                   <div class="form-group">
                     <label for="title">Firstname</label>
                     <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $fname; ?>">
