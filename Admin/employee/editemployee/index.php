@@ -297,7 +297,7 @@ if (isset($_REQUEST['btn_update'])) {
           </li>
 
           <li class="active">
-            <a href="../">
+            <a href="index.php">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
             </a>
           </li>
