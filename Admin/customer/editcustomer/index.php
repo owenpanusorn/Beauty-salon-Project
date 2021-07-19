@@ -77,7 +77,7 @@ if (isset($_REQUEST['btn_update'])) {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Edit Employee | Beautiful Salon</title>
+  <title>Customer | Beautiful Salon</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -232,7 +232,7 @@ if (isset($_REQUEST['btn_update'])) {
       </nav>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
+    <aside class="main-sidebar kanitB">
       <!-- sidebar: style can be found in sidebar.less -->
       <section class="sidebar">
         <!-- Sidebar user panel -->
@@ -340,13 +340,13 @@ if (isset($_REQUEST['btn_update'])) {
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Edit Employees
-          <small class="kanitB"><b>แก้ไขรายชื่อพนักงาน</b></small>
+          Customer
+          <small class="kanitB"><b>แก้ไขรายชื่อลูกค้า</b></small>
         </h1>
         <ol class="breadcrumb">
           <li><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li><a href="../">Employees</a></li>
-          <li class="active">Add Employee</li>
+          <li><a href="../">Customer</a></li>
+          <li class="active">Edit Customer</li>
         </ol>
       </section>
 
@@ -392,7 +392,7 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="fa fa-user"></i>
                       </div>
-                      <input type="text" class="form-control" id="username" name="username" value="<?php echo $username; ?>">
+                      <input type="text" class="form-control" id="username" name="username" value="">
                     </div>
                   </div>
                   <!-- /.input group -->
@@ -403,7 +403,7 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-lock"></i>
                       </div>
-                      <input type="password" class="form-control" id="password" name="password" placeholder="password">
+                      <input type="password" class="form-control" id="password" name="password" value="">
                     </div>
                   </div>
 
@@ -422,23 +422,22 @@ if (isset($insertMsg)) {
                 <!-- /.box-header -->
                 <!-- form start -->
                 <div class="box-body">
-                <input  type="hidden" class="form-control" id="uuid" name="uuid" value="<?php echo $uuid; ?>">
                   <div class="form-group">
                     <label for="title">Firstname</label>
-                    <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $fname; ?>">
+                    <input type="text" class="form-control" id="fname" name="fname" value="">
                   </div>
                   <div class="form-group">
                     <label for="description">Lastname</label>
-                    <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $lname; ?>">
+                    <input type="text" class="form-control" id="lname" name="lname" value="">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">Gender</label><br>
-                    <input type="radio" name="gender" class="minimal" value='male' <?php echo $gender == "male" ? "checked" : "" ?>>
+                    <input type="radio" name="gender" class="minimal" value='male' checked>
                     <label>
                       Male
                     </label>
-                    <input type="radio" name="gender" class="minimal-red" value='female' <?php echo $gender == "female" ? "checked" : "" ?>>
+                    <input type="radio" name="gender" class="minimal-red" value='female'>
                     <label>
                       Female
                     </label>
@@ -452,7 +451,7 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                       </div>
-                      <input type="text" class="form-control pull-right" id="datepicker" name="birthday" value="<?php echo $birthday; ?>">
+                      <input type="text" class="form-control pull-right selector" id="datepicker" name="birthday" value="">
                     </div>
                     <!-- /.input group -->
                   </div>
@@ -464,38 +463,27 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="fa fa-phone"></i>
                       </div>
-                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask value="<?php echo $nphone; ?>">
+                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask value="">
                     </div>
                   </div>
-                  <!-- /.input group -->
-
-                  <!-- ID Card-->
-                  <div class="form-group">
-                    <label>ID Card</label>
-
-                    <div class="input-group">
-                      <div class="input-group-addon">
-                        <i class="glyphicon glyphicon-credit-card"></i>
-                      </div>
-                      <input type="text" class="form-control" data-inputmask='"mask": "9-9999-99999-99-9"' data-mask name="idcard" value="<?php echo $idcard; ?>">
-                    </div>
-                    <!-- /.input group -->
-                  </div>
-                  <!-- /.form group -->
+                  <!-- /.input group -->                
+                
                   <!-- Text area -->
                   <div class="form-group">
                     <label>Address</label>
-                    <textarea class="form-control" name="address" rows="3"><?php echo $address; ?></textarea>
+                    <textarea class="form-control kanitB" name="address" rows="3" ><?php echo "รายละเอียด . . ."?></textarea>
                   </div>
+
                   <div class="form-group">
-                    <label for="fileupload">Profile picture</label><br>
-                    <img src="../../images/<?php echo $images; ?>" height="100">
+                    <label for="fileupload">Profile picture</label>
+                    <img src="../../images/customer/<?php ?>" alt="">
                     <input type="file" class="form-control" name="image">
                   </div>
                 </div>
                 <!-- /.box-body -->
+
                 <div class="box-footer">
-                  <button type="submit" name="btn_update" class="btn btn-success"><i class="fa fa-pencil-square-o"></i> Update</button>
+                  <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> Update</button>
                 </div>
               </div>
               <!-- /ข้อมูลส้วนตัว -->
