@@ -4,14 +4,9 @@
     if (isset($_REQUEST['del_id'])){
       $id = $_REQUEST['del_id'];
 
-      $del_login = $db -> prepare("DELETE FROM tb_login WHERE uuid = :id ");
+      $del_login = $db -> prepare("DELETE FROM tb_product WHERE prod_id = :id ");
       $del_login -> bindParam(":id",$id);
       $del_login -> execute();
-
-      $del_emp = $db -> prepare("DELETE FROM tb_employee WHERE uuid = :id ");
-      $del_emp -> bindParam(":id",$id);
-      $del_emp -> execute();
-
 
       header('Location:index.php');
 
@@ -125,13 +120,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <span class="hidden-xs">Alexander Pierce</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
                   Alexander Pierce - Web Developer
@@ -308,7 +303,7 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>CODE</th>
                   <th>Product</th>
                   <th>Details</th>
                   <th>Price</th>
@@ -326,13 +321,13 @@
         
                   ?>                    
                       <tr class="kanitB">
-                        <td><?php echo $row["prod_id"]?></td>
+                        <td><?php echo $row["prod_code"]?></td>
                         <td><?php echo $row["prod_name"]?></td>
                         <td><?php echo $row["prod_details"]?></td>
                         <td><?php echo $row["prod_price"]?></td>                      
-                        <td><?php echo '<img src="../images/product'.$row["prod_img"].'" height="50">'?></td>
-                        <td><a href="editemployee?update_id=<?php echo $row['uuid']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
-                        <td><a href="?del_id=<?php echo $row['uuid']?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');" > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
+                        <td><?php echo '<img src="../images/prod_img/'.$row["prod_img"].'" height="50">'?></td>
+                        <td><a href="editproduct?update_id=<?php echo $row['prod_id']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
+                        <td><a href="?del_id=<?php echo $row['prod_id']?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');" > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
                       </tr>
                   <?php } ?>
                 </tbody>

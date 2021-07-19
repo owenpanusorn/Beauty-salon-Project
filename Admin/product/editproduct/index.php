@@ -3,118 +3,61 @@
 <?php
 require_once('../../require/config.php');
 
-if (isset($_REQUEST['btn_insert'])) {
-  $data = $data ?? random_bytes(16);
-  assert(strlen($data) == 16);
+if (isset($_REQUEST['update_id'])) {
+  try {
+    $uuid = $_REQUEST['update_id'];
+    $qry = $db->prepare("select * from tb_product where prod_id = :id");
+    $qry->bindParam(":id", $uuid);
+    $qry->execute();
+    $row = $qry->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
 
-  // Set version to 0100
-  $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-  // Set bits 6-7 to 10
-  $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+if (isset($_REQUEST['btn_update'])) {
+  try {
 
-  // Output the 36 character UUID.
-  $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    $prodid = $_REQUEST['prod_id_update'];
+    $prodcode = $_REQUEST['prod_code'];
+    $prodname = $_REQUEST['prod_name'];
+    $proddetails = $_REQUEST['prod_details_up'];
+    $prodprice = $_REQUEST['prod_price'];
 
-  $username = $_REQUEST['username'];
-  $password = $_REQUEST['password'];
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  $role = 201;
+    // if (isset($_FILES['prod_img_up'])) {
+    //   $file_name = $_FILES['prod_img_up']['name'];
+    //   $file_size = $_FILES['prod_img_up']['size'];
+    //   $file_tmp = $_FILES['prod_img_up']['tmp_name'];
+    //   $file_type = $_FILES['prod_img_up']['type'];
+    //   $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
 
-  $fname = $_REQUEST['fname'];
-  $lname = $_REQUEST['lname'];
-  $gender = $_REQUEST['gender'];
-  $birthday = $_REQUEST['birthday'];
-  $numberphone = $_REQUEST['numberphone'];
-  $idcard = $_REQUEST['idcard'];
-  $address = $_REQUEST['address'];
-  $date = date("d/m/Y");
-  $time = date("h:i:sa");
-  $newtime = str_replace(['pm', 'am'], '', $time);
-  $newphone = str_replace(['(', ')',' ','-','_'], '', $numberphone);
-  $newcard = str_replace(['(', ')',' ','-','_'], '', $idcard);
-  $lenphone = strlen($newphone);
-  $lencard = strlen($newcard);
+    //   echo 'file_ext'.$file_ext.'<br>'; 
+    //   echo 'prod_img'.$prod_img;
+    //   // if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
+    //   //   $$errorMsg = "Wrong! i . . .";
+    //   // } else {
+    //   //   $file_ext = $prod_img;
+    //   // }
+    // }
+    $update_prod = $db->prepare("update tb_product set prod_code = :prod_code_up,prod_name = :prod_name_up,prod_details = :prod_details_up,prod_price = :prod_price_up,up_prod_date = :up_prod_date_up,up_prod_time = :up_prod_time_up where prod_id = :id_up");
 
-  if (empty($username)) {
-    $errorMsg = "Please Enter Username";
-  } else if (empty($password)) {
-    $errorMsg = "Please Enter Password";
-  } else if (empty($fname)) {
-    $errorMsg = "Please Enter Firstname";
-  } else if (empty($lname)) {
-    $errorMsg = "Please Enter Lastname";
-  } else if (empty($gender)) {
-    $errorMsg = "Please Select Gender";
-  } else if (empty($birthday)) {
-    $errorMsg = "Please Select Birthday";
-  } else if (empty($numberphone)) {
-    $errorMsg = "Please Enter Number Phone";
-  } else if ($lenphone < 10) {
-    $errorMsg = "Please Enter Number Phone To Complete 10 Digits ";
-  } else if ($lencard < 13) { 
-    $errorMsg = "Please Enter ID Card To Complete 13 Digits ";
-  } else if (empty($idcard)) {
-    $errorMsg = "Please Enter Number IDCard";
-  } else if (empty($address)) {
-    $errorMsg = "Please Enter Address";
-    // } else if (empty($fileupload)) {
-    //   $errorMsg = "Please Upload File";
-  } else if (empty($_FILES['image']['name'])) {
-    $errorMsg = "Please Select Images";
-  } else {
-    try {
-      if (!isset($errorMsg)) {
-        $insert_login = $db->prepare("INSERT INTO tb_login(uuid, username, password, role , cre_login_date, cre_login_time) VALUES (:uuid, :user, :password, :role, :cre_login_date, :cre_login_time)");
-        $insert_login->bindParam(':uuid', $myuuid);
-        $insert_login->bindParam(':user', $username);
-        $insert_login->bindParam(':password', $hashed_password);
-        $insert_login->bindParam(':role', $role);
-        $insert_login->bindParam(':cre_login_date', $date);
-        $insert_login->bindParam(':cre_login_time', $newtime);
+    $update_prod->bindParam(':id_up', $prodid);
+    $update_prod->bindParam(':prod_code_up', $prodcode);
+    $update_prod->bindParam(':prod_name_up', $prodname);
+    $update_prod->bindParam(':prod_details_up', $proddetails);
+    $update_prod->bindParam(':prod_price_up', $prodprice);
+    // $update_prod->bindParam(':prod_img_up', $file_ext);
+    $update_prod->bindParam(':up_prod_date_up', $date);
+    $update_prod->bindParam(':up_prod_time_up', $time);
 
-        if (isset($_FILES['image'])) {
-          $file_name = $_FILES['image']['name'];
-          $file_size = $_FILES['image']['size'];
-          $file_tmp = $_FILES['image']['tmp_name'];
-          $file_type = $_FILES['image']['type'];
-          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+    if ($update_prod->execute()) {
 
-          if (!move_uploaded_file($file_tmp, "../../images/" . $file_ext)) {
-            $$errorMsg = "Wrong! i . . .";
-          }
-          // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
-
-
-          // if(in_array($file_ext,$extensions)=== false){
-          //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
-          // }
-
-          // if ($file_size > 2097152) {
-          //   $errors[] = 'File size must be excately 2 MB';   // }
-
-        }
-
-        $insert_emp = $db->prepare("INSERT INTO tb_employee(uuid, fname, lname, gender, birthday, nphone, idcard, address, images, cre_emp_date, cre_emp_time) VALUES (:uuid, :firname, :lasname, :ggender, :bbirthday, :nnphone, :iidcard, :aaddress, :iimages, :cre_emp_date, :cre_emp_time)");
-        $insert_emp->bindParam(':uuid', $myuuid);
-        $insert_emp->bindParam(':firname', $fname);
-        $insert_emp->bindParam(':lasname', $lname);
-        $insert_emp->bindParam(':ggender', $gender);
-        $insert_emp->bindParam(':bbirthday', $birthday);
-        $insert_emp->bindParam(':nnphone', $numberphone);
-        $insert_emp->bindParam(':iidcard', $idcard);
-        $insert_emp->bindParam(':aaddress', $address);
-        $insert_emp->bindParam(':iimages', $file_ext);
-        $insert_emp->bindParam(':cre_emp_date', $date);
-        $insert_emp->bindParam(':cre_emp_time', $newtime);
-
-        if ($insert_login->execute() && $insert_emp->execute()) {
-          $insertMsg = "Insert Successfully . . .";
-          header("refresh:2;../index.php");
-        }
-      }
-    } catch (PDOException $e) {
-      echo $e->getMessage();
+      $insertMsg = "update Successfully . . .";
+      header("refresh:2;../index.php");
     }
+  } catch (PDOException $e) {
+    echo $e->getMessage();
   }
 }
 
@@ -297,7 +240,7 @@ if (isset($_REQUEST['btn_insert'])) {
           <li class="header">MENU BAR</li>
 
           <li>
-            <a href="index.php">
+            <a href="../../index.php">
               <i class="fa fa-home"></i> <span>หน้าแรก</span>
               <!-- <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
@@ -318,20 +261,20 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+              <li><a href="../../pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+              <li><a href="../../pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                   <span class="pull-right-container">
                     <span class="label label-primary pull-right">4</span>
                   </span>
                 </a></li>
-              <li><a href="pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+              <li><a href="../../pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
             </ul>
           </li>
           <li>
 
           <li class="active">
-            <a href="#">
+            <a href="../index.php">
               <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
             </a>
           </li>
@@ -343,7 +286,7 @@ if (isset($_REQUEST['btn_insert'])) {
           </li>
 
           <li>
-            <a href="../">
+            <a href="../../employee/">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
             </a>
           </li>
@@ -357,8 +300,8 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li><a href="../../pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <li><a href="../../pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
             </ul>
           </li>
 
@@ -371,8 +314,8 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
+              <li><a href="../../pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -416,7 +359,7 @@ if (isset($_REQUEST['btn_insert'])) {
         <?php } ?>
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
-            <div class="col-xs-12">            
+            <div class="col-xs-12">
 
               <!-- ข้อมูลส้วนตัว -->
               <div class="box box-primary">
@@ -433,64 +376,65 @@ if (isset($_REQUEST['btn_insert'])) {
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-barcode"></i>
-                        </div> 
-                    <input type="text" class="form-control kanitB" name="prod_id" value="">
+                      </div>
+                      <input  type="hidden" class="form-control" id="prod_id" name="prod_id_update" value="<?php echo $prod_id; ?>">
+                      <input type="text" class="form-control kanitB" name="prod_code" value="<?php echo $prod_code; ?>">
                     </div>
                   </div>
 
                   <div class="form-group">
-                  <label for="description">Product Name</label>
-                  <div class="input-group">
+                    <label for="description">Product Name</label>
+                    <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-tags"></i>
-                        </div> 
-                      
-                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" value="">
-                      </div>                     
-                    </div>                  
-                                 
+                      </div>
+
+                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" value="<?php echo $prod_name; ?>">
+                    </div>
+                  </div>
+
                   <!-- Text area -->
                   <div class="form-group">
                     <label>Details</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa  fa-align-left"></i>
-                        </div> 
-                    <textarea class="form-control kanitB" name="prod_details" rows="3" value=""></textarea>
-                    </div> 
+                      </div>
+                      <textarea class="form-control kanitB" name="prod_details_up" rows="3" value=""><?php echo $prod_details; ?></textarea>
+                    </div>
                   </div>
-                   <!-- Text area -->
-                    <!-- Price -->               
-                <div class="form-group">
+                  <!-- Text area -->
+                  <!-- Price -->
+                  <div class="form-group">
                     <label>Price</label>
 
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-usd"></i>
                       </div>
-                      <input type="number" class="form-control" name="prod_price" min="0" max="10000" value="">
-                      </div>
+                      <input type="number" class="form-control" name="prod_price" min="0" max="10000" value="<?php echo $prod_price; ?>">
                     </div>
-                    <!-- /.input group -->                
-                <!-- Price -->  
-                    <!-- fileupload--> 
-                 <div class="form-group">
-                    <label for="fileupload">Product picture</label>
-                    <input type="file" class="form-control" name="prod_img">
-                  </div>          
-                  <!-- fileupload-->              
-                              
-          
-                <div class="box-footer">
-                  <img src="../../images/product/" alt="">
-                  <button type="submit" name="btn_update" class="btn btn-success"><i class="fa  fa-cart-plus"></i> Update</button>
-                </div>
-                    <!-- /.input group -->
                   </div>
-                  <!-- /.form group -->
-                 
+                  <!-- /.input group -->
+                  <!-- Price -->
+                  <!-- fileupload-->
+                  <div class="form-group">
+                    <label for="fileupload">Product picture</label><br>
+                    <img src="../../images/prod_img/<?php echo $prod_img; ?>" height="100">
+                    <input type="file" class="form-control" name="prod_img_up">
+                  </div>
+                  <!-- fileupload-->
 
-              
+
+                  <div class="box-footer">
+                    <button type="submit" name="btn_update" class="btn btn-success"><i class="fa  fa-cart-plus"></i> Update</button>
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <!-- /.form group -->
+
+
+
               </div>
               <!-- /ข้อมูลส้วนตัว -->
             </div>

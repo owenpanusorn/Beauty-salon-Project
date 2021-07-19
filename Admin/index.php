@@ -202,7 +202,7 @@
         <li>
         
           <li>
-            <a href="#">
+            <a href="product/">
               <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>             
             </a>            
           </li>
