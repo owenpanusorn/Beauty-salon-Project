@@ -44,8 +44,8 @@ body, html {
 
 /*---------------------------------------------*/
 a {
-	font-family: Poppins-Regular;
-	font-size: 14px;
+	/* font-family: Poppins-Regular;
+	font-size: 14px; */
 	line-height: 1.7;
 	color: #666666;
 	margin: 0px;
@@ -160,7 +160,7 @@ iframe {
 
 .container-login100 {
   width: 100%;  
-  /* min-height: 100vh; */
+  min-height: 100vh;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -189,7 +189,7 @@ iframe {
 .login100-form-title {
   display: block;
   font-family: Poppins-Bold;
-  font-size: 30px;
+  font-size: 39px;
   color: #333333;
   line-height: 1.2;
   text-align: center;
