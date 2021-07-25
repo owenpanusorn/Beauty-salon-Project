@@ -7,37 +7,49 @@ require_once 'require/config.php';
 <html lang="en">
 
 <?php
-// Set session variables
 if (isset($_REQUEST['btn_logout'])) {
     try {
         session_unset();
-        echo '
-        <script>
-            alert("ออกจากระบบแล้ว");
-        </script>';
-        header("refresh:1;");
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;");
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
 }
+
 if (isset($_REQUEST['btn_login'])) {
     try {
 
         $username_login = $_REQUEST['username'];
+        $password_login = $_REQUEST['pass'];
 
-        $qry1 = $db->prepare("select * from tb_login where username = :usernmae_login");
-        $qry1->bindParam(":usernmae_login", $username_login);
-        $qry1->execute();
-        $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
 
-        if (!empty($row1) && count($row1) > 0) {
-            extract($row1);
-            $_SESSION["token_loing"] = "yes login";
-            $_SESSION["token_username"] = $_REQUEST['username'];
-            $seMsg = 'เข้าสูระบบแล้ว : uuid :' . $uuid;
-            header("refresh:3;");
+        if (empty($username_login)) {
+            $errorMsg = "Please Enter Username";
+            header("refresh:2;");
+        } else if (empty($password_login)) {
+            $errorMsg = "Please Enter Password";
+            header("refresh:2;");
         } else {
-            $errorMsg = 'ไม่พบ user';
+            $qry1 = $db->prepare("select * from tb_login where username = :usernmae_login");
+            $qry1->bindParam(":usernmae_login", $username_login);
+            $qry1->execute();
+            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+            extract($row1);
+
+            if (!password_verify($password_login, $password)) {
+                $errorMsg = 'password Fail';
+                header("refresh:2;");
+            }else if (!empty($row1) && count($row1) > 0) {
+                $_SESSION["token_uuid"] = $uuid;
+                $_SESSION["token_loing"] = "yes login";
+                $_SESSION["token_username"] = $_REQUEST['username'];
+                $seMsg = 'เข้าสูระบบแล้ว';
+                header("refresh:2;");
+            } else {
+                $errorMsg = 'ไม่พบ user';
+                header("refresh:2;");
+            }
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -80,6 +92,22 @@ if (isset($_REQUEST['btn_login'])) {
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Main content -->
+        <?php
+        if (isset($errorMsg)) {
+        ?>
+            <div class="alert alert-danger alert-dismissible">
+                <strong><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></strong>
+            </div>
+        <?php } ?>
+
+        <?php
+        if (isset($seMsg)) {
+        ?>
+            <div class="alert alert-success alert-dismissible">
+                <strong><i class="icon fa fa-check"></i><?php echo $seMsg ?></strong>
+            </div>
+        <?php } ?>
+
         <div class="container">
             <a href="#" class="navbar-brand">Beautiful Salon</a>
 
@@ -124,25 +152,6 @@ if (isset($_REQUEST['btn_login'])) {
                                                             Beautiful Salon
                                                         </span>
                                                         <h5 class="text-center welcome-spacing">Welcome</h5>';
-                    ?>
-                        <?php
-                        if (isset($errorMsg)) {
-                        ?>
-                            <div class="alert alert-danger alert-dismissible">
-                                <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
-                            </div>
-
-                        <?php } ?>
-
-                        <?php
-                        if (isset($insertMsg)) {
-                        ?>
-                            <div class="alert alert-success alert-dismissible">
-                                <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
-                            </div>
-                        <?php } ?>
-                    <?php
-
                         echo '
                                                         <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
                                                             <input class="input100" type="text" name="username">
