@@ -1,5 +1,50 @@
+<?php
+// Start the session
+session_start();
+require_once 'require/config.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
+
+<?php
+// Set session variables
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        echo '
+        <script>
+            alert("ออกจากระบบแล้ว");
+        </script>';
+        header("refresh:1;");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+if (isset($_REQUEST['btn_login'])) {
+    try {
+
+        $username_login = $_REQUEST['username'];
+
+        $qry1 = $db->prepare("select * from tb_login where username = :usernmae_login");
+        $qry1->bindParam(":usernmae_login", $username_login);
+        $qry1->execute();
+        $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+
+        if (!empty($row1) && count($row1) > 0) {
+            extract($row1);
+            $_SESSION["token_loing"] = "yes login";
+            $_SESSION["token_username"] = $_REQUEST['username'];
+            $seMsg = 'เข้าสูระบบแล้ว : uuid :' . $uuid;
+            header("refresh:3;");
+        } else {
+            $errorMsg = 'ไม่พบ user';
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -10,35 +55,35 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-    <!--===============================================================================================-->	
-        <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-    <!--===============================================================================================-->	
-        <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
     <!--===============================================================================================-->
-        <link rel="stylesheet" type="text/css" href="css/util.css">
-        <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--===============================================================================================-->
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Main content -->
         <div class="container">
             <a href="#" class="navbar-brand">Beautiful Salon</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -56,50 +101,71 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link ">Contact</a>
                     </li>
+
+                    <?php
+                    if (empty($_SESSION["token_loing"])) {
+                        echo '
                     <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Login</button>
-                       
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Login</button>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header text-center">
                                         <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="limiter">
                                             <div class="container-login100">
                                                 <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form">
+                                                    <form class="login100-form validate-form" method="post">
                                                         <span class="login100-form-title ">
                                                             Beautiful Salon
                                                         </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate = "Enter username">
+                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
+                    ?>
+                        <?php
+                        if (isset($errorMsg)) {
+                        ?>
+                            <div class="alert alert-danger alert-dismissible">
+                                <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
+                            </div>
+
+                        <?php } ?>
+
+                        <?php
+                        if (isset($insertMsg)) {
+                        ?>
+                            <div class="alert alert-success alert-dismissible">
+                                <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
+                            </div>
+                        <?php } ?>
+                    <?php
+
+                        echo '
+                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
                                                             <input class="input100" type="text" name="username">
                                                             <span class="focus-input100" data-placeholder="Username"></span>
                                                         </div>
-                                    
+
                                                         <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
                                                             <input class="input100" type="password" name="pass">
                                                             <span class="focus-input100" data-placeholder="Password"></span>
                                                         </div>
-                                    
+
                                                         <div class="container-login100-form-btn">
-                                                            <button class="login100-form-btn">
+                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
                                                                 Login
                                                             </button>
                                                         </div>
-                                    
+
                                                         <ul class="login-more p-t-50 ms-auto">
                                                             <li class="m-b-8">
                                                                 <span class="txt1">
                                                                     Forgot
                                                                 </span>
-                                    
+
                                                                 <a href="#" class="txt2">
                                                                     Username / Password?
                                                                 </a>
@@ -108,7 +174,7 @@
                                                                 <span class="txt1">
                                                                     Don’t have an account?
                                                                 </span>
-                                    
+
                                                                 <a href="#" class="txt2">
                                                                     Sign up
                                                                 </a>
@@ -117,14 +183,28 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                        </div>                                      
-                                    
+                                        </div>
+
                                         <div id="dropDownSelect1"></div>
-                                    </div>                               
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </li>
+                    ';
+                    } else {
+                        echo '
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] . '</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post">
+                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                        </form>
+                    </li>
+                    ';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -142,8 +222,7 @@
                     <form action="">
                         <div class="row d-flex">
                             <div class="col-12 col-md-9 mb-2 mb-md-0">
-                                <input type="email" class="form-control form-control-lg"
-                                    placeholder="Enter your email . . .">
+                                <input type="email" class="form-control form-control-lg" placeholder="Enter your email . . .">
                             </div>
                             <div class="col-12 col-md-3">
                                 <button type="submit" class="btn btn-block btn-lg btn-primary">Sign Up</button>
@@ -162,12 +241,9 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bounding-box-circles"
-                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
-                                <path fill-rule="evenodd"
-                                    d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bounding-box-circles" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
+                                <path fill-rule="evenodd" d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
                             </svg>
                         </div>
 
@@ -179,10 +255,8 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-braces" fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6zM13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-braces" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6zM13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6z" />
                             </svg>
                         </div>
 
@@ -194,12 +268,9 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square"
-                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                <path fill-rule="evenodd"
-                                    d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z" />
                             </svg>
                         </div>
 
@@ -215,8 +286,7 @@
     <section class="showcase">
         <div class="container-fluid p-0">
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img"
-                    style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
+                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text ">
                     <h2>Full Responsive Design</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -225,8 +295,7 @@
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-1 text-light showcase-img"
-                    style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
+                <div class="col-lg-6 order-lg-1 text-light showcase-img" style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
                 <div class="col-lg-6 order-lg-2 my-auto showcase-text ">
                     <h2>Updated for Bootstrap</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -235,8 +304,7 @@
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img"
-                    style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
+                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
                 <div class="col-lg-6 order-lg-1 my-auto showcase-text ">
                     <h2>Easy to use &amp; Customize</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -290,21 +358,21 @@
             </div>
         </div>
     </footer>
-	
+
     <!--===============================================================================================-->
-        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->
-        <script src="vendor/animsition/js/animsition.min.js"></script>
+    <script src="vendor/animsition/js/animsition.min.js"></script>
     <!--===============================================================================================-->
-        <script src="vendor/bootstrap/js/popper.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <!--===============================================================================================-->
-        <script src="vendor/select2/select2.min.js"></script>
+    <script src="vendor/select2/select2.min.js"></script>
     <!--===============================================================================================-->
-        <script src="vendor/daterangepicker/moment.min.js"></script>
-        <script src="vendor/daterangepicker/daterangepicker.js"></script>
+    <script src="vendor/daterangepicker/moment.min.js"></script>
+    <script src="vendor/daterangepicker/daterangepicker.js"></script>
     <!--===============================================================================================-->
-        <script src="vendor/countdowntime/countdowntime.js"></script>
+    <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
     <script src="js/bootstrap.min.js"></script>
 </body>
