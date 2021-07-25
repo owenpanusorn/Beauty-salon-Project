@@ -10,6 +10,7 @@ require_once 'require/config.php';
 if (isset($_REQUEST['btn_logout'])) {
     try {
         session_unset();
+        $_SESSION["token_loing"] = false;
         $seMsg = 'ออกจากระบบแล้ว';
         header("refresh:2;");
     } catch (PDOException $e) {
@@ -22,8 +23,6 @@ if (isset($_REQUEST['btn_login'])) {
 
         $username_login = $_REQUEST['username'];
         $password_login = $_REQUEST['pass'];
-
-
         if (empty($username_login)) {
             $errorMsg = "Please Enter Username";
             header("refresh:2;");
@@ -31,21 +30,25 @@ if (isset($_REQUEST['btn_login'])) {
             $errorMsg = "Please Enter Password";
             header("refresh:2;");
         } else {
-            $qry1 = $db->prepare("select * from tb_login where username = :usernmae_login");
+            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
             $qry1->bindParam(":usernmae_login", $username_login);
             $qry1->execute();
             $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
-            extract($row1);
 
-            if (!password_verify($password_login, $password)) {
-                $errorMsg = 'password Fail';
-                header("refresh:2;");
-            }else if (!empty($row1) && count($row1) > 0) {
-                $_SESSION["token_uuid"] = $uuid;
-                $_SESSION["token_loing"] = "yes login";
-                $_SESSION["token_username"] = $_REQUEST['username'];
-                $seMsg = 'เข้าสูระบบแล้ว';
-                header("refresh:2;");
+            if (!empty($row1) && count($row1) > 0) {
+                extract($row1);
+            }
+            if (!empty($password) && !empty($username)) {
+                if (!password_verify($password_login, $password)) {
+                    $errorMsg = 'password Fail';
+                    header("refresh:2;");
+                } else {
+                    $_SESSION["token_uuid"] = $uuid;
+                    $_SESSION["token_loing"] = true;
+                    $_SESSION["token_username"] = $_REQUEST['username'];
+                    $seMsg = 'เข้าสูระบบแล้ว';
+                    header("refresh:2;");
+                }
             } else {
                 $errorMsg = 'ไม่พบ user';
                 header("refresh:2;");
@@ -201,10 +204,10 @@ if (isset($_REQUEST['btn_login'])) {
                         </div>
                     </li>
                     ';
-                    } else {
+                    } else if ($_SESSION["token_loing"] === true) {
                         echo '
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] . '</a>
+                        <a href="#" class="nav-link">Username : '.$_SESSION["token_username"].' </a>
                     </li>
                     <li class="nav-item">
                         <form method="post">
