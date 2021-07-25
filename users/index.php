@@ -1,5 +1,65 @@
+<?php
+// Start the session
+session_start();
+require_once 'require/config.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
+
+<?php
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+if (isset($_REQUEST['btn_login'])) {
+    try {
+
+        $username_login = $_REQUEST['username'];
+        $password_login = $_REQUEST['pass'];
+        if (empty($username_login)) {
+            $errorMsg = "Please Enter Username";
+            header("refresh:2;");
+        } else if (empty($password_login)) {
+            $errorMsg = "Please Enter Password";
+            header("refresh:2;");
+        } else {
+            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
+            $qry1->bindParam(":usernmae_login", $username_login);
+            $qry1->execute();
+            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+
+            if (!empty($row1) && count($row1) > 0) {
+                extract($row1);
+            }
+            if (!empty($password) && !empty($username)) {
+                if (!password_verify($password_login, $password)) {
+                    $errorMsg = 'password Fail';
+                    header("refresh:2;");
+                } else {
+                    $_SESSION["token_uuid"] = $uuid;
+                    $_SESSION["token_loing"] = true;
+                    $_SESSION["token_username"] = $_REQUEST['username'];
+                    $seMsg = 'เข้าสูระบบแล้ว';
+                    header("refresh:2;");
+                }
+            } else {
+                $errorMsg = 'ไม่พบ user';
+                header("refresh:2;");
+            }
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -29,6 +89,11 @@
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--===============================================================================================-->
     <link rel="stylesheet" href="css/rome.css">
     <!-- time picker -->
     <link rel="stylesheet" href="jquery/jquery.timepicker.min.css">
@@ -41,11 +106,27 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Main content -->
+        <?php
+        if (isset($errorMsg)) {
+        ?>
+            <div class="alert alert-danger alert-dismissible">
+                <strong><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></strong>
+            </div>
+        <?php } ?>
+
+        <?php
+        if (isset($seMsg)) {
+        ?>
+            <div class="alert alert-success alert-dismissible">
+                <strong><i class="icon fa fa-check"></i><?php echo $seMsg ?></strong>
+            </div>
+        <?php } ?>
+
         <div class="container">
             <a href="#" class="navbar-brand">Beautiful Salon</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -63,6 +144,10 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link ">Contact</a>
                     </li>
+
+                    <?php
+                    if (empty($_SESSION["token_loing"])) {
+                        echo '
                     <li class="navbar-item">
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
                             data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
@@ -80,28 +165,27 @@
                                         <div class="limiter">
                                             <div class="container-login100">
                                                 <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form">
+                                                    <form class="login100-form validate-form" method="post">
                                                         <span class="login100-form-title ">
                                                             Beautiful Salon
                                                         </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35"
-                                                            data-validate="Enter username">
+                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
+                        echo '
+                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
                                                             <input class="input100" type="text" name="username">
                                                             <span class="focus-input100"
                                                                 data-placeholder="Username"></span>
                                                         </div>
 
-                                                        <div class="wrap-input100 validate-input m-b-50"
-                                                            data-validate="Enter password">
+                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
                                                             <input class="input100" type="password" name="pass">
                                                             <span class="focus-input100"
                                                                 data-placeholder="Password"></span>
                                                         </div>
 
                                                         <div class="container-login100-form-btn">
-                                                            <button class="login100-form-btn">
-                                                                Sign In
+                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
+                                                                Login
                                                             </button>
                                                         </div>
 
@@ -136,6 +220,20 @@
                             </div>
                         </div>
                     </li>
+                    ';
+                    } else if ($_SESSION["token_loing"] === true) {
+                        echo '
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Username : '.$_SESSION["token_username"].' </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post">
+                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                        </form>
+                    </li>
+                    ';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -208,12 +306,9 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bounding-box-circles"
-                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
-                                <path fill-rule="evenodd"
-                                    d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bounding-box-circles" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
+                                <path fill-rule="evenodd" d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
                             </svg>
                         </div>
 
@@ -225,10 +320,8 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-braces" fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6zM13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-braces" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6zM13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6z" />
                             </svg>
                         </div>
 
@@ -240,12 +333,9 @@
                 <div class="col-lg-4">
                     <div class="features-icons-item mx-auto mb-5 mb-lg-3">
                         <div class="features-icons-icon">
-                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square"
-                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                                <path fill-rule="evenodd"
-                                    d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z" />
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                                <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z" />
                             </svg>
                         </div>
 

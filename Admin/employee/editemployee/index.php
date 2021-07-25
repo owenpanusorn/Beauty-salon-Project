@@ -28,7 +28,7 @@ if (isset($_REQUEST['btn_update'])) {
         if (empty($_REQUEST['password'])) {
             $pass = $password;
         } else {
-            $pass = password_hash($$_REQUEST['password'], PASSWORD_DEFAULT);
+            $pass = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
         }
         $uuidup = $_REQUEST['uuid'];
         $fname = $_REQUEST['fname'];
@@ -63,7 +63,7 @@ if (isset($_REQUEST['btn_update'])) {
         if ($update_login->execute() && $update_employee->execute()) {
 
             $insertMsg = "update Successfully . . .";
-            header("refresh:2;index.php");
+            header("refresh:2;../index.php");
         }
 
     } catch (PDOException $e) {

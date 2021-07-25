@@ -184,7 +184,7 @@
         <li class="header">MENU BAR</li>
 
         <li>
-          <a href="index.php">
+          <a href="../index.php">
             <i class="fa fa-home"></i> <span>หน้าแรก</span>
             <!-- <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
