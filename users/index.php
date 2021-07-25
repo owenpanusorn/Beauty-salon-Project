@@ -89,6 +89,18 @@ if (isset($_REQUEST['btn_login'])) {
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" href="css/rome.css">
+    <!-- time picker -->
+    <link rel="stylesheet" href="jquery/jquery.timepicker.min.css">
+    <link rel="stylesheet" href="jquery/jquery.timepicker.css">
+
+
+
 </head>
 
 <body>
@@ -137,14 +149,17 @@ if (isset($_REQUEST['btn_login'])) {
                     if (empty($_SESSION["token_loing"])) {
                         echo '
                     <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Login</button>
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="exampleModalLabel">Login</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="limiter">
@@ -158,12 +173,14 @@ if (isset($_REQUEST['btn_login'])) {
                         echo '
                                                         <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
                                                             <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100" data-placeholder="Username"></span>
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Username"></span>
                                                         </div>
 
                                                         <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
                                                             <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100" data-placeholder="Password"></span>
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Password"></span>
                                                         </div>
 
                                                         <div class="container-login100-form-btn">
@@ -230,19 +247,55 @@ if (isset($_REQUEST['btn_login'])) {
                     <h1 class="mb-5">Build the best landing page for your business or project with bootstrap 5!</h1>
                 </div>
 
-                <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                    <form action="">
+
+                <div class="col-xl-0 mx-auto">
+                    <form action="#" class="row">
                         <div class="row d-flex">
-                            <div class="col-12 col-md-9 mb-2 mb-md-0">
-                                <input type="email" class="form-control form-control-lg" placeholder="Enter your email . . .">
+                            <div class="col-md-4 ">
+                                <div class="form-group">
+                                    <input type="text" class="form-control-lg" id="input" placeholder="Start Date">
+                                </div>
                             </div>
-                            <div class="col-12 col-md-3">
-                                <button type="submit" class="btn btn-block btn-lg btn-primary">Sign Up</button>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control-lg" id="startTime" placeholder="Start Time">
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" class="form-control-lg" id="endTime" placeholder="End Time">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex mx-auto">
+                            <div class="col-12 col-md-12">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-block btn-lg btn-primary">Booking</button>
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
+
+
+            <!-- <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                    <form action="">
+                        <div class="row d-flex">
+                            <div class="col-12 col-md-5 mb-2 mb-md-0">
+                                <input type="email" class="form-control form-control-lg"
+                                    placeholder="Enter your email . . .">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <button type="submit" class="btn btn-block btn-lg btn-primary">Booking</button>
+                            </div>
+                        </div>
+                    </form>
+                </div> -->
+
         </div>
     </header>
 
@@ -298,8 +351,9 @@ if (isset($_REQUEST['btn_login'])) {
     <section class="showcase">
         <div class="container-fluid p-0">
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
-                <div class="col-lg-6 order-lg-1 my-auto showcase-text ">
+                <div class="col-lg-6 order-lg-2 text-light showcase-img"
+                    style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
+                <div class="col-lg-6 order-lg-1 showcase-text bg-light">
                     <h2>Full Responsive Design</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
                         inventore commodi qui ratione modi voluptate, culpa id porro corporis.</p>
@@ -307,8 +361,9 @@ if (isset($_REQUEST['btn_login'])) {
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-1 text-light showcase-img" style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
-                <div class="col-lg-6 order-lg-2 my-auto showcase-text ">
+                <div class="col-lg-6 order-lg-1 text-light showcase-img"
+                    style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
+                <div class="col-lg-6 order-lg-2 showcase-text">
                     <h2>Updated for Bootstrap</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
                         inventore commodi qui ratione modi voluptate, culpa id porro corporis.</p>
@@ -316,8 +371,9 @@ if (isset($_REQUEST['btn_login'])) {
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
-                <div class="col-lg-6 order-lg-1 my-auto showcase-text ">
+                <div class="col-lg-6 order-lg-2 text-light showcase-img"
+                    style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
+                <div class="col-lg-6 order-lg-1 showcase-text">
                     <h2>Easy to use &amp; Customize</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
                         inventore commodi qui ratione modi voluptate, culpa id porro corporis.</p>
@@ -371,8 +427,19 @@ if (isset($_REQUEST['btn_login'])) {
         </div>
     </footer>
 
+
+    <script src="js/bootstrap.min.js"></script>
+    <!-- caledate -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/rome.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/main1.js"></script>
+    <!-- time picker -->
+    <script src="jquery/jquery.timepicker.min.js"></script>
+    <script src="jquery/jquery.timepicker.js"></script>
     <!--===============================================================================================-->
-    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!-- <script src="vendor/jquery/jquery-3.2.1.min.js"></script> -->
     <!--===============================================================================================-->
     <script src="vendor/animsition/js/animsition.min.js"></script>
     <!--===============================================================================================-->
@@ -386,7 +453,34 @@ if (isset($_REQUEST['btn_login'])) {
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
-    <script src="js/bootstrap.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#startTime').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 30,
+                minTime: '10.30',
+                maxTime: '19.00',
+                startTime: '10:30',
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true,
+            });
+
+            $('#endTime').timepicker({
+                timeFormat: 'HH:mm',
+                interval: 30,
+                minTime: '10.30',
+                maxTime: '19.00',
+                startTime: '10:30',
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true,
+            });
+        });
+
+    </script>
 </body>
 
 </html>
