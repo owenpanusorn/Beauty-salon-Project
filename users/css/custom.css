@@ -1,9 +1,22 @@
+@font-face {
+    font-family: FontKanit;
+    src: url('/fonts/kanit/Kanit-Thin.ttf');
+    font-weight: normal;
+    font-style: normal;
+  }  
+
+    .kanitB {
+    font-family: FontKanit;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
 header {
     background: url('../img/wp6699074.jpg') no-repeat center center;
     background-size: cover;
     padding-top: 8rem;
     padding-bottom: 8rem;
-    height: 500px;
+    height: auto;
 }
 
 .features-icons {
@@ -47,6 +60,67 @@ header {
 
 .welcome-spacing {    
     margin-top: 1rem;
+}
+
+.sDate{
+    margin-right: 2rem;
+}
+
+.eTime {
+    margin-left: 2rem;
+}
+
+.btn_booking{
+    background-color: #9E7B6C;
+    color: #fff;
+}
+
+.btn_booking:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.headsignup {
+    background: url('../img/wp6699074.jpg') no-repeat center center;
+    background-size: cover;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+    
+}
+
+.formregis {
+    background-color: #fff;
+    color: #000;
+    height: 500px;;
+}
+
+.bcrumb {
+    background-color: #9E7B6C;
+    margin-top: -20px;
+}
+
+.changcrumb {
+    background-color: #9E7B6C !important;
+    display:block;
+    height: 40px;
+}
+
+.changcrumb a {
+      color: #fff !important;
+}
+
+.changcrumb li {
+    display:block;  
+    text-indent:5px;   
+    float:left;
+}
+
+.changcrumb .active{
+    color: #CED4dA;
+}
+
+.breadcrumb-item {
+    color: #fff !important;
 }
 
 
