@@ -68,28 +68,6 @@ if (isset($_REQUEST['btn_singup'])) {
             else if ($username == $singup_username) $errorMsg = 'Username is Duplicate';
             else if ($nphone == $singup_nphon) $errorMsg = 'Number Phone is Duplicate';
         }
-
-
-
-        //     if (!empty($row1) && count($row1) > 0) {
-        //         extract($row1);
-        //     }
-        //     if (!empty($password) && !empty($username)) {
-        //         if (!password_verify($password_login, $password)) {
-        //             $errorMsg = 'password Fail';
-        //             header("refresh:2;");
-        //         } else {
-        //             $_SESSION["token_uuid"] = $uuid;
-        //             $_SESSION["token_loing"] = true;
-        //             $_SESSION["token_username"] = $_REQUEST['username'];
-        //             $seMsg = 'เข้าสูระบบแล้ว';
-        //             header("refresh:2;");
-        //         }
-        //     } else {
-        //         $errorMsg = 'ไม่พบ user';
-        //         header("refresh:2;");
-        //     }
-        // }
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
