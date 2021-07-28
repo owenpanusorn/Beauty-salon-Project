@@ -1,0 +1,28 @@
+.calen-date {  
+    background: url('../img/service1.jpg') no-repeat center center;
+    background-size: cover;
+    height: auto;    
+}
+
+.sel-box {
+    
+    padding-top: 6rem;
+    padding-bottom: 6rem;  
+ 
+}
+
+.showbarber {
+    padding-top: 3rem;
+}
+
+.showcard{
+    border: 1px solid #9E7B6C;
+    border-radius: 5px;
+}
+
+.star-fill {
+    color : #FCD34E;
+}
+
+
+

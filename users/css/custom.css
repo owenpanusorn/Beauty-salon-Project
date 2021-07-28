@@ -1,14 +1,10 @@
 @font-face {
     font-family: FontKanit;
     src: url('/fonts/kanit/Kanit-Thin.ttf');
-    font-weight: normal;
-    font-style: normal;
   }  
 
     .kanitB {
     font-family: FontKanit;
-    font-weight: bold;
-    font-size: 14px;
   }
 
 header {
