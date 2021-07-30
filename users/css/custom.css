@@ -67,12 +67,12 @@ header {
 }
 
 .btn_booking{
-    background-color: #9E7B6C;
+    background-color: #000;
     color: #fff;
 }
 
 .btn_booking:hover {
-    background-color: #000;
+    background-color: #9E7B6C;
     color: #fff;
 }
 
