@@ -9,8 +9,13 @@ require_once 'require/config.php';
 
 <?php
 
+if ($_SESSION["token_loing"] === true) {
+    header("refresh:0;index.php");
+}
+
 if (isset($_REQUEST['btn_singup'])) {
     try {
+
         $singup_fname = $_REQUEST['fname'];
         $singup_lname = $_REQUEST['lname'];
         $singup_username = $_REQUEST['username'];
@@ -73,6 +78,60 @@ if (isset($_REQUEST['btn_singup'])) {
     }
 }
 
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+if (isset($_REQUEST['btn_login'])) {
+    try {
+
+        $username_login = $_REQUEST['username'];
+        $password_login = $_REQUEST['pass'];
+        if (empty($username_login)) {
+            $errorMsg = "Please Enter Username";
+            header("refresh:2;");
+        } else if (empty($password_login)) {
+            $errorMsg = "Please Enter Password";
+            header("refresh:2;");
+        } else {
+            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
+            $qry1->bindParam(":usernmae_login", $username_login);
+            $qry1->execute();
+            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+
+            if (!empty($row1) && count($row1) > 0) {
+                extract($row1);
+            }
+            if (!empty($password) && !empty($username)) {
+                if (!password_verify($password_login, $password)) {
+                    $errorMsg = 'password Fail';
+                    header("refresh:3;");
+                } else {
+                    $_SESSION["token_uuid"] = $uuid;
+                    $_SESSION["token_loing"] = true;
+                    $_SESSION["token_fname"] = $fname;
+                    $_SESSION["token_lname"] = $lname;
+                    $_SESSION["token_username"] = $_REQUEST['username'];
+                    $seMsg = 'เข้าสูระบบแล้ว';
+                    header("refresh:2;");
+                }
+            } else {
+                $errorMsg = 'ไม่พบ user';
+                header("refresh:2;");
+            }
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
 
 ?>
 
@@ -120,6 +179,23 @@ if (isset($_REQUEST['btn_singup'])) {
     ?>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Main content -->
+        <?php
+        if (isset($errorMsg)) {
+        ?>
+            <div class="alert alert-danger alert-dismissible">
+                <p><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></p>
+            </div>
+        <?php } ?>
+
+        <?php
+        if (isset($seMsg)) {
+        ?>
+            <div class="alert alert-success alert-dismissible">
+                <p><i class="icon fa fa-check"></i><?php echo $seMsg ?></p>
+            </div>
+        <?php } ?>
+
         <div class="container">
             <a href="#" class="navbar-brand">Beautiful Salon</a>
 
@@ -130,7 +206,7 @@ if (isset($_REQUEST['btn_singup'])) {
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a href="index.html" class="nav-link active" aria-current="page">Home</a>
+                        <a href="#" class="nav-link active" aria-current="page">Home</a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link ">About</a>
@@ -141,38 +217,48 @@ if (isset($_REQUEST['btn_singup'])) {
                     <li class="nav-item">
                         <a href="#" class="nav-link ">Contact</a>
                     </li>
-                    <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <?php
+                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
+                        echo '
+                    <li class="navbar-item">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header text-center">
                                         <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="limiter">
                                             <div class="container-login100">
                                                 <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form">
+                                                    <form class="login100-form validate-form" method="post">
                                                         <span class="login100-form-title ">
                                                             Beautiful Salon
                                                         </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>
+                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
+                        echo '
                                                         <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
                                                             <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100" data-placeholder="Username"></span>
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Username"></span>
                                                         </div>
 
                                                         <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
                                                             <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100" data-placeholder="Password"></span>
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Password"></span>
                                                         </div>
 
                                                         <div class="container-login100-form-btn">
-                                                            <button class="login100-form-btn">
-                                                                Sign In
+                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
+                                                                Login
                                                             </button>
                                                         </div>
 
@@ -191,8 +277,7 @@ if (isset($_REQUEST['btn_singup'])) {
                                                                     Don’t have an account?
                                                                 </span>
 
-
-                                                                <a href="#" class="txt2">
+                                                                <a href="signup.php" class="txt2">
                                                                     Sign up
                                                                 </a>
                                                             </li>
@@ -208,6 +293,20 @@ if (isset($_REQUEST['btn_singup'])) {
                             </div>
                         </div>
                     </li>
+                    ';
+                    } else if ($_SESSION["token_loing"] === true) {
+                        echo '
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">' . $_SESSION["token_fname"] . ' ' . $_SESSION["token_lname"] . ' </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post">
+                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                        </form>
+                    </li>
+                    ';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -219,7 +318,7 @@ if (isset($_REQUEST['btn_singup'])) {
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb">
-                            <li class=""><a href="index.html">Home / </a></li>
+                            <li class=""><a href="index.php">Home / </a></li>
                             <li class="active">Sign Up</li>
                         </ul>
                     </nav>

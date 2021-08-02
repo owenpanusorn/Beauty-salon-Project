@@ -41,10 +41,12 @@ if (isset($_REQUEST['btn_login'])) {
             if (!empty($password) && !empty($username)) {
                 if (!password_verify($password_login, $password)) {
                     $errorMsg = 'password Fail';
-                    header("refresh:2;");
+                    header("refresh:3;");
                 } else {
                     $_SESSION["token_uuid"] = $uuid;
                     $_SESSION["token_loing"] = true;
+                    $_SESSION["token_fname"] = $fname;
+                    $_SESSION["token_lname"] = $lname;
                     $_SESSION["token_username"] = $_REQUEST['username'];
                     $seMsg = 'เข้าสูระบบแล้ว';
                     header("refresh:2;");
@@ -111,7 +113,7 @@ if (isset($_REQUEST['btn_login'])) {
         if (isset($errorMsg)) {
         ?>
             <div class="alert alert-danger alert-dismissible">
-                <strong><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></strong>
+                <p><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></p>
             </div>
         <?php } ?>
 
@@ -119,7 +121,7 @@ if (isset($_REQUEST['btn_login'])) {
         if (isset($seMsg)) {
         ?>
             <div class="alert alert-success alert-dismissible">
-                <strong><i class="icon fa fa-check"></i><?php echo $seMsg ?></strong>
+                <p><i class="icon fa fa-check"></i><?php echo $seMsg ?></p>
             </div>
         <?php } ?>
 
@@ -146,7 +148,7 @@ if (isset($_REQUEST['btn_login'])) {
                     </li>
 
                     <?php
-                    if (empty($_SESSION["token_loing"])) {
+                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
                         echo '
                     <li class="navbar-item">
                         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
@@ -204,7 +206,7 @@ if (isset($_REQUEST['btn_login'])) {
                                                                     Don’t have an account?
                                                                 </span>
 
-                                                                <a href="#" class="txt2">
+                                                                <a href="signup.php" class="txt2">
                                                                     Sign up
                                                                 </a>
                                                             </li>
@@ -224,7 +226,7 @@ if (isset($_REQUEST['btn_login'])) {
                     } else if ($_SESSION["token_loing"] === true) {
                         echo '
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Username : '.$_SESSION["token_username"].' </a>
+                        <a href="#" class="nav-link">' . $_SESSION["token_fname"] . ' ' . $_SESSION["token_lname"] . ' </a>
                     </li>
                     <li class="nav-item">
                         <form method="post">
@@ -351,8 +353,7 @@ if (isset($_REQUEST['btn_login'])) {
     <section class="showcase">
         <div class="container-fluid p-0">
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img"
-                    style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
+                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image: url('img/photo-1581404788767-726320400cea.jfif');"></div>
                 <div class="col-lg-6 order-lg-1 showcase-text bg-light">
                     <h2>Full Responsive Design</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -361,8 +362,7 @@ if (isset($_REQUEST['btn_login'])) {
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-1 text-light showcase-img"
-                    style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
+                <div class="col-lg-6 order-lg-1 text-light showcase-img" style="background-image: url('img/photo-1562322140-8baeececf3df.jfif');"></div>
                 <div class="col-lg-6 order-lg-2 showcase-text">
                     <h2>Updated for Bootstrap</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -371,8 +371,7 @@ if (isset($_REQUEST['btn_login'])) {
             </div>
 
             <div class="row g-0">
-                <div class="col-lg-6 order-lg-2 text-light showcase-img"
-                    style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
+                <div class="col-lg-6 order-lg-2 text-light showcase-img" style="background-image : url('img/adam-winger-fI-TKWjKYls-unsplash.jpg');"></div>
                 <div class="col-lg-6 order-lg-1 showcase-text">
                     <h2>Easy to use &amp; Customize</h2>
                     <p class="lead mb-0">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam distinctio
@@ -456,7 +455,7 @@ if (isset($_REQUEST['btn_login'])) {
 
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
                 interval: 30,
@@ -479,7 +478,6 @@ if (isset($_REQUEST['btn_login'])) {
                 scrollbar: true,
             });
         });
-
     </script>
 </body>
 
