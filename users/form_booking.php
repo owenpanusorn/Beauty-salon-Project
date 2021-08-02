@@ -1,3 +1,9 @@
+<?php
+// Start the session
+session_start();
+require_once '../Admin/require/config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,11 +13,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Bootstrap 5</title>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" type="text/css"  href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"  href="css/custom.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
@@ -36,7 +43,7 @@
     <!-- regisform -->
     <!-- <link rel="stylesheet" href="css/style1.css"> -->
     <!-- Select Employee -->
-    <link rel="stylesheet" href="css/select_emp.css">
+    <link rel="stylesheet" type="text/css" href="css/select_emp.css">
  
 </head>
 
@@ -66,11 +73,17 @@
             <div class="form-booking border rounded-2 p-5">
                 <form action="">
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col-3 col-md-2 text-right my-auto">
-                                <label for="" class="kanitB fw-bolder ">เลขที่การจอง</label>
+                        <div class="row  mb-3">
+                        <div class="col-12 col-md-2 my-auto">
+                                <label for="" class="kanitB  fw-bold">รายละเอียดการจอง
+                                </label>
                             </div>
-                            <div class="col-3 col-md-3">
+                        </div>
+                        <div class="row">                            
+                            <div class="col-12 col-md-2 text-right my-auto">
+                                <label for="" class="kanitB ">เลขที่การจอง</label>
+                            </div>
+                            <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" placeholder="B123456789"
                                     disabled>
                             </div>
@@ -79,10 +92,10 @@
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-3 col-md-2 text-right my-auto">
-                                <label for="" class="kanitB fw-bolder ">วันที่จอง</label>
+                            <div class="col-12 col-md-2 text-right my-auto">
+                                <label for="" class="kanitB ">วันที่จอง</label>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" placeholder="01/08/2021"
                                     disabled>
                             </div>
@@ -91,17 +104,17 @@
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-3 col-md-2 text-right my-auto">
-                                <label for="" class="kanitB fw-bolder ">เวลาที่จอง</label>
+                            <div class="col-12 col-md-2 text-right my-auto">
+                                <label for="" class="kanitB">เวลาที่จอง</label>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" placeholder="08:00"
                                     disabled>
                             </div>
-                            <div class="col-md-1 text-center my-auto">
-                                <label for="" class="kanitB fw-bolder ">ถึง</label>
+                            <div class="col-12 col-md-1 text-center my-auto">
+                                <label for="" class="kanitB ">ถึง</label>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" placeholder="08:00"
                                     disabled>
                             </div>
@@ -110,28 +123,61 @@
 
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-3 col-md-2 text-right my-auto">
-                                <label for="" class="kanitB fw-bolder ">โดยช่าง
+                            <div class="col-12 col-md-2 text-right my-auto">
+                                <label for="" class="kanitB ">โดยช่าง
                                 </label>
                             </div>
-                            <div class="col-3 col-md-3">
-                                <input type="text" class="form-control border kanitB fw-bolder" name="" id=""
+                            <div class="col-12 col-md-3">
+                                <input type="text" class="form-control border kanitB " name="" id=""
                                     placeholder="ภานุสรณ์ ใจกลม" disabled>
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col-3 col-md-2 text-right my-auto">
-                                <label for="" class="kanitB fw-bolder ">บริการ
+                        <div class="row mt-5">
+                            <div class="col-12 col-md-2 my-auto fw-bold">
+                                <label for="" class="kanitB ">เลือกบริการ
                                 </label>
                             </div>
-                            <div class="col-3 col-md-12">
-                               
-                            </div>                                          
+                            </div> 
+                     </div>
+
+                     <div class="form-check">
+                            <div class="row">                               <div class="col-12 col-md-3">
+                        
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Default checkbox
+                                    </label>                                  
+                                  </div>
+
+                                  <div class="col-12 col-md-3">
+                        
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Default checkbox
+                                    </label>                                  
+                                  </div>
+
+                                  <div class="col-12 col-md-3">
+                        
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Default checkbox
+                                    </label>                                  
+                                  </div>
+
+                                  <div class="col-12 col-md-3">
+                        
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Default checkbox
+                                    </label>                                  
+                                  </div>
+                            </div> 
+                                                                     
                         </div>
-                    </div>
+                    
 
                 </form>
             </div>
@@ -145,9 +191,7 @@
     <main-footer></main-footer>
 
 
-    <script src="/script.js"></script>
-
-
+    <script src="script.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <!-- caledate -->
     <script src="js/jquery-3.3.1.min.js"></script>
