@@ -2,6 +2,7 @@
 // Start the session
 session_start();
 require_once '../Admin/require/config.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -13,8 +14,8 @@ require_once '../Admin/require/config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Bootstrap 5</title>
 
-    <link rel="stylesheet" type="text/css"  href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css"  href="css/custom.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
@@ -44,7 +45,7 @@ require_once '../Admin/require/config.php';
     <!-- <link rel="stylesheet" href="css/style1.css"> -->
     <!-- Select Employee -->
     <link rel="stylesheet" type="text/css" href="css/select_emp.css">
- 
+
 </head>
 
 <body>
@@ -70,22 +71,21 @@ require_once '../Admin/require/config.php';
     <section class="">
         <div class="container">
             <h5 class="kanitB fw-bolder mt-5 mb-3">ฟอร์มการจอง</h5>
-            <div class="form-booking border rounded-2 p-5">
-                <form action="">
+            <div class="form-booking border rounded-2 p-5 mb-5">
+                <form action="" name="frm">
                     <div class="form-group">
                         <div class="row  mb-3">
-                        <div class="col-12 col-md-2 my-auto">
+                            <div class="col-12 col-md-2 my-auto">
                                 <label for="" class="kanitB  fw-bold">รายละเอียดการจอง
                                 </label>
                             </div>
                         </div>
-                        <div class="row">                            
+                        <div class="row">
                             <div class="col-12 col-md-2 text-right my-auto">
                                 <label for="" class="kanitB ">เลขที่การจอง</label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" placeholder="B123456789"
-                                    disabled>
+                                <input type="text" class="form-control border" name="" id="" placeholder="B123456789" disabled>
                             </div>
                         </div>
                     </div>
@@ -96,8 +96,7 @@ require_once '../Admin/require/config.php';
                                 <label for="" class="kanitB ">วันที่จอง</label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" placeholder="01/08/2021"
-                                    disabled>
+                                <input type="text" class="form-control border" name="" id="" placeholder="01/08/2021" disabled>
                             </div>
                         </div>
                     </div>
@@ -108,15 +107,13 @@ require_once '../Admin/require/config.php';
                                 <label for="" class="kanitB">เวลาที่จอง</label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" placeholder="08:00"
-                                    disabled>
+                                <input type="text" class="form-control border" name="" id="" placeholder="08:00" disabled>
                             </div>
                             <div class="col-12 col-md-1 text-center my-auto">
                                 <label for="" class="kanitB ">ถึง</label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" placeholder="08:00"
-                                    disabled>
+                                <input type="text" class="form-control border" name="" id="" placeholder="08:00" disabled>
                             </div>
                         </div>
                     </div>
@@ -128,68 +125,67 @@ require_once '../Admin/require/config.php';
                                 </label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border kanitB " name="" id=""
-                                    placeholder="ภานุสรณ์ ใจกลม" disabled>
+                                <input type="text" class="form-control border kanitB " name="" id="" placeholder="ภานุสรณ์ ใจกลม" disabled>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="row mt-5">
                             <div class="col-12 col-md-2 my-auto fw-bold">
-                                <label for="" class="kanitB ">เลือกบริการ
+                                <label for="" class="kanitB">เลือกบริการ
                                 </label>
                             </div>
-                            </div> 
-                     </div>
-
-                     <div class="form-check">
-                            <div class="row">                               <div class="col-12 col-md-3">
-                        
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                      Default checkbox
-                                    </label>                                  
-                                  </div>
-
-                                  <div class="col-12 col-md-3">
-                        
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                      Default checkbox
-                                    </label>                                  
-                                  </div>
-
-                                  <div class="col-12 col-md-3">
-                        
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                      Default checkbox
-                                    </label>                                  
-                                  </div>
-
-                                  <div class="col-12 col-md-3">
-                        
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                      Default checkbox
-                                    </label>                                  
-                                  </div>
-                            </div> 
-                                                                     
                         </div>
-                    
+                    </div>
 
+                    <div class="form-check">
+                        <div class="row">
+                            <?php
+                            $result = $db->prepare('SELECT * from tb_service');
+                            $result->execute();
+
+                            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                if ($row["serv_process_time"] == "02:00:00") {
+                                    $process = "2 ชั่วโมง";
+                                    $time  = 120;
+                                } else if ($row["serv_process_time"] == "01:30:00") {
+                                    $process = "1 ชั่วโมง 30 นาที";
+                                    $time  = 90;
+                                } else if ($row["serv_process_time"] == "01:00:00") {
+                                    $process = "1 ชั่วโมง";
+                                    $time  = 60;
+                                } else {
+                                    $process = "30 นาที";
+                                    $time  = 30;
+                                }
+                                $ri = $row["serv_price"];
+                            ?>
+                                <div class="col-12 col-md-3 mb-2">
+                                    <input class="form-check-input "type="checkbox" value="<?php echo $time ?>" onclick="tick(frm , this,<?php echo $ri ?>)">
+
+                                    <p class="form-check-label kanitB fw-bold h6 mb-1">
+                                        <?php echo $row["serv_type"] ?>
+                                    </p>
+
+                                    <p class="form-check-label kanitB">
+                                        <?php echo $ri ?> บาท
+                                    </p>
+
+                                    <p class="form-check-label kanitB">
+                                        <?php echo $process ?>
+                                    </p>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <input type="text" name="sum" id="sum" value="0" />
+                        <input type="text" name="sum_price" id="sumprice" value="0" />
+                    </div>
                 </form>
             </div>
-
         </div>
     </section>
-
-
-
     <!-- Footer -->
     <main-footer></main-footer>
-
 
     <script src="script.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -217,9 +213,47 @@ require_once '../Admin/require/config.php';
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
-    
+
     <script>
-        $(document).ready(function () {
+        function tick(frm, chk,price) {
+            // คำนวณบวกหรือลบจากค่าเริ่มต้น
+            console.log('value', chk.value);
+            var sum = parseFloat(frm.sum.value);
+            var total = parseFloat(frm.sumprice.value);
+            frm.sumprice.value = chk.checked ? total + parseFloat(price) : total - parseFloat(price);
+            frm.sum.value = chk.checked ? sum + parseFloat(chk.value) : sum - parseFloat(chk.value);
+            console.log(frm.sum.value);
+            if (frm.sum.value > 120) {
+                alert('เกินเวลาแล้ว')
+                frm.sumprice.value -= parseFloat(price)
+                frm.sum.value -= parseFloat(chk.value)
+                chk.checked = false;
+            }
+
+
+            // }
+            // var hour = 0;
+            // var minute = 0;
+            // var second = 0;
+
+            // var splitTime1= time1.split(':');
+            // hour = parseInt(splitTime1[0]);
+            // minute = parseInt(splitTime1[1]);
+            // hour = hour + minute/60;
+            // minute = minute%60;
+            // second = parseInt(splitTime1[2]);
+            // minute = minute + second/60;
+            // second = second%60;
+
+            // alert('sum of above time= '+hour+':'+minute+':'+second);
+
+
+        }
+
+
+
+
+        $(document).ready(function() {
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
                 interval: 30,
@@ -242,9 +276,6 @@ require_once '../Admin/require/config.php';
                 scrollbar: true,
             });
         });
-
-        
-
     </script>
 </body>
 
