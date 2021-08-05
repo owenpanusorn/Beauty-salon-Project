@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once '../Admin/require/config.php';
+require_once 'require/config.php';
+require_once 'require/session.php';
     
 if(isset($_REQUEST['btn_booking'])){
     $date = $_REQUEST['startDate'];
@@ -8,6 +9,16 @@ if(isset($_REQUEST['btn_booking'])){
     $etime = $_REQUEST['endTime'];
 }
 
+try {
+    $uuid = "4875a614-0a2b-48f9-aa5e-5b4adb04121e";
+    $select_emp = $db -> prepare("SELECT * FROM tb_employee WHERE uuid = :uuid"); //เตรียมคำสั่งที่ query
+    $select_emp -> bindParam(':uuid', $uuid); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
+    $select_emp -> execute(); // ประมวลผลคำสัง prepare
+    $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
+    extract($row);
+} catch (PDOException $e) {
+    $e -> getMessage();
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,8 +65,134 @@ if(isset($_REQUEST['btn_booking'])){
 </head>
 
 <body>
+     <!-- Navbar -->
+     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Main content -->
+        <?php
+        if (isset($errorMsg)) {
+        ?>
+            <div class="alert alert-danger alert-dismissible">
+                <p><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></p>
+            </div>
+        <?php } ?>
+
+        <?php
+        if (isset($seMsg)) {
+        ?>
+            <div class="alert alert-success alert-dismissible">
+                <p><i class="icon fa fa-check"></i><?php echo $seMsg ?></p>
+            </div>
+        <?php } ?>
+
+        <div class="container">
+            <a href="#" class="navbar-brand">Beautiful Salon</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" aria-current="page">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link ">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link ">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link ">Contact</a>
+                    </li>
+
+                    <?php
+                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
+                        echo '
+                    <li class="navbar-item">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="limiter">
+                                            <div class="container-login100">
+                                                <div class="wrap-login100 p-t-20 p-b-10">
+                                                    <form class="login100-form validate-form" method="post">
+                                                        <span class="login100-form-title ">
+                                                            Beautiful Salon
+                                                        </span>
+                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
+                        echo '
+                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                            <input class="input100" type="text" name="username">
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Username"></span>
+                                                        </div>
+
+                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                            <input class="input100" type="password" name="pass">
+                                                            <span class="focus-input100"
+                                                                data-placeholder="Password"></span>
+                                                        </div>
+
+                                                        <div class="container-login100-form-btn">
+                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
+                                                                Login
+                                                            </button>
+                                                        </div>
+
+                                                        <ul class="login-more p-t-50 ms-auto">
+                                                            <li>
+                                                                <span class="txt1">
+                                                                    Don’t have an account?
+                                                                </span>
+
+                                                                <a href="signup.php" class="txt2">
+                                                                    Sign up
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="dropDownSelect1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    ';
+                    } else if ($_SESSION["token_loing"] === true) {
+                        echo '
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] .  '</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post">
+                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                        </form>
+                    </li>
+                    ';
+                    }
+                    ?>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
     <!-- Navbar -->
-    <main-menubar></main-menubar>
+    
 
     <div class="container-fluid bcrumb">
         <div class="container mt-3 bcrumb-in">
@@ -63,7 +200,7 @@ if(isset($_REQUEST['btn_booking'])){
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb">
-                            <li class=""><a href="index.html">Home / </a></li>
+                            <li class=""><a href="index.php">Home / </a></li>
                             <li class="active">Select Hairdresser</li>
                         </ul>
                     </nav>
@@ -111,13 +248,13 @@ if(isset($_REQUEST['btn_booking'])){
         <div class="container p-0">
             <div class="row">
                 <div class="col-6 col-md-3 me-2">
-                    <a href="#">
+                    <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
                         <div class="card" style="width: 18rem;">
 
                             <img src="img/barber2.jpg" alt="" class="card-img-top">
 
                             <div class="card-body">
-                                <h5 class="card-title text-center">Barber 1</h5>
+                                <h5 class="card-title text-center"><?php echo $fname ?></h5>
                                 <p class="text-warning text-center card-text">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                         class="bi bi-star-fill" viewBox="0 0 16 16">

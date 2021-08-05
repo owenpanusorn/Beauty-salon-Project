@@ -6,17 +6,12 @@ require_once '../../require/config.php';
 if (isset($_REQUEST['update_id'])) {
     try {
         $uuid = $_REQUEST['update_id'];
-        $qry = $db->prepare("select * from tb_employee where uuid = :uuid");
+        $qry = $db->prepare("select * from tb_customer where uuid = :uuid");
         $qry->bindParam(":uuid", $uuid);
         $qry->execute();
         $row = $qry->fetch(PDO::FETCH_ASSOC);
         extract($row);
 
-        $qry1 = $db->prepare("select * from tb_login where uuid = :uuid");
-        $qry1->bindParam(":uuid", $uuid);
-        $qry1->execute();
-        $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
-        extract($row1);
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
@@ -28,42 +23,36 @@ if (isset($_REQUEST['btn_update'])) {
         if (empty($_REQUEST['password'])) {
             $pass = $password;
         } else {
-            $pass = password_hash($$_REQUEST['password'], PASSWORD_DEFAULT);
+            $pass = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
         }
-        $uuidup = $_REQUEST['uuid'];
+
+        $uuidup = $_REQUEST['update_id'];
         $fname = $_REQUEST['fname'];
         $lname = $_REQUEST['lname'];
-        $gender = $_REQUEST['gender'];
-        $birthday = $_REQUEST['birthday'];
+        $gender = $_REQUEST['gender'];        
         $numberphone = $_REQUEST['numberphone'];
-        $idcard = $_REQUEST['idcard'];
         $address = $_REQUEST['address'];
         $date = date("d/m/Y");
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 
-        $update_login = $db->prepare('update tb_login set username = :usernameup,password = :passup where uuid = :uuidedit');
-        $update_login->bindParam(':usernameup', $username);
-        $update_login->bindParam(':passup', $pass);
-        $update_login->bindParam(':uuidedit', $uuid);
+        $update_cus = $db->prepare('update tb_customer set username = :usernameup,password = :passwordup,fname = :fnameup,lname = :lnameup,gender = :genderup,nphone = :numberphoneup,address = :addressup,up_cus_date = :up_cus_dateup,up_cus_time = :up_cus_timeup where uuid = :uuidedit');
 
-        $update_employee = $db->prepare('update tb_employee set fname = :fnameup,lname = :lnameup,gender = :genderup,birthday = :birthdayup,nphone = :numberphoneup,idcard = :idcardup,address = :addressup,up_emp_date = :up_emp_dateup,up_emp_time = :up_emp_timeup where uuid = :uuidedit');
+        $update_cus->bindParam(':usernameup', $username);
+        $update_cus->bindParam(':passwordup', $pass);
+        $update_cus->bindParam(':fnameup', $fname);
+        $update_cus->bindParam(':lnameup', $lname);
+        $update_cus->bindParam(':genderup', $gender);
+        $update_cus->bindParam(':numberphoneup', $numberphone);      
+        $update_cus->bindParam(':addressup', $address);
+        $update_cus->bindParam(':up_cus_dateup', $date);
+        $update_cus->bindParam(':up_cus_timeup', $newtime);
+        $update_cus->bindParam(':uuidedit', $uuidup);
 
-        $update_employee->bindParam(':fnameup', $fname);
-        $update_employee->bindParam(':lnameup', $lname);
-        $update_employee->bindParam(':genderup', $gender);
-        $update_employee->bindParam(':birthdayup', $birthday);
-        $update_employee->bindParam(':numberphoneup', $numberphone);
-        $update_employee->bindParam(':idcardup', $idcard);
-        $update_employee->bindParam(':addressup', $address);
-        $update_employee->bindParam(':up_emp_dateup', $date);
-        $update_employee->bindParam(':up_emp_timeup', $newtime);
-        $update_employee->bindParam(':uuidedit', $uuid);
-
-        if ($update_login->execute() && $update_employee->execute()) {
+        if ($update_cus->execute()) {
 
             $insertMsg = "update Successfully . . .";
-            header("refresh:2;index.php");
+            header("refresh:2;../index.php");
         }
 
     } catch (PDOException $e) {
@@ -392,7 +381,7 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="fa fa-user"></i>
                       </div>
-                      <input type="text" class="form-control" id="username" name="username" value="">
+                      <input type="text" class="form-control" id="username" name="username" value="<?php echo $username ?>">
                     </div>
                   </div>
                   <!-- /.input group -->
@@ -424,37 +413,25 @@ if (isset($insertMsg)) {
                 <div class="box-body">
                   <div class="form-group">
                     <label for="title">Firstname</label>
-                    <input type="text" class="form-control" id="fname" name="fname" value="">
+                    <input type="text" class="form-control" id="fname" name="fname" value="<?php echo $fname ?>">
                   </div>
                   <div class="form-group">
                     <label for="description">Lastname</label>
-                    <input type="text" class="form-control" id="lname" name="lname" value="">
+                    <input type="text" class="form-control" id="lname" name="lname" value="<?php echo $lname ?>">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">Gender</label><br>
-                    <input type="radio" name="gender" class="minimal" value='male' checked>
+                    <input type="radio" name="gender" class="minimal" value='male' <?php echo $gender == "male" ? "checked" : "" ?>>
                     <label>
                       Male
                     </label>
-                    <input type="radio" name="gender" class="minimal-red" value='female'>
+                    <input type="radio" name="gender" class="minimal-red" value='female' <?php echo $gender == "female" ? "checked" : "" ?>>
                     <label>
                       Female
                     </label>
                   </div>
-                  <!-- /.form group -->
-                  <!-- Date -->
-                  <div class="form-group">
-                    <label>BirthDay</label>
-
-                    <div class="input-group date">
-                      <div class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                      </div>
-                      <input type="text" class="form-control pull-right selector" id="datepicker" name="birthday" value="">
-                    </div>
-                    <!-- /.input group -->
-                  </div>
+                  <!-- /.form group -->               
                   <!-- /.form group -->
                   <!-- phone mask -->
                   <div class="form-group">
@@ -463,7 +440,7 @@ if (isset($insertMsg)) {
                       <div class="input-group-addon">
                         <i class="fa fa-phone"></i>
                       </div>
-                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask value="">
+                      <input type="text" class="form-control" name="numberphone" data-inputmask='"mask": "(99) 9999-9999"' data-mask value="<?php echo $nphone ?>">
                     </div>
                   </div>
                   <!-- /.input group -->                
@@ -471,13 +448,7 @@ if (isset($insertMsg)) {
                   <!-- Text area -->
                   <div class="form-group">
                     <label>Address</label>
-                    <textarea class="form-control kanitB" name="address" rows="3" ><?php echo "รายละเอียด . . ."?></textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="fileupload">Profile picture</label>
-                    <img src="../../images/customer/<?php ?>" alt="">
-                    <input type="file" class="form-control" name="image">
+                    <textarea class="form-control kanitB" name="address" rows="3" ><?php echo $address ?></textarea>
                   </div>
                 </div>
                 <!-- /.box-body -->

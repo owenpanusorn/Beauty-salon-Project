@@ -25,6 +25,9 @@ if (isset($_REQUEST['btn_singup'])) {
         $singup_nphon = $_REQUEST['nphon'];
         $singup_adder = $_REQUEST['adder'];
         $uuid_in = uuid();
+        $date = date("d/m/Y");
+        $time = date("h:i:sa");
+        $newtime = str_replace(['pm', 'am'], '', $time);
 
         if (empty($singup_fname)) $errorMsg = 'Please Enter First Name';
         else if (empty($singup_lname)) $errorMsg = 'Please Enter Last Name';
@@ -60,7 +63,7 @@ if (isset($_REQUEST['btn_singup'])) {
                 $insert_singup->bindParam(":nphone_in", $singup_nphon);
                 $insert_singup->bindParam(":adderss_in", $singup_adder);
                 $insert_singup->bindParam(":cre_cus_date", $date);
-                $insert_singup->bindParam(":cre_cus_time", $time);
+                $insert_singup->bindParam(":cre_cus_time", $newtime);
 
                 if ($insert_singup->execute()) {
                     $seMsg = "Insert Successfully . . .";
