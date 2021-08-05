@@ -161,7 +161,7 @@ require_once '../Admin/require/config.php';
                                 $ri = $row["serv_price"];
                             ?>
                                 <div class="col-12 col-md-3 mb-2">
-                                    <input class="form-check-input "type="checkbox" value="<?php echo $time ?>" onclick="tick(frm , this,<?php echo $ri ?>)">
+                                    <input class="form-check-input " type="checkbox" value="<?php echo $time ?>" onclick="tick(frm , this,<?php echo $ri ?>)">
 
                                     <p class="form-check-label kanitB fw-bold h6 mb-1">
                                         <?php echo $row["serv_type"] ?>
@@ -177,9 +177,57 @@ require_once '../Admin/require/config.php';
                                 </div>
                             <?php } ?>
                         </div>
-                        <input type="text" name="sum" id="sum" value="0" />
-                        <input type="text" name="sum_price" id="sumprice" value="0" />
                     </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-12 col-md-3 my-auto fw-bold">
+                                <label for="" class="kanitB">รวมทั้งหมด
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+
+
+                        </div>
+
+                        <input type="hidden" class="kanitB" name="time" id="time" value="0" />
+
+
+                        <div class="row">
+                            <div class="col-12 col-md-2 text-right">
+                                <label for="" class="kanitB">เวลาทั้งหมด</label>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <input type="text" class="kanitB" name="sumtime" id="sumtime" value="0" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-2 text-right">
+                                <label for="" class="kanitB">ค่าบริการทั้งหมด</label>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <input type="text" name="price" id="price" value="0" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-5">
+                        <div class="col-12 col-md-3 ms-auto">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-block btn-success kanitB">ตกลง</button>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3 me-auto">
+                            <div class="form-group">
+                                <button class="btn btn-block btn-danger kanitB">ยกเลิก</button>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -215,39 +263,36 @@ require_once '../Admin/require/config.php';
     <!--===============================================================================================-->
 
     <script>
-        function tick(frm, chk,price) {
+        function tick(frm, chk, price) {
             // คำนวณบวกหรือลบจากค่าเริ่มต้น
-            console.log('value', chk.value);
-            var sum = parseFloat(frm.sum.value);
-            var total = parseFloat(frm.sumprice.value);
-            frm.sumprice.value = chk.checked ? total + parseFloat(price) : total - parseFloat(price);
-            frm.sum.value = chk.checked ? sum + parseFloat(chk.value) : sum - parseFloat(chk.value);
-            console.log(frm.sum.value);
-            if (frm.sum.value > 120) {
-                alert('เกินเวลาแล้ว')
-                frm.sumprice.value -= parseFloat(price)
-                frm.sum.value -= parseFloat(chk.value)
-                chk.checked = false;
+            // console.log('value', chk.value);
+            var time = parseFloat(frm.time.value);
+            var total = parseFloat(frm.price.value);
+
+            frm.price.value = chk.checked ? total + parseFloat(price) : total - parseFloat(price);
+            frm.time.value = chk.checked ? time + parseFloat(chk.value) : time - parseFloat(chk.value);
+            // console.log(frm.sum.value);
+            let sum_total = frm.time.value
+            if (frm.time.value > 0) {
+                let hours = 0
+                while (sum_total >= 60) {
+                    sum_total -= 60
+                    hours++
+                }
+                text = ''
+                if (hours > 0) text += hours + " ชั่วโมง "
+                if (sum_total > 0 && sum_total < 60) text += sum_total + ' นาที'
+                frm.sumtime.value = text
+            } else {
+                frm.sumtime.value = "0 ชั่วโมง"
             }
 
-
-            // }
-            // var hour = 0;
-            // var minute = 0;
-            // var second = 0;
-
-            // var splitTime1= time1.split(':');
-            // hour = parseInt(splitTime1[0]);
-            // minute = parseInt(splitTime1[1]);
-            // hour = hour + minute/60;
-            // minute = minute%60;
-            // second = parseInt(splitTime1[2]);
-            // minute = minute + second/60;
-            // second = second%60;
-
-            // alert('sum of above time= '+hour+':'+minute+':'+second);
-
-
+            if (frm.time.value > 120) {
+                alert('จำกัดเวลาเพียง 2 ขั่วโมง')
+                frm.price.value -= parseFloat(price)
+                frm.time.value -= parseFloat(chk.value)
+                chk.checked = false;
+            }
         }
 
 

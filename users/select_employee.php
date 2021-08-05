@@ -1,3 +1,15 @@
+<?php
+session_start();
+require_once '../Admin/require/config.php';
+    
+if(isset($_REQUEST['btn_booking'])){
+    $date = $_REQUEST['startDate'];
+    $stime = $_REQUEST['startTime'];
+    $etime = $_REQUEST['endTime'];
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,11 +19,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Bootstrap 5</title>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
@@ -36,7 +49,7 @@
     <!-- regisform -->
     <!-- <link rel="stylesheet" href="css/style1.css"> -->
     <!-- Select Employee -->
-    <link rel="stylesheet" href="css/select_emp.css">
+    <link rel="stylesheet" type="text/css" href="css/select_emp.css">
 
 </head>
 
@@ -66,19 +79,19 @@
                 <div class="row col-12">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control-lg selDate " id="input" placeholder="Start Date">
+                            <input type="text" class="form-control-lg selDate " id="input" value="<?php echo $date ?>">
                         </div>
                     </div>
 
                     <div class="col-12 col-md-4">
                         <div class="form-group text-center">
-                            <input type="text" class="form-control-lg" id="startTime" placeholder="Start Time">
+                            <input type="text" class="form-control-lg" id="startTime" value="<?php echo $stime ?>">
                         </div>
                     </div>
 
                     <div class="col-12 col-md-4 text-end">
                         <div class="form-group">
-                            <input type="text" class="form-control-lg selTime" id="endTime" placeholder="End Time">
+                            <input type="text" class="form-control-lg selTime" id="endTime" value="<?php echo $etime ?>">
                         </div>
                     </div>
                 </div>
@@ -184,11 +197,15 @@
     </section>
 
     <!-- Footer -->
-    <main-footer></main-footer>
-
-
-    <script src="/script.js"></script>
-
+    <footer class="bg-light">
+             <div class="container">
+                 <div class="row">
+                     <div class="col-12 text-center mt-5">
+                         <p class="text-mired">&copy; Beautiful Salon 2021. All Right Reserved.</p>
+                    </div>
+              </div>
+            </div>
+    </footer>
 
     <script src="js/bootstrap.min.js"></script>
     <!-- caledate -->

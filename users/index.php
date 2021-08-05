@@ -2,65 +2,10 @@
 // Start the session
 session_start();
 require_once 'require/config.php';
+require_once 'require/session.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
-<?php
-if (isset($_REQUEST['btn_logout'])) {
-    try {
-        session_unset();
-        $_SESSION["token_loing"] = false;
-        $seMsg = 'ออกจากระบบแล้ว';
-        header("refresh:2;");
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
-
-if (isset($_REQUEST['btn_login'])) {
-    try {
-
-        $username_login = $_REQUEST['username'];
-        $password_login = $_REQUEST['pass'];
-        if (empty($username_login)) {
-            $errorMsg = "Please Enter Username";
-            header("refresh:2;");
-        } else if (empty($password_login)) {
-            $errorMsg = "Please Enter Password";
-            header("refresh:2;");
-        } else {
-            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
-            $qry1->bindParam(":usernmae_login", $username_login);
-            $qry1->execute();
-            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
-
-            if (!empty($row1) && count($row1) > 0) {
-                extract($row1);
-            }
-            if (!empty($password) && !empty($username)) {
-                if (!password_verify($password_login, $password)) {
-                    $errorMsg = 'password Fail';
-                    header("refresh:2;");
-                } else {
-                    $_SESSION["token_uuid"] = $uuid;
-                    $_SESSION["token_loing"] = true;
-                    $_SESSION["token_username"] = $_REQUEST['username'];
-                    $seMsg = 'เข้าสูระบบแล้ว';
-                    header("refresh:2;");
-                }
-            } else {
-                $errorMsg = 'ไม่พบ user';
-                header("refresh:2;");
-            }
-        }
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
-
-?>
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -249,23 +194,23 @@ if (isset($_REQUEST['btn_login'])) {
 
 
                 <div class="col-xl-0 mx-auto">
-                    <form action="#" class="row">
+                    <form action="select_employee.php" method="post" class="row">
                         <div class="row d-flex">
                             <div class="col-md-4 ">
                                 <div class="form-group">
-                                    <input type="text" class="form-control-lg" id="input" placeholder="Start Date">
+                                    <input type="text" class="form-control-lg" id="input"  name="startDate" placeholder="Start Date">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <input type="text" class="form-control-lg" id="startTime" placeholder="Start Time">
+                                    <input type="text" class="form-control-lg" id="startTime" name="startTime" placeholder="Start Time">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <input type="text" class="form-control-lg" id="endTime" placeholder="End Time">
+                                    <input type="text" class="form-control-lg" id="endTime"  name="endTime" placeholder="End Time">
                                 </div>
                             </div>
                         </div>
@@ -273,7 +218,9 @@ if (isset($_REQUEST['btn_login'])) {
                         <div class="row d-flex mx-auto">
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-block btn-lg btn-primary">Booking</button>
+                                    <button href="" class="btn btn-block btn-lg btn-primary" name="btn_booking">Booking</button>
+
+                                    <!-- select_employee.php?startdate='startDate'&starttime='startTime'&endtime='endTime' -->
                                 </div>
                             </div>
                         </div>
