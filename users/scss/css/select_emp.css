@@ -1,0 +1,51 @@
+.calen-date {  
+    background: url('../img/service1.jpg') no-repeat center center;
+    background-size: cover;
+    height: auto;    
+}
+
+.sel-box {
+    
+    padding-top: 6rem;
+    padding-bottom: 6rem;  
+ 
+}
+
+.showbarber {
+    padding-top: 3rem;
+}
+
+.showcard{
+    border: 1px solid #9E7B6C;
+    border-radius: 5px;
+}
+
+.detail-card {
+    border-bottom: 1px solid #ececec;
+    padding: 5px;
+}
+
+.text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.img-radius {
+    border-radius: 6px;
+}
+
+.set-btn {
+    background-color: black;
+    color: #fff;
+}
+
+.set-btn:hover {
+    background-color: #9E7B6C;
+    color: #fff;
+}
+
+.form-booking {
+    box-shadow: 1px 1px 10px #ececec;
+}
+
+

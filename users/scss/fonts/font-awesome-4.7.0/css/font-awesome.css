@@ -11,16 +11,6 @@
   font-weight: normal;
   font-style: normal;
 }
-
-@font-face {
-  font-family: FontKanit;
-  src: url('../../kanit/Kanit-Regular.ttf');
-}
-
-.kanitB {
-  font-family: FontKanit;
-}
-
 .fa {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
