@@ -1,71 +1,70 @@
 <!DOCTYPE html>
 <html>
 <?php
-require_once('../../require/config.php');
+require_once '../../require/config.php';
 
 if (isset($_REQUEST['btn_insert'])) {
-  $data = $data ?? random_bytes(16);
-  assert(strlen($data) == 16);
+    $data = $data ?? random_bytes(16);
+    assert(strlen($data) == 16);
 
-  // Set version to 0100
-  $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-  // Set bits 6-7 to 10
-  $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+    // Set version to 0100
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
 
-  // Output the 36 character UUID.
-  $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    // Output the 36 character UUID.
+    $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-  $prodid = $_REQUEST['prod_id'];
-  $prodname = $_REQUEST['prod_name'];
-  $proddetails = $_REQUEST['prod_details'];
-  $prodprice = $_REQUEST['prod_price'];
+    $prodname = $_REQUEST['prod_name'];
+    $proddetails = $_REQUEST['prod_details'];
+    $prodprice = $_REQUEST['prod_price'];
 
-  if (empty($prodid)) {
-    $prodid = $myuuid;
-  }
-  if (empty($prodname)) {
-    $errorMsg = "Please Enter Product Name";
-  } else if (empty($proddetails)) {
-    $errorMsg = "Please Enter Details";
-  } else if (empty($prodprice)) {
-    $errorMsg = "Please Enter Price";
-  } else if (empty($_FILES['prod_img']['name'])) {
-    $errorMsg = "Please Select Images";
-  } else {
-    try {
-      if (!isset($errorMsg)) {
-        $insert_prod = $db->prepare("INSERT INTO tb_product(prod_code, prod_name, prod_details, prod_price,prod_img, cre_prod_date, cre_prod_time) VALUES (:id, :prodname, :proddetail, :profprice,:prodimg, :cre_prod_date, :cre_prod_time)");
-        if (isset($_FILES['prod_img'])) {
-          $file_name = $_FILES['prod_img']['name'];
-          $file_size = $_FILES['prod_img']['size'];
-          $file_tmp = $_FILES['prod_img']['tmp_name'];
-          $file_type = $_FILES['prod_img']['type'];
-          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
-
-          if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
-            $$errorMsg = "Wrong! i . . .";
-          }
-        }
-        $insert_prod->bindParam(':id', $prodid);
-        $insert_prod->bindParam(':prodname', $prodname);
-        $insert_prod->bindParam(':proddetail', $proddetails);
-        $insert_prod->bindParam(':profprice', $prodprice);
-        $insert_prod->bindParam(':prodimg', $file_ext);
-        $insert_prod->bindParam(':cre_prod_date', $date);
-        $insert_prod->bindParam(':cre_prod_time', $time);
-    
-
-        
-
-        if ($insert_prod->execute()) {
-          $insertMsg = "Insert Successfully . . .";
-          header("refresh:2;../index.php");
-        }
-      }
-    } catch (PDOException $e) {
-      echo $e->getMessage();
+    if (empty($_REQUEST['prod_code'])) {
+        $prodid = $myuuid;
+    } else {
+        $prodid = $_REQUEST['prod_code'];
     }
-  }
+
+    if (empty($prodname)) {
+        $errorMsg = "Please Enter Product Name";
+    } else if (empty($proddetails)) {
+        $errorMsg = "Please Enter Details";
+    } else if (empty($prodprice)) {
+        $errorMsg = "Please Enter Price";
+    } else if (empty($_FILES['prod_img']['name'])) {
+        $errorMsg = "Please Select Images";
+    } else {
+        try {
+            if (!isset($errorMsg)) {
+                $insert_prod = $db->prepare("INSERT INTO tb_product(prod_code, prod_name, prod_details, prod_price,prod_img, cre_prod_date, cre_prod_time) VALUES (:id, :prodname, :proddetail, :profprice,:prodimg, :cre_prod_date, :cre_prod_time)");
+                if (isset($_FILES['prod_img'])) {
+                    $file_name = $_FILES['prod_img']['name'];
+                    $file_size = $_FILES['prod_img']['size'];
+                    $file_tmp = $_FILES['prod_img']['tmp_name'];
+                    $file_type = $_FILES['prod_img']['type'];
+                    $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+
+                    if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
+                        $$errorMsg = "Wrong! i . . .";
+                    }
+                }
+                $insert_prod->bindParam(':id', $prodid);
+                $insert_prod->bindParam(':prodname', $prodname);
+                $insert_prod->bindParam(':proddetail', $proddetails);
+                $insert_prod->bindParam(':profprice', $prodprice);
+                $insert_prod->bindParam(':prodimg', $file_ext);
+                $insert_prod->bindParam(':cre_prod_date', $date);
+                $insert_prod->bindParam(':cre_prod_time', $time);
+
+                if ($insert_prod->execute()) {
+                    $insertMsg = "Insert Successfully . . .";
+                    header("refresh:2;../index.php");
+                }
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 }
 
 ?>
@@ -349,21 +348,21 @@ if (isset($_REQUEST['btn_insert'])) {
       <!-- Main content -->
       <section class="content">
         <?php
-        if (isset($errorMsg)) {
-        ?>
+if (isset($errorMsg)) {
+    ?>
           <div class="alert alert-danger alert-dismissible">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php } ?>
+        <?php }?>
 
         <?php
-        if (isset($insertMsg)) {
-        ?>
+if (isset($insertMsg)) {
+    ?>
           <div class="alert alert-success alert-dismissible">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php } ?>
+        <?php }?>
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
             <div class="col-xs-12">
