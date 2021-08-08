@@ -1,64 +1,79 @@
 <!DOCTYPE html>
 <html>
 <?php
-require_once('../../require/config.php');
+require_once '../../require/config.php';
 
 if (isset($_REQUEST['update_id'])) {
-  try {
-    $uuid = $_REQUEST['update_id'];
-    $qry = $db->prepare("select * from tb_product where prod_id = :id");
-    $qry->bindParam(":id", $uuid);
-    $qry->execute();
-    $row = $qry->fetch(PDO::FETCH_ASSOC);
-    extract($row);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
+    try {
+        $uuid = $_REQUEST['update_id'];
+        $qry = $db->prepare("select * from tb_product where prod_id = :id");
+        $qry->bindParam(":id", $uuid);
+        $qry->execute();
+        $row = $qry->fetch(PDO::FETCH_ASSOC);
+        extract($row);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
 }
 
 if (isset($_REQUEST['btn_update'])) {
-  try {
+    try {
 
-    $prodid = $_REQUEST['prod_id_update'];
-    $prodcode = $_REQUEST['prod_code'];
-    $prodname = $_REQUEST['prod_name'];
-    $proddetails = $_REQUEST['prod_details_up'];
-    $prodprice = $_REQUEST['prod_price'];
+        $prodid = $_REQUEST['prod_id_update'];
+        $prodcode = $_REQUEST['prod_code'];
+        $prodname = $_REQUEST['prod_name'];
+        $proddetails = $_REQUEST['prod_details_up'];
+        $prodprice = $_REQUEST['prod_price'];
 
-    // if (isset($_FILES['prod_img_up'])) {
-    //   $file_name = $_FILES['prod_img_up']['name'];
-    //   $file_size = $_FILES['prod_img_up']['size'];
-    //   $file_tmp = $_FILES['prod_img_up']['tmp_name'];
-    //   $file_type = $_FILES['prod_img_up']['type'];
-    //   $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+        $image_file = $_FILES['prod_img_up']['name'];
+        $type = $_FILES['prod_img_up']['type'];
+        $size = $_FILES['prod_img_up']['size'];
+        $temp = $_FILES['prod_img_up']['tmp_name'];
+        $newname = substr(str_shuffle("0123456789"), 0, 5) . $image_file;
+        $path = "../../images/prod_img/" . $newname;
+        $directory = "../../images/prod_img/";
 
-    //   echo 'file_ext'.$file_ext.'<br>'; 
-    //   echo 'prod_img'.$prod_img;
-    //   // if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
-    //   //   $$errorMsg = "Wrong! i . . .";
-    //   // } else {
-    //   //   $file_ext = $prod_img;
-    //   // }
-    // }
-    $update_prod = $db->prepare("update tb_product set prod_code = :prod_code_up,prod_name = :prod_name_up,prod_details = :prod_details_up,prod_price = :prod_price_up,up_prod_date = :up_prod_date_up,up_prod_time = :up_prod_time_up where prod_id = :id_up");
+        if ($image_file) {
+            if ($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png" || $type == "image/gif") {
+                if (!file_exists($path)) {
+                    if ($size < 5000000) {
+                        unlink($directory . $prod_img); // ลบไฟล์เดิม
+                        move_uploaded_file($temp, '../../images/prod_img/' . $newname);
+                    } else {
+                        $errorMsg = "ขนาดรูปใหญ่เกินไป กรุณาอัปโหลดรูปต่ำกว่า 5 MB";
+                    }
 
-    $update_prod->bindParam(':id_up', $prodid);
-    $update_prod->bindParam(':prod_code_up', $prodcode);
-    $update_prod->bindParam(':prod_name_up', $prodname);
-    $update_prod->bindParam(':prod_details_up', $proddetails);
-    $update_prod->bindParam(':prod_price_up', $prodprice);
-    // $update_prod->bindParam(':prod_img_up', $file_ext);
-    $update_prod->bindParam(':up_prod_date_up', $date);
-    $update_prod->bindParam(':up_prod_time_up', $time);
+                } else {
+                    $errorMsg = "กรุณาอัปโหลดรูปภาพ";
+                }
 
-    if ($update_prod->execute()) {
+            } else {
+                $errorMsg = "กรุณาอัปโหลดรูปภาพประเภทไฟล์ JPG, JPEG, PNG และ GIF. . .";
+            }
 
-      $insertMsg = "update Successfully . . .";
-      header("refresh:2;../index.php");
+        } else {
+            $newname = $prod_img;
+        }
+
+        $update_prod = $db->prepare("update tb_product set prod_code = :prod_code_up,prod_name = :prod_name_up,prod_details = :prod_details_up,prod_price = :prod_price_up, prod_img = :prod_img_up,up_prod_date = :up_prod_date_up,up_prod_time = :up_prod_time_up where prod_id = :id_up");
+
+        $update_prod->bindParam(':id_up', $prodid);
+        $update_prod->bindParam(':prod_code_up', $prodcode);
+        $update_prod->bindParam(':prod_name_up', $prodname);
+        $update_prod->bindParam(':prod_details_up', $proddetails);
+        $update_prod->bindParam(':prod_price_up', $prodprice);
+        $update_prod->bindParam(':prod_img_up', $newname);
+        $update_prod->bindParam(':up_prod_date_up', $date);
+        $update_prod->bindParam(':up_prod_time_up', $time);
+
+        if ($update_prod->execute()) {
+
+            $insertMsg = "update Successfully . . .";
+            header("refresh:2;../index.php");
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
     }
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
 }
 
 ?>
@@ -342,21 +357,21 @@ if (isset($_REQUEST['btn_update'])) {
       <!-- Main content -->
       <section class="content">
         <?php
-        if (isset($errorMsg)) {
-        ?>
+if (isset($errorMsg)) {
+    ?>
           <div class="alert alert-danger alert-dismissible">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php } ?>
+        <?php }?>
 
         <?php
-        if (isset($insertMsg)) {
-        ?>
+if (isset($insertMsg)) {
+    ?>
           <div class="alert alert-success alert-dismissible">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php } ?>
+        <?php }?>
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
             <div class="col-xs-12">
