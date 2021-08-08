@@ -14,19 +14,11 @@
 
 @font-face {
   font-family: FontKanit;
-  src: url('../fonts/Kanit-Thin.ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-
-.kanit {
-  font-family: FontKanit;
-  font-size: 14px;
+  src: url('../fonts/Kanit-Regular.ttf');
 }
 
 .kanitB {
   font-family: FontKanit;
-  font-weight: bold;
   font-size: 14px;
 }
 
