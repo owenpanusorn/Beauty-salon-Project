@@ -3,17 +3,17 @@
 
     if (isset($_REQUEST['del_id'])){
       $id = $_REQUEST['del_id'];
-
+      // echo $id;
       $del_login = $db -> prepare("DELETE FROM tb_login WHERE uuid = :id ");
       $del_login -> bindParam(":id",$id);
       $del_login -> execute();
 
-      $del_emp = $db -> prepare("DELETE FROM tb_employee WHERE uuid = :id ");
-      $del_emp -> bindParam(":id",$id);
-      $del_emp -> execute();
+      $del_cus = $db -> prepare("DELETE FROM tb_customer WHERE uuid = :id ");
+      $del_cus -> bindParam(":id",$id);
+      $del_cus -> execute();
 
 
-      header('Location:index.php');
+      // header('Location:index.php');
 
     }
 ?>
@@ -228,13 +228,13 @@
             </a>            
           </li>
 
-          <li>
+          <li class="active">
             <a href="users.php">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>             
             </a>            
           </li>
 
-          <li class="active">
+          <li>
             <a href="index.php">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>             
             </a>            
@@ -311,11 +311,9 @@
                   <th>ID</th>
                   <th>Firstname</th>
                   <th>Lastname</th>
-                  <th>Gender</th>
-                  <th>Birthday</th>
+                  <th>Gender</th>                 
                   <th>Number Phone</th>                 
-                  <th>Address</th>
-                  <th>Image</th>
+                  <th>Address</th>                
                   <th>Crete date</th>
                   <th>Crete time</th>                  
                   <th>Edit</th>
@@ -334,14 +332,14 @@
                         <td><?php echo $row["id"]?></td>
                         <td><?php echo $row["fname"]?></td>
                         <td><?php echo $row["lname"]?></td>
-                        <td><?php echo $row["gender"]?></td>
-                        <td><?php echo $row["birthday"]?></td>
+                        <td><?php echo $row["gender"]?></td>                       
                         <td><?php echo $row["nphone"]?></td>                       
-                        <td><?php echo $row["address"]?></td>
-                        <td><?php echo '<img src="../images/'.$row["images"].'" height="50">'?></td>
-                        <td><?php echo $row["cre_emp_date"]?></td>
-                        <td><?php echo $row["cre_emp_time"]?></td>                        
-                        <td><a href="editcustomer?update_id=<?php echo $row['uuid']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
+                        <td><?php echo $row["address"]?></td>                       
+                        <td><?php echo $row["cre_cus_date"]?></td>
+                        <td><?php echo $row["cre_cus_time"]?></td>                        
+                        <td>
+                          <a href="editcustomer?update_id=<?php echo $row['uuid']?>" class="btn btn-warning">
+                          <i class="fa fa-pencil-square-o"></i> Edit</a></td>
                         <td><a href="?del_id=<?php echo $row['uuid']?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');" > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
                         
                       </tr>

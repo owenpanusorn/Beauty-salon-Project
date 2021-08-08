@@ -340,7 +340,7 @@
                         <td><?php echo $row["nphone"]?></td>
                         <td><?php echo $row["idcard"]?></td>
                         <td><?php echo $row["address"]?></td>
-                        <td><?php echo '<img src="../images/'.$row["images"].'" height="50">'?></td>
+                        <td><?php echo '<img src="../images/employee/'.$row["images"].'" height="50">'?></td>
                         <td><?php echo $row["cre_emp_date"]?></td>
                         <td><?php echo $row["cre_emp_time"]?></td>                        
                         <td><a href="editemployee?update_id=<?php echo $row['uuid']?>" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a></td>
@@ -348,24 +348,7 @@
                         
                       </tr>
                   <?php } ?>
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>ID</th>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Gender</th>
-                  <th>Birthday</th>
-                  <th>Number Phone</th>
-                  <th>ID Card</th>
-                  <th>Address</th>
-                  <th>Image</th>
-                  <th>Crete date</th>
-                  <th>Crete time</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
-                </tr>
-                </tfoot>
+                </tbody>               
               </table>
             </div>
             <!-- /.box-body -->
