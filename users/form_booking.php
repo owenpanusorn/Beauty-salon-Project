@@ -354,15 +354,15 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['s
                             </div>
                         </div>
 
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="col-12 col-md-2 text-right">
                                 <label for="" class="kanitB">รายการ</label>
                             </div>
                             <div class="col-12 col-md-2">
-                                <input type="hidden" name="price" id="price" value="0" />
+                                <input type="hidden" name="services" id="services" value="0" />
                                 <input type="text" class="kanitB" name="serv" id="serv" value="" disabled/>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
 
 
@@ -488,10 +488,21 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['s
             // console.log('value', chk.value);
             var time = parseFloat(frm.time.value);
             var total = parseFloat(frm.price.value);
+            var list = String(frm.servname.value);
            
             frm.price.value = chk.checked ? total + parseFloat(price) : total - parseFloat(price);
             frm.time.value = chk.checked ? time + parseFloat(minute) : time - parseFloat(minute);
-            
+
+            frm.services.value = chk.checked ? list += String(chk.value) : list -= String(chk.value);
+
+            let result_serv = frm.services.value          
+            if (chk.checked == true && frm.time.value < 121) {
+                frm.serv.value += result_serv + ", ";               
+            } else {
+                frm.serv.value = "";
+            }
+        
+           
             // console.log(frm.sum.value);
             let sum_total = frm.time.value
             if (frm.time.value > 0) {
@@ -511,7 +522,7 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['s
             if (frm.time.value > 120) {
                 alert('จำกัดเวลาเพียง 2 ขั่วโมง')
                 frm.price.value -= parseFloat(price)
-                frm.time.value -= parseFloat(minute)
+                frm.time.value -= parseFloat(minute)                
                 chk.checked = false;
             }
 
