@@ -3,7 +3,12 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
-if (isset($_REQUEST['uu_id'])) {
+if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUEST['start_time']) && isset($_REQUEST['end_time'])) {
+
+    $date = $_REQUEST['start_date'];
+    $start_time = $_REQUEST['start_time'];
+    $end_time = $_REQUEST['end_time'];
+
     try {
         $id = $_REQUEST['uu_id'];
         $select_emp = $db->prepare("SELECT * FROM tb_employee WHERE uuid = :id"); //เตรียมคำสั่งที่ query
@@ -11,11 +16,18 @@ if (isset($_REQUEST['uu_id'])) {
         $select_emp->execute(); // ประมวลผลคำสัง prepare
         $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
         extract($row);
-        
+
         if ($gender == 'male') {
             $gender = 'ชาย';
-        } else { 
+        } else {
             $gender = 'หญิง';
+        }
+
+        if ($birthday) {
+            $birthday = explode("/", $birthday); //แยกตัวอักษร
+            $age = (date("md", date("U", mktime(0, 0, 0, $birthday[0], $birthday[1], $birthday[2]))) > date("md")
+                ? ((date("Y") - $birthday[2]) - 1)
+                : (date("Y") - $birthday[2]));
         }
     } catch (PDOException $e) {
         $e->getMessage();
@@ -200,9 +212,8 @@ if (isset($_REQUEST['uu_id'])) {
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb">
-                            <li class=""><a href="index.php">Home / </a></li>
-                            <li class=""><a href="select_employee.php">Hairdresser /</a> </li>
-                            <li class="active">Detail Hairdresse</li>
+                            <li class="kanitB"><a href="index.php">หน้าแรก / </a></li>
+                            <li class="active kanitB">รายละเอียดช่างทำผม</li>
                         </ul>
                     </nav>
                 </div>
@@ -212,15 +223,14 @@ if (isset($_REQUEST['uu_id'])) {
 
     <section class="">
         <div class="container">
-            <h4 class="kanitB fw-bolder mt-5 mb-3">รายละเอียดช่าง <?php echo $fname?></h4>
+            <h4 class="kanitB fw-bolder mt-5 mb-3">รายละเอียดช่าง <?php echo $fname ?></h4>
 
             <div class="row">
                 <div class="col-md-6">
-                    <img src="img/barber2.jpg" alt="" class="img-fluid d-blok mb-5 img-radius ">
-
+                    <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="img-fluid d-blok mb-5 img-radius ">' ?>
                     <div class="contact-card">
-                        <p class="text-justify">
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ea laudantium distinctio earum illum fuga ad consectetur, amet quia excepturi mollitia nisi reprehenderit deleniti dicta possimus explicabo, voluptates suscipit inventore provident!
+                        <p class="text-justify kanitB">
+                        ร้านเสริมสวยหน่อยบิวตี้ 162/2 ถ.ต้นขาม2 ต.ท่าสาลา อ.เมืองเชียงใหม่ จ.เชียงใหม่ 50000
                         </p>
                     </div>
                 </div>
@@ -234,21 +244,16 @@ if (isset($_REQUEST['uu_id'])) {
                                 </div>
 
                                 <div class="col-md-6  text-end">
-                                    <span class="text-warning mx-auto kanitB fw-bolder"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
+                                    <span class="text-warning mx-auto kanitB fw-bolder">
+                                    <?php 
+                                            
+                                            for ($i=0; $i <  5; $i++) { 
+                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>' ;
+                                            }
+                                            
+                                            ?> 
                                         ( 5.0 คะแนน)
                                     </span>
                                 </div>
@@ -259,7 +264,7 @@ if (isset($_REQUEST['uu_id'])) {
                                             <p class="kanitB fw-bolder fs-6">ชื่อ</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="kanitB fw-bolder fs-6"><?php echo $fname;?></p>
+                                            <p class="kanitB fw-bolder fs-6"><?php echo $fname; ?></p>
                                         </div>
                                     </div>
                                     <div class="row detail-card">
@@ -276,7 +281,7 @@ if (isset($_REQUEST['uu_id'])) {
                                             <p class="kanitB fw-bolder fs-6">อายุ</p>
                                         </div>
                                         <div class="col-md-6 ">
-                                            <p class="kanitB fw-bolder fs-6">25</p>
+                                            <p class="kanitB fw-bolder fs-6"><?php echo $age; ?></p>
                                         </div>
                                     </div>
 
@@ -285,10 +290,10 @@ if (isset($_REQUEST['uu_id'])) {
                                             <p class="kanitB fw-bolder fs-6">เบอร์โทร</p>
                                         </div>
                                         <div class="col-md-6 ">
-                                            <p class="kanitB fw-bolder fs-6">0980031729</p>
+                                            <p class="kanitB fw-bolder fs-6"><?php echo $nphone; ?></p>
                                         </div>
                                     </div>
-
+                                  
                                     <div class="row detail-card">
                                         <div class="col-md-6 ">
                                             <p class="kanitB fw-bolder fs-6">จำนวนลูกค้า</p>
@@ -324,11 +329,11 @@ if (isset($_REQUEST['uu_id'])) {
                                             <p class="kanitB fw-bolder fs-6"> 20 ชั่วโมง</p>
                                         </div>
                                     </div>
-
+                                   
                                     <div class="row ">
                                         <div class="col-md-12 mt-5">
-                                            <a href="form_booking.php" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
-                                            progress-bar-animated">Booking</a>
+                                            <a href="form_booking.php?uu_id=<?php echo $row['uuid'] ?>&fname=<?php echo $fname ?>&start_date=<?php echo $date?>&start_time=<?php echo $start_time?>&end_time=<?php echo $end_time?>" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
+                                            progress-bar-animated" target="_blank">Booking</a>
                                         </div>
                                     </div>
 
@@ -360,7 +365,7 @@ if (isset($_REQUEST['uu_id'])) {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <input type="text" class="form-control selDate border" id="input" placeholder="Start Date">
+                                        <input type="text" class="form-control selDate border" id="input" value="<?php echo $date; ?>">
                                     </div>
                                 </div>
 
@@ -373,35 +378,34 @@ if (isset($_REQUEST['uu_id'])) {
                             </div>
                         </form>
 
-                        <table class="table table-hover">
+                        <table class="table table-hover kanitB">
                             <thead class="">
                                 <tr>
-                                    <th>#</th>
-                                    <th>First</th>
-                                    <th>Last</th>
-                                    <th>Age</th>
+                                    <th>ลำดับ</th>
+                                    <th>รายการบริการ</th>
+                                    <th>เวลาเริ่มต้น</th>
+                                    <th>เวลาสิ้นสุด</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th>1</th>
-                                    <td>Panusorn</td>
-                                    <td>Jaiklom</td>
-                                    <td>24</td>
-                                </tr>
-                                <tr>
-                                    <th>2</th>
-                                    <td>Panusorn</td>
-                                    <td>Jaiklom</td>
-                                    <td>24</td>
-                                </tr>
-                                <tr>
-                                    <th>3</th>
-                                    <td>Panusorn</td>
-                                    <td>Jaiklom</td>
-                                    <td>24</td>
-                                </tr>
+                                <?php
+                                $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :id and cre_bks_date = :stardate');
+                                $result->bindParam(':id', $id); //ผูกพารามิเตอรฺ์ 
+                                $result->bindParam(':stardate', $date);
+                                $result->execute();
+                                $num = 0;
+                                while ($row = $result->fetch
+                                (PDO::FETCH_ASSOC)) {
+                                $num++;
+                                ?>
+                                    <tr>
+                                        <th><?php echo $num; ?></th>
+                                        <td><?php echo $row['book_serv']; ?></td>
+                                        <td><?php echo $row['cre_bks_time']; ?></td>
+                                        <td><?php echo $row['end_bks_time']; ?></td>
+                                    </tr>
                             </tbody>
+                        <?php } ?>
                         </table>
                     </div>
 
@@ -414,22 +418,18 @@ if (isset($_REQUEST['uu_id'])) {
                                 <div class="row border p-3">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
-                                            <span class="text-warning mx-auto kanitB fw-bolder">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                </svg>
+                                            <span class="text-warning 
+                                            mx-auto kanitB fw-bolder">
+
+                                            <?php 
+                                            
+                                            for ($i=0; $i <  5; $i++) { 
+                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>' ;
+                                            }
+                                            
+                                            ?>
                                                 ( 5.0 คะแนน)
                                             </span>
                                         </div>

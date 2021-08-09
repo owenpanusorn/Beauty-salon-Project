@@ -10,9 +10,8 @@ if(isset($_REQUEST['btn_booking'])){
 }
 
 try {
-    $uuid = "4875a614-0a2b-48f9-aa5e-5b4adb04121e";
-    $select_emp = $db -> prepare("SELECT * FROM tb_employee WHERE uuid = :uuid"); //เตรียมคำสั่งที่ query
-    $select_emp -> bindParam(':uuid', $uuid); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
+    $select_emp = $db -> prepare("SELECT * FROM tb_employee"); //เตรียมคำสั่งที่ query
+    // $select_emp -> bindParam(':uuid', $uuid); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
     $select_emp -> execute(); // ประมวลผลคำสัง prepare
     $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
     extract($row);
@@ -197,11 +196,12 @@ try {
     <div class="container-fluid bcrumb">
         <div class="container mt-3 bcrumb-in">
             <div class="row">
+               
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb">
-                            <li class=""><a href="index.php">Home / </a></li>
-                            <li class="active">Select Hairdresser</li>
+                            <li class="kanitB"><a href="index.php">หน้าแรก / </a></li>
+                            <li class="active kanitB">เลือกช่างทำผม</li>
                         </ul>
                     </nav>
                 </div>
@@ -247,6 +247,9 @@ try {
     <section class="bg-light showbarber">
         <div class="container p-0">
             <div class="row">
+            <div class="col-12 col-md-12 mb-4">
+                    <h3 class="kanitB">เลือกช่างทำผม</h3>
+             </div>
             <?php                        
                         $result = $db->prepare('SELECT * from tb_employee');  
                         $result->execute();
@@ -255,10 +258,10 @@ try {
         
                   ?> 
                 <div class="col-12 col-md-3 mb-1">
-                    <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
-                        <div class="card" style="width: 18rem;">
+                    <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date?>&start_time=<?php echo $stime?>&end_time=<?php echo $etime?>" target="_blank">
+                        <div class="card" style="width: 16rem;">
 
-                        <?php echo '<img src="../Admin/images/employee/'.$row["images"].'" class="card-img-top" height=250">'?>
+                        <?php echo '<img src="../Admin/images/employee/'.$row["images"].'" class="card-img-top" height=225">'?>
                             <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
 
                             <div class="card-body">
@@ -291,6 +294,7 @@ try {
                                             d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
                                     </svg>
                                 </p>
+
                                 <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
                                 <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
                             </div>
