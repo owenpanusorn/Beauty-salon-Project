@@ -10,9 +10,9 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
     $end_time = $_REQUEST['end_time'];
 
     try {
-        $id = $_REQUEST['uu_id'];
+        $uuid_emp = $_REQUEST['uu_id'];
         $select_emp = $db->prepare("SELECT * FROM tb_employee WHERE uuid = :id"); //เตรียมคำสั่งที่ query
-        $select_emp->bindParam(':id', $id); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
+        $select_emp->bindParam(':id', $uuid_emp); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
         $select_emp->execute(); // ประมวลผลคำสัง prepare
         $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
         extract($row);
@@ -390,7 +390,7 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                             <tbody>
                                 <?php
                                 $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :id and cre_bks_date = :stardate');
-                                $result->bindParam(':id', $id); //ผูกพารามิเตอรฺ์ 
+                                $result->bindParam(':id', $uuid_emp); //ผูกพารามิเตอรฺ์ 
                                 $result->bindParam(':stardate', $date);
                                 $result->execute();
                                 $num = 0;
