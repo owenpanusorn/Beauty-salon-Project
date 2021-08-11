@@ -1,5 +1,8 @@
 $(function() {
 
-  rome(input, { time: false });
+  rome(input, { 
+    format : 'dd-mm-yyyy',
+    time: false 
+  });
 
 });
