@@ -333,7 +333,7 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                                     <div class="row ">
                                         <div class="col-md-12 mt-5">
                                             <a href="form_booking.php?uu_id=<?php echo $row['uuid'] ?>&fname=<?php echo $fname ?>&start_date=<?php echo $date?>&start_time=<?php echo $start_time?>&end_time=<?php echo $end_time?>" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
-                                            progress-bar-animated" target="_blank">Booking</a>
+                                            progress-bar-animated" >Booking</a>
                                         </div>
                                     </div>
 

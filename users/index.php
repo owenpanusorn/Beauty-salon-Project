@@ -29,7 +29,6 @@ require_once 'require/session.php';
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
@@ -49,11 +48,13 @@ require_once 'require/session.php';
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" href="css/rome.css">
     <!-- time picker -->
     <link rel="stylesheet" href="jquery/jquery.timepicker.min.css">
     <link rel="stylesheet" href="jquery/jquery.timepicker.css">
-    <!-- datepicker -->
-    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
 
 
 
@@ -104,82 +105,76 @@ require_once 'require/session.php';
 
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
-                        echo '
-                    <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+                    ?>
+                        <li class="navbar-item">
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="limiter">
-                                            <div class="container-login100">
-                                                <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form" method="post">
-                                                        <span class="login100-form-title ">
-                                                            Beautiful Salon
-                                                        </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
-                        echo '
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                            <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Username"></span>
-                                                        </div>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="limiter">
+                                                <div class="container-login100">
+                                                    <div class="wrap-login100 p-t-20 p-b-10">
+                                                        <form class="login100-form validate-form" method="post">
+                                                            <span class="login100-form-title ">
+                                                                Beautiful Salon
+                                                            </span>
+                                                            <h5 class="text-center welcome-spacing">Welcome</h5>
+                                                            <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                                <input class="input100" type="text" name="username">
+                                                                <span class="focus-input100" data-placeholder="Username"></span>
+                                                            </div>
 
-                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
-                                                            <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Password"></span>
-                                                        </div>
+                                                            <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                                <input class="input100" type="password" name="pass">
+                                                                <span class="focus-input100" data-placeholder="Password"></span>
+                                                            </div>
 
-                                                        <div class="container-login100-form-btn">
-                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
-                                                                Login
-                                                            </button>
-                                                        </div>
+                                                            <div class="container-login100-form-btn">
+                                                                <button type="submit" name="btn_login" class="login100-form-btn">
+                                                                    Login
+                                                                </button>
+                                                            </div>
 
-                                                        <ul class="login-more p-t-50 ms-auto">
-                                                            <li>
-                                                                <span class="txt1">
-                                                                    Don’t have an account?
-                                                                </span>
+                                                            <ul class="login-more p-t-50 ms-auto">
+                                                                <li>
+                                                                    <span class="txt1">
+                                                                        Don’t have an account?
+                                                                    </span>
 
-                                                                <a href="signup.php" class="txt2">
-                                                                    Sign up
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </form>
+                                                                    <a href="signup.php" class="txt2">
+                                                                        Sign up
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div id="dropDownSelect1"></div>
+                                            <div id="dropDownSelect1"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                    ';
+                        </li>
+                    <?php
                     } else if ($_SESSION["token_loing"] === true) {
-                        echo '
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] . ' </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post">
-                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
-                        </form>
-                    </li>
-                    ';
+                    ?>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Username : <?php echo $_SESSION["token_username"] ?> </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post">
+                                <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                            </form>
+                        </li>
+                    <?php
                     }
                     ?>
                 </ul>
@@ -192,28 +187,27 @@ require_once 'require/session.php';
     <header class="text-white text-center">
         <div class="container">
             <div class="row">
-                <div class="col-xl-0 ">
-                    <h1 class=" kanitB" style="text-shadow: 0 5px 5px #adb5bd">ร้านเสริมสวยหน่อยบิวตี้</h1>
-                    <h2 class="mb-5 kanitB " style="text-shadow: 0 5px 5px #adb5bd">สามารถจองผ่านออนไลน์ได้แล้ววันนี้ !</h2>
+                <div class="col-xl-0">
+                    <h1 class="mb-5">Build the best landing page for your business or project with bootstrap 5!</h1>
                 </div>
 
-                <form action="select_employee.php" method="post">
+                <form action="select_employee.php" method="get">
                     <div class="row align-items-start">
                         <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" placeholder="เลือกวันที่">
+                                <input type="text" class="form-control-lg" id="input" name="startDate" placeholder="Start Date">
                             </div>
                         </div>
 
                         <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <input type="text" class="form-control-lg kanitB" id="startTime" name="startTime" placeholder="เวลาเริ่มต้น">
+                                <input type="text" class="form-control-lg" id="startTime" name="startTime" placeholder="Start Time">
                             </div>
                         </div>
 
                         <div class="col-12 col-md-4">
                             <div class="form-group">
-                                <input type="text" class="form-control-lg kanitB" id="endTime" name="endTime" placeholder="เวลาสิ้นสุด">
+                                <input type="text" class="form-control-lg" id="endTime" name="endTime" placeholder="End Time">
                             </div>
                         </div>
                     </div>
@@ -221,7 +215,7 @@ require_once 'require/session.php';
                     <div class="row-fluid d-flex mx-3">
                         <div class="col-12 col-md-12">
                             <div class="form-group">
-                                <button class="btn btn-block btn-lg btn-primary kanitB" name="btn_booking">ค้นหา</button>
+                                <button class="btn btn-block btn-lg btn_booking" name="btn_booking">Booking</button>
                             </div>
                         </div>
                     </div>
@@ -229,60 +223,343 @@ require_once 'require/session.php';
             </div>
         </div>
 
+
+        <!-- <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                    <form action="">
+                        <div class="row d-flex">
+                            <div class="col-12 col-md-5 mb-2 mb-md-0">
+                                <input type="email" class="form-control form-control-lg"
+                                    placeholder="Enter your email . . .">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <button type="submit" class="btn btn-block btn-lg btn-primary">Booking</button>
+                            </div>
+                        </div>
+                    </form>
+                </div> -->
+
         </div>
     </header>
     <!-- employee slid -->
-    <section class="p-5">
-        <div class="container p-0">
-            <div class="row">
-                <div class="col-12 col-md-12 mb-4">
-                    <h3 class="kanitB">รายละเอียดช่างทำผม</h3>
-                </div>
-                <?php
-                $result = $db->prepare('SELECT * from tb_employee');
-                $result->execute();
-
-                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-
-                ?>
-                    <div class="col-12 col-sm-2 mb-2 me-2">
-                        <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=<?php echo $stime ?>&end_time=<?php echo $etime ?>" target="_blank">
-                            <div class="card" style="width: 11rem;">
-
-                                <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="card-img-top" height=150">' ?>
-                                <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
-
-                                <div class="card-body">
-                                    <h6 class="card-title text-center"><?php echo $row["fname"] ?></h6>
-
-                                    <p class="text-warning text-center card-text">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                    </p>
-
-                                    <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
-                                    <h6 class="kanitB text-center text-success fw-bolder">ว่าง</h6>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                <?php } ?>
+    <section class="bg-primary p-5">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
-        </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
 
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item ">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item ">
+                    <div class="container p-0">
+                        <div class="row">
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-3 me-2">
+                                <a href="detail_emp.php?uu_id=<?php echo $uuid ?>">
+                                    <div class="card w-100">
+
+                                        <img src="img/barber2.jpg" alt="" class="card-img-top">
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"></h5>
+                                            <p class="text-warning text-center card-text">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                </svg>
+                                            </p>
+                                            <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                            <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     </section>
 
     <!-- Features icons -->
@@ -368,16 +645,33 @@ require_once 'require/session.php';
     <!-- Test imonials -->
     <section class="testimonials text-center bg-light">
         <div class="container">
+            <h2 class="mb-5">what preplo are saying . . .</h2>
+
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="testimonails-item mx-auto mb-5 mb-lg-0">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3777.5509494819394!2d99.02139502017593!3d18.77358465599324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDQ2JzI1LjEiTiA5OcKwMDEnMTcuNCJF!5e0!3m2!1sth!2sth!4v1628698791703!5m2!1sth!2sth" width="500" height="450" style="box-shadow : 0 5px 5px #adb5bd;" allowfullscreen="" loading="lazy" class="border rounded-2"></iframe>
+                        <img src="img/p2.jfif" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Evelyn E.</h5>
+                        <p class="font-weight-light mb-0">"This is fantastic! Thanks so much guys!"</p>
                     </div>
                 </div>
-                <div class="col-lg-6 my-auto">
-                    <h2 class="mb-5 kanitB text-left">สถานที่ตั้งของทางร้าน</h2>
-                    <p class="kanitB text-left mb-0 lead ">ร้านเสริมสวยหน่อยบิวตี้ 162 / 2 ถ.ต้นขาม 2 ต.ท่าศาลา อ.เมืองเชียงใหม่ จ.เชียงใหม่ 50000</p>
+                <div class="col-lg-4">
+                    <div class="testimonails-item mx-auto mb-5 mb-lg-0">
+                        <img src="img/p2.jfif" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Harper H.</h5>
+                        <p class="font-weight-light mb-0">"Bootstrap is amazing. I've been using it to create lots of
+                            super nice landing pages."</p>
+                    </div>
                 </div>
+                <div class="col-lg-4">
+                    <div class="testimonails-item mx-auto mb-5 mb-lg-0">
+                        <img src="img/p2.jfif" class="img-fluid rounded-circle mb-3" alt="">
+                        <h5>Avery A.</h5>
+                        <p class="font-weight-light mb-0">"Thanks so much for making these free resources available to
+                            us!"</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -393,14 +687,14 @@ require_once 'require/session.php';
         </div>
     </footer>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script src="js/bootstrap.min.js"></script>
     <!-- caledate -->
     <script src="js/jquery-3.3.1.min.js"></script>
-    <!-- <script src="js/popper.min.js"></script> -->
-    <!-- <script src="js/rome.js"></script> -->
+    <script src="js/popper.min.js"></script>
+    <script src="js/rome.js"></script>
     <script src="js/main.js"></script>
-    <!-- <script src="js/main1.js"></script> -->
+    <script src="js/main1.js"></script>
     <!-- time picker -->
     <script src="jquery/jquery.timepicker.min.js"></script>
     <script src="jquery/jquery.timepicker.js"></script>
@@ -410,7 +704,6 @@ require_once 'require/session.php';
     <script src="vendor/animsition/js/animsition.min.js"></script>
     <!--===============================================================================================-->
     <script src="vendor/bootstrap/js/popper.js"></script>
-    <script src="vendor/bootstrap/js/popper.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <!--===============================================================================================-->
     <script src="vendor/select2/select2.min.js"></script>
@@ -420,22 +713,9 @@ require_once 'require/session.php';
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js" integrity="sha512-cp+S0Bkyv7xKBSbmjJR0K7va0cor7vHYhETzm2Jy//ZTQDUvugH/byC4eWuTii9o5HN9msulx2zqhEXWau20Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
     <script>
-        var date_start = new Date()
-        var date_end = new Date()
-        date_start.setDate(date_start.getDate());
-        date_end.setDate(date_end.getDate() + 30);
-
-        $('#datepicker').datepicker({
-            format: 'dd-mm-yyyy',
-            language: 'th',
-            startDate: date_start,
-            endDate: date_end
-
-        });
-
         $(document).ready(function() {
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',

@@ -109,82 +109,76 @@ try {
 
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
-                        echo '
-                    <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+                    ?>
+                        <li class="navbar-item">
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="limiter">
-                                            <div class="container-login100">
-                                                <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form" method="post">
-                                                        <span class="login100-form-title ">
-                                                            Beautiful Salon
-                                                        </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
-                        echo '
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                            <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Username"></span>
-                                                        </div>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="limiter">
+                                                <div class="container-login100">
+                                                    <div class="wrap-login100 p-t-20 p-b-10">
+                                                        <form class="login100-form validate-form" method="post">
+                                                            <span class="login100-form-title ">
+                                                                Beautiful Salon
+                                                            </span>
+                                                            <h5 class="text-center welcome-spacing">Welcome</h5>
+                                                            <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                                <input class="input100" type="text" name="username">
+                                                                <span class="focus-input100" data-placeholder="Username"></span>
+                                                            </div>
 
-                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
-                                                            <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Password"></span>
-                                                        </div>
+                                                            <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                                <input class="input100" type="password" name="pass">
+                                                                <span class="focus-input100" data-placeholder="Password"></span>
+                                                            </div>
 
-                                                        <div class="container-login100-form-btn">
-                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
-                                                                Login
-                                                            </button>
-                                                        </div>
+                                                            <div class="container-login100-form-btn">
+                                                                <button type="submit" name="btn_login" class="login100-form-btn">
+                                                                    Login
+                                                                </button>
+                                                            </div>
 
-                                                        <ul class="login-more p-t-50 ms-auto">
-                                                            <li>
-                                                                <span class="txt1">
-                                                                    Don’t have an account?
-                                                                </span>
+                                                            <ul class="login-more p-t-50 ms-auto">
+                                                                <li>
+                                                                    <span class="txt1">
+                                                                        Don’t have an account?
+                                                                    </span>
 
-                                                                <a href="signup.php" class="txt2">
-                                                                    Sign up
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </form>
+                                                                    <a href="signup.php" class="txt2">
+                                                                        Sign up
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div id="dropDownSelect1"></div>
+                                            <div id="dropDownSelect1"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                    ';
+                        </li>
+                    <?php
                     } else if ($_SESSION["token_loing"] === true) {
-                        echo '
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] .  '</a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post">
-                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
-                        </form>
-                    </li>
-                    ';
+                    ?>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Username : <?php echo $_SESSION["token_username"] ?> </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post">
+                                <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
+                            </form>
+                        </li>
+                    <?php
                     }
                     ?>
                 </ul>
@@ -257,41 +251,105 @@ try {
                 $result->execute();
 
                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-
                 ?>
+
                     <div class="col-12 col-md-3 mb-1">
-                        <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=<?php echo $stime ?>&end_time=<?php echo $etime ?>" target="_blank">
-                            <div class="card" style="width: 16rem;">
+                        <?php
+                        if (!empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === true) {
+                        ?>
+                            <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=<?php echo $stime ?>&end_time=<?php echo $etime ?>">
+                            <?php
+                        } else {
+                            ?>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header text-center">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="limiter">
+                                                        <div class="container-login100">
+                                                            <div class="wrap-login100 p-t-20 p-b-10">
+                                                                <form class="login100-form validate-form" method="post">
+                                                                    <span class="login100-form-title ">
+                                                                        Beautiful Salon
+                                                                    </span>
+                                                                    <h5 class="text-center welcome-spacing">Welcome</h5>';
+                                                                    echo '
+                                                                    <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                                        <input class="input100" type="text" name="username">
+                                                                        <span class="focus-input100" data-placeholder="Username"></span>
+                                                                    </div>
 
-                                <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="card-img-top" height=225">' ?>
-                                <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
+                                                                    <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                                        <input class="input100" type="password" name="pass">
+                                                                        <span class="focus-input100" data-placeholder="Password"></span>
+                                                                    </div>
 
-                                <div class="card-body">
-                                    <h5 class="card-title text-center"><?php echo $row["fname"] ?></h5>
+                                                                    <div class="container-login100-form-btn">
+                                                                        <button type="submit" name="btn_login" class="login100-form-btn">
+                                                                            Login
+                                                                        </button>
+                                                                    </div>
 
-                                    <p class="text-warning text-center card-text">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                        </svg>
-                                    </p>
+                                                                    <ul class="login-more p-t-50 ms-auto">
+                                                                        <li>
+                                                                            <span class="txt1">
+                                                                                Don’t have an account?
+                                                                            </span>
 
-                                    <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
-                                    <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                                                            <a href="signup.php" class="txt2">
+                                                                                Sign up
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="dropDownSelect1"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <?php } ?>
+
+                                <div class="card" style="width: 16rem;">
+
+                                    <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="card-img-top" height=225">' ?>
+                                    <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
+
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center"><?php echo $row["fname"] ?></h5>
+
+                                        <p class="text-warning text-center card-text">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                            </svg>
+                                        </p>
+
+                                        <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                        <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                                </a>
                     </div>
                 <?php } ?>
             </div>
