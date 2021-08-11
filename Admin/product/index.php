@@ -230,7 +230,7 @@
           </li>
 
           <li>
-            <a href="index.php">
+            <a href="../employee">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>             
             </a>            
           </li>

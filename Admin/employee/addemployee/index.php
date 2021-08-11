@@ -27,6 +27,14 @@ if (isset($_REQUEST['btn_insert'])) {
   $numberphone = $_REQUEST['numberphone'];
   $idcard = $_REQUEST['idcard'];
   $address = $_REQUEST['address'];
+
+  $image_file = $_FILES['image']['name'];
+  $type = $_FILES['image']['type'];
+  $size = $_FILES['image']['size'];
+  $temp = $_FILES['image']['tmp_name'];
+  $newname = substr(str_shuffle("0123456789"), 0, 5) . $image_file;
+  $path = "../../images/employee/" . $newname ;
+
   $date = date("d/m/Y");
   $time = date("h:i:sa");
   $newtime = str_replace(['pm', 'am'], '', $time);
@@ -59,9 +67,22 @@ if (isset($_REQUEST['btn_insert'])) {
     $errorMsg = "Please Enter Address";
     // } else if (empty($fileupload)) {
     //   $errorMsg = "Please Upload File";
-  } else if (empty($_FILES['image']['name'])) {
+  } else if (empty($image_file)) {
     $errorMsg = "Please Select Images";
+  } else if ($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png" || $type == "image/gif") {
+    if (!file_exists($path)) { // ถ้าไม่มีข้อผิดพลาดในโฟลเดอร์
+      if ($size < 5000000) { // ไม่เกิน 5 MB
+        move_uploaded_file($temp, '../../images/employee/'. $newname); //อัปโหลดรูปไปที่โฟลเดอ์
+      } else {
+        $errorMsg = "ขนาดรูปใหญ่เกินไป กรุณาอัปโหลดรูปต่ำกว่า 5 MB";
+      }
+    } else {
+      $errorMsg = "กรุณาอัปโหลดรูปภาพ";
+    }
   } else {
+    $errorMsg = "กรุณาอัปโหลดรูปภาพประเภทไฟล์ JPG, JPEG, PNG และ GIF. . .";
+  }
+
     try {
       if (!isset($errorMsg)) {
         $insert_login = $db->prepare("INSERT INTO tb_login(uuid, username, password, role , cre_login_date, cre_login_time) VALUES (:uuid, :user, :password, :role, :cre_login_date, :cre_login_time)");
@@ -72,27 +93,27 @@ if (isset($_REQUEST['btn_insert'])) {
         $insert_login->bindParam(':cre_login_date', $date);
         $insert_login->bindParam(':cre_login_time', $newtime);
 
-        if (isset($_FILES['image'])) {
-          $file_name = $_FILES['image']['name'];
-          $file_size = $_FILES['image']['size'];
-          $file_tmp = $_FILES['image']['tmp_name'];
-          $file_type = $_FILES['image']['type'];
-          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+    //     // if (isset($_FILES['image'])) {
+    //     //   $file_name = $_FILES['image']['name'];
+    //     //   $file_size = $_FILES['image']['size'];
+    //     //   $file_tmp = $_FILES['image']['tmp_name'];
+    //     //   $file_type = $_FILES['image']['type'];
+    //     //   $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
 
-          if (!move_uploaded_file($file_tmp, "../../images/" . $file_ext)) {
-            $$errorMsg = "Wrong! i . . .";
-          }
-          // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
+    //     //   if (!move_uploaded_file($file_tmp, "../../images/employee" . $file_ext)) {
+    //     //     $errorMsg = "Wrong! i . . .";
+    //     //   }
+    //     //   // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
 
 
-          // if(in_array($file_ext,$extensions)=== false){
-          //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
-          // }
+    //     //   // if(in_array($file_ext,$extensions)=== false){
+    //     //   //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+    //     //   // }
 
-          // if ($file_size > 2097152) {
-          //   $errors[] = 'File size must be excately 2 MB';   // }
+    //     //   // if ($file_size > 2097152) {
+    //     //   //   $errors[] = 'File size must be excately 2 MB';   // }
 
-        }
+    //     // }
 
         $insert_emp = $db->prepare("INSERT INTO tb_employee(uuid, fname, lname, gender, birthday, nphone, idcard, address, images, cre_emp_date, cre_emp_time) VALUES (:uuid, :firname, :lasname, :ggender, :bbirthday, :nnphone, :iidcard, :aaddress, :iimages, :cre_emp_date, :cre_emp_time)");
         $insert_emp->bindParam(':uuid', $myuuid);
@@ -103,19 +124,19 @@ if (isset($_REQUEST['btn_insert'])) {
         $insert_emp->bindParam(':nnphone', $numberphone);
         $insert_emp->bindParam(':iidcard', $idcard);
         $insert_emp->bindParam(':aaddress', $address);
-        $insert_emp->bindParam(':iimages', $file_ext);
+        $insert_emp->bindParam(':iimages', $newname);
         $insert_emp->bindParam(':cre_emp_date', $date);
         $insert_emp->bindParam(':cre_emp_time', $newtime);
 
         if ($insert_login->execute() && $insert_emp->execute()) {
-          $insertMsg = "Insert Successfully . . .";
+          $insertMsg = "อัปโหลดสำเร็จ . . .";
           header("refresh:2;../index.php");
         }
       }
     } catch (PDOException $e) {
       echo $e->getMessage();
     }
-  }
+
 }
 
 ?>
