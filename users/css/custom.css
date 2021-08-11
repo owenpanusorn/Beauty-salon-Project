@@ -67,12 +67,12 @@ header {
 }
 
 .btn_booking{
-    background-color: #000;
+    background-color: #9E7B6C;
     color: #fff;
 }
 
 .btn_booking:hover {
-    background-color: #9E7B6C;
+    background-color: #000;
     color: #fff;
 }
 
@@ -119,6 +119,11 @@ header {
     color: #fff !important;
 }
 
+/* text animation */
+
+
+
+
 
 footer {
     padding-bottom: 2rem; 
@@ -133,7 +138,6 @@ footer {
         min-height: 18rem;
     }
 }
-
 
 
 /* 9E7B6C */

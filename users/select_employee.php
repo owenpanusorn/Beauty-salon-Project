@@ -2,21 +2,21 @@
 session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
-    
-if(isset($_REQUEST['btn_booking'])){
+
+if (isset($_REQUEST['btn_booking'])) {
     $date = $_REQUEST['startDate'];
     $stime = $_REQUEST['startTime'];
     $etime = $_REQUEST['endTime'];
 }
 
 try {
-    $select_emp = $db -> prepare("SELECT * FROM tb_employee"); //เตรียมคำสั่งที่ query
+    $select_emp = $db->prepare("SELECT * FROM tb_employee"); //เตรียมคำสั่งที่ query
     // $select_emp -> bindParam(':uuid', $uuid); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
-    $select_emp -> execute(); // ประมวลผลคำสัง prepare
+    $select_emp->execute(); // ประมวลผลคำสัง prepare
     $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
     extract($row);
 } catch (PDOException $e) {
-    $e -> getMessage();
+    $e->getMessage();
 }
 ?>
 
@@ -52,7 +52,7 @@ try {
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <!--===============================================================================================-->
-    <link rel="stylesheet" href="css/rome.css">
+    <!-- <link rel="stylesheet" href="css/rome.css"> -->
     <!-- time picker -->
     <link rel="stylesheet" href="jquery/jquery.timepicker.min.css">
     <link rel="stylesheet" href="jquery/jquery.timepicker.css">
@@ -60,12 +60,14 @@ try {
     <!-- <link rel="stylesheet" href="css/style1.css"> -->
     <!-- Select Employee -->
     <link rel="stylesheet" type="text/css" href="css/select_emp.css">
+    <!-- datepicker -->
+    <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
 
 </head>
 
 <body>
-     <!-- Navbar -->
-     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Main content -->
         <?php
         if (isset($errorMsg)) {
@@ -191,12 +193,12 @@ try {
         </div>
     </nav>
     <!-- Navbar -->
-    
+
 
     <div class="container-fluid bcrumb">
         <div class="container mt-3 bcrumb-in">
             <div class="row">
-               
+
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb">
@@ -216,7 +218,7 @@ try {
                 <div class="row col-12">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input type="text" class="form-control-lg selDate " id="input" value="<?php echo $date ?>">
+                            <input type="text" class="form-control-lg selDate" id="datepicker" value="<?php echo $date ?>">
                         </div>
                     </div>
 
@@ -247,60 +249,50 @@ try {
     <section class="bg-light showbarber">
         <div class="container p-0">
             <div class="row">
-            <div class="col-12 col-md-12 mb-4">
+                <div class="col-12 col-md-12 mb-4">
                     <h3 class="kanitB">เลือกช่างทำผม</h3>
-             </div>
-            <?php                        
-                        $result = $db->prepare('SELECT * from tb_employee');  
-                        $result->execute();
-                        
-                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-        
-                  ?> 
-                <div class="col-12 col-md-3 mb-1">
-                    <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date?>&start_time=<?php echo $stime?>&end_time=<?php echo $etime?>" target="_blank">
-                        <div class="card" style="width: 16rem;">
-
-                        <?php echo '<img src="../Admin/images/employee/'.$row["images"].'" class="card-img-top" height=225">'?>
-                            <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
-
-                            <div class="card-body">
-                                <h5 class="card-title text-center"><?php echo $row["fname"] ?></h5>
-
-                                <p class="text-warning text-center card-text">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-star-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-star-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-star-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-star-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-star-fill" viewBox="0 0 16 16">
-                                        <path
-                                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                    </svg>
-                                </p>
-
-                                <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
-                                <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
-                            </div>
-                        </div>
-                    </a>
                 </div>
+                <?php
+                $result = $db->prepare('SELECT * from tb_employee');
+                $result->execute();
+
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+
+                ?>
+                    <div class="col-12 col-md-3 mb-1">
+                        <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=<?php echo $stime ?>&end_time=<?php echo $etime ?>" target="_blank">
+                            <div class="card" style="width: 16rem;">
+
+                                <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="card-img-top" height=225">' ?>
+                                <!-- <img src="../Admin/images/" alt="" class="card-img-top"> -->
+
+                                <div class="card-body">
+                                    <h5 class="card-title text-center"><?php echo $row["fname"] ?></h5>
+
+                                    <p class="text-warning text-center card-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                        </svg>
+                                    </p>
+
+                                    <p class="kanitB text-center mb-1 fw-bold card-text">( 5.0 คะแนน)</p>
+                                    <h5 class="kanitB text-center text-success fw-bolder">ว่าง</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 <?php } ?>
             </div>
         </div>
@@ -309,22 +301,23 @@ try {
 
     <!-- Footer -->
     <footer class="bg-light">
-             <div class="container">
-                 <div class="row">
-                     <div class="col-12 text-center mt-5">
-                         <p class="text-mired">&copy; Beautiful Salon 2021. All Right Reserved.</p>
-                    </div>
-              </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mt-5">
+                    <p class="text-mired">&copy; Beautiful Salon 2021. All Right Reserved.</p>
+                </div>
             </div>
+        </div>
     </footer>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <!-- caledate -->
-    <script src="js/jquery-3.3.1.min.js"></script>
+    <!-- <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/rome.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/main1.js"></script>
+    <script src="js/main1.js"></script> -->
     <!-- time picker -->
     <script src="jquery/jquery.timepicker.min.js"></script>
     <script src="jquery/jquery.timepicker.js"></script>
@@ -343,10 +336,24 @@ try {
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js" integrity="sha512-cp+S0Bkyv7xKBSbmjJR0K7va0cor7vHYhETzm2Jy//ZTQDUvugH/byC4eWuTii9o5HN9msulx2zqhEXWau20Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-        $(document).ready(function () {
+        var date_start = new Date()
+        var date_end = new Date()
+        date_start.setDate(date_start.getDate());
+        date_end.setDate(date_end.getDate() + 30);
+
+        $('#datepicker').datepicker({
+            format: 'dd-mm-yyyy',
+            language: 'th',
+            startDate: date_start,
+            endDate: date_end
+
+        });
+
+        $(document).ready(function() {
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
                 interval: 30,
@@ -369,7 +376,6 @@ try {
                 scrollbar: true,
             });
         });
-
     </script>
 </body>
 
