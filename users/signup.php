@@ -9,9 +9,9 @@ require_once 'require/config.php';
 
 <?php
 
-if ($_SESSION["token_loing"] === true) {
-    header("refresh:0;index.php");
-}
+// if ($_SESSION["token_loing"] === true) {
+//     header("refresh:0;index.php");
+// }
 
 if (isset($_REQUEST['btn_singup'])) {
     try {
@@ -208,6 +208,7 @@ if (isset($_REQUEST['btn_login'])) {
 
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    
                     <li class="nav-item">
                         <a href="#" class="nav-link active" aria-current="page">Home</a>
                     </li>

@@ -25,7 +25,14 @@
   src: url('../fonts/poppins/Poppins-SemiBold.ttf'); 
 }
 
+@font-face {
+  font-family: FontKanit;
+  src: url('../fonts/kanit/Kanit-Regular.ttf');
+}  
 
+  .kanitB {
+  font-family: FontKanit;
+}
 
 
 /*//////////////////////////////////////////////////////////////////
@@ -137,15 +144,15 @@ iframe {
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
 .txt1 {
-  font-family: Poppins-Regular;
-  font-size: 15px;
+  font-family: FontKanit;
+  font-size: 14px;
   color: #999999;
   line-height: 1.5;
 }
 
 .txt2 {
-  font-family: Poppins-Regular;
-  font-size: 15px;
+  font-family: FontKanit;
+  font-size: 14px;
   color: #57b846;
   line-height: 1.5;
 }

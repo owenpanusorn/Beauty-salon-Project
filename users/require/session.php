@@ -19,10 +19,10 @@ if (isset($_REQUEST['btn_login'])) {
         $username_login = $_REQUEST['username'];
         $password_login = $_REQUEST['pass'];
         if (empty($username_login)) {
-            $errorMsg = "Please Enter Username";
+            $errorMsg = "กรุณากรอก Usernaem";
             header("refresh:2;");
         } else if (empty($password_login)) {
-            $errorMsg = "Please Enter Password";
+            $errorMsg = "กรุณากรอก Password";
             header("refresh:2;");
         } else {
             $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
@@ -35,7 +35,7 @@ if (isset($_REQUEST['btn_login'])) {
             }
             if (!empty($password) && !empty($username)) {
                 if (!password_verify($password_login, $password)) {
-                    $errorMsg = 'password Fail';
+                    $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
                     header("refresh:2;");
                 } else {
                     $_SESSION["token_uuid"] = $uuid;

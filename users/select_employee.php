@@ -255,7 +255,7 @@ try {
 
                     <div class="col-12 col-md-3 mb-1">
                         <?php
-                        if (!empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === true) {
+                        if (!empty($_SESSION["token_loing"]) ) {
                         ?>
                             <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=<?php echo $stime ?>&end_time=<?php echo $etime ?>">
                             <?php
@@ -353,8 +353,7 @@ try {
                     </div>
                 <?php } ?>
             </div>
-        </div>
-        </div>
+        </div> 
     </section>
 
     <!-- Footer -->
