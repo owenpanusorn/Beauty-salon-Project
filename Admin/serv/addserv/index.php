@@ -4,110 +4,35 @@
 require_once('../../require/config.php');
 
 if (isset($_REQUEST['btn_insert'])) {
-  $data = $data ?? random_bytes(16);
-  assert(strlen($data) == 16);
 
-  // Set version to 0100
-  $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-  // Set bits 6-7 to 10
-  $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+  $serv_id = $_REQUEST['serv_id'];
+  $serv_ser = $_REQUEST['serv_ser'];
+  $serv_price = $_REQUEST['serv_price'];
+  $serv_time = $_REQUEST['serv_time'];
 
-  // Output the 36 character UUID.
-  $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-  $username = $_REQUEST['username'];
-  $password = $_REQUEST['password'];
-  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-  $role = 201;
-
-  $fname = $_REQUEST['fname'];
-  $lname = $_REQUEST['lname'];
-  $gender = $_REQUEST['gender'];
-  $birthday = $_REQUEST['birthday'];
-  $numberphone = $_REQUEST['numberphone'];
-  $idcard = $_REQUEST['idcard'];
-  $address = $_REQUEST['address'];
-  $date = date("d/m/Y");
-  $time = date("h:i:sa");
-  $newtime = str_replace(['pm', 'am'], '', $time);
-  $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
-  $newcard = str_replace(['(', ')', ' ', '-', '_'], '', $idcard);
-  $lenphone = strlen($newphone);
-  $lencard = strlen($newcard);
-
-  if (empty($username)) {
-    $errorMsg = "Please Enter Username";
-  } else if (empty($password)) {
-    $errorMsg = "Please Enter Password";
-  } else if (empty($fname)) {
-    $errorMsg = "Please Enter Firstname";
-  } else if (empty($lname)) {
-    $errorMsg = "Please Enter Lastname";
-  } else if (empty($gender)) {
-    $errorMsg = "Please Select Gender";
-  } else if (empty($birthday)) {
-    $errorMsg = "Please Select Birthday";
-  } else if (empty($numberphone)) {
-    $errorMsg = "Please Enter Number Phone";
-  } else if ($lenphone < 10) {
-    $errorMsg = "Please Enter Number Phone To Complete 10 Digits ";
-  } else if ($lencard < 13) {
-    $errorMsg = "Please Enter ID Card To Complete 13 Digits ";
-  } else if (empty($idcard)) {
-    $errorMsg = "Please Enter Number IDCard";
-  } else if (empty($address)) {
-    $errorMsg = "Please Enter Address";
-    // } else if (empty($fileupload)) {
-    //   $errorMsg = "Please Upload File";
-  } else if (empty($_FILES['image']['name'])) {
-    $errorMsg = "Please Select Images";
+  if (empty($serv_id)) {
+    $errorMsg = "Please Enter Service Code";
+  } else if (empty($serv_ser)) {
+    $errorMsg = "Please Enter Service Name";
+  } else if (empty($serv_price)) {
+    $errorMsg = "Please Enter Service Price";
+  } else if (empty($serv_time)) {
+    $errorMsg = "Please Enter Service Time";
   } else {
     try {
       if (!isset($errorMsg)) {
-        $insert_login = $db->prepare("INSERT INTO tb_login(uuid, username, password, role , cre_login_date, cre_login_time) VALUES (:uuid, :user, :password, :role, :cre_login_date, :cre_login_time)");
-        $insert_login->bindParam(':uuid', $myuuid);
-        $insert_login->bindParam(':user', $username);
-        $insert_login->bindParam(':password', $hashed_password);
-        $insert_login->bindParam(':role', $role);
-        $insert_login->bindParam(':cre_login_date', $date);
-        $insert_login->bindParam(':cre_login_time', $newtime);
-
-        if (isset($_FILES['image'])) {
-          $file_name = $_FILES['image']['name'];
-          $file_size = $_FILES['image']['size'];
-          $file_tmp = $_FILES['image']['tmp_name'];
-          $file_type = $_FILES['image']['type'];
-          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
-
-          if (!move_uploaded_file($file_tmp, "../../images/" . $file_ext)) {
-            $$errorMsg = "Wrong! i . . .";
-          }
-          // $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
+        $insert_serv = $db->prepare("INSERT INTO tb_service(serv_code, serv_type, serv_price, serv_process_time , cre_serv_date, cre_serv_time) 
+        VALUES (:code_serv, :type_serv, :price_serv, :process_time_serv, :cre_serv_date, :cre_serv_time)");
+        $insert_serv->bindParam(':code_serv', $serv_id);
+        $insert_serv->bindParam(':type_serv', $serv_ser);
+        $insert_serv->bindParam(':price_serv', $serv_price);
+        $insert_serv->bindParam(':process_time_serv', $serv_time);
+        $insert_serv->bindParam(':cre_serv_date', $date);
+        $insert_serv->bindParam(':cre_serv_time', $time);
 
 
-          // if(in_array($file_ext,$extensions)=== false){
-          //    $errors[]="extension not allowed, please choose a JPEG or PNG file.";
-          // }
-
-          // if ($file_size > 2097152) {
-          //   $errors[] = 'File size must be excately 2 MB';   // }
-
-        }
-
-        $insert_emp = $db->prepare("INSERT INTO tb_employee(uuid, fname, lname, gender, birthday, nphone, idcard, address, images, cre_emp_date, cre_emp_time) VALUES (:uuid, :firname, :lasname, :ggender, :bbirthday, :nnphone, :iidcard, :aaddress, :iimages, :cre_emp_date, :cre_emp_time)");
-        $insert_emp->bindParam(':uuid', $myuuid);
-        $insert_emp->bindParam(':firname', $fname);
-        $insert_emp->bindParam(':lasname', $lname);
-        $insert_emp->bindParam(':ggender', $gender);
-        $insert_emp->bindParam(':bbirthday', $birthday);
-        $insert_emp->bindParam(':nnphone', $numberphone);
-        $insert_emp->bindParam(':iidcard', $idcard);
-        $insert_emp->bindParam(':aaddress', $address);
-        $insert_emp->bindParam(':iimages', $file_ext);
-        $insert_emp->bindParam(':cre_emp_date', $date);
-        $insert_emp->bindParam(':cre_emp_time', $newtime);
-
-        if ($insert_login->execute() && $insert_emp->execute()) {
+        if ($insert_serv->execute()) {
           $insertMsg = "Insert Successfully . . .";
           header("refresh:2;../index.php");
         }
@@ -436,29 +361,28 @@ if (isset($_REQUEST['btn_insert'])) {
                 <div class="box-body kanitB">
                   <div class="form-group">
                     <label for="title">รหัสบริการ</label>
-                    <input type="text" class="form-control" id="fname" name="fname" placeholder="S100X">
+                    <input type="text" class="form-control" id="serv_id" name="serv_id" placeholder="S100X">
                   </div>
                   <div class="form-group">
                     <label for="description">ชื่อบริการ</label>
-                    <input type="text" class="form-control" id="lname" name="lname" placeholder="สระผม">
+                    <input type="text" class="form-control" id="serv_ser" name="serv_ser" placeholder="สระผม">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">ราคา</label>
-                    <input type="number" class="form-control" id="lname" name="lname" placeholder="100.00" min='0' max='10000'>
+                    <input type="number" class="form-control" id="serv_price" name="serv_price" placeholder="100.00" min='0' max='10000'>
                   </div>
                   <!-- /.form group -->
                   <!-- Date -->
                   <div class="form-group">
                     <label>เวลาในการบริการ</label>
-
-                    <select class="form-control" name="process_time" >
-                    <option style="font-weight: bolder;" selected>เลือกเวลาในการบริการ</option>
-                    <option style="font-weight: bolder;" value="00:30:00">00:30:00</option>
-                    <option style="font-weight: bolder;" value="01:00:00">01:00:00</option>
-                    <option style="font-weight: bolder;" value="01:30:00">01:30:00</option>
-                    <option style="font-weight: bolder;" value="02:00:00">02:00:00</option>
-                  </select>
+                    <select class="form-control" name="serv_time">
+                      <option style="font-weight: bolder;" selected>เลือกเวลาในการบริการ</option>
+                      <option style="font-weight: bolder;" value="00:30:00">00:30:00</option>
+                      <option style="font-weight: bolder;" value="01:00:00">01:00:00</option>
+                      <option style="font-weight: bolder;" value="01:30:00">01:30:00</option>
+                      <option style="font-weight: bolder;" value="02:00:00">02:00:00</option>
+                    </select>
                     <!-- /.input group -->
                   </div>
                   <!-- /.form group -->

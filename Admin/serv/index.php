@@ -4,14 +4,9 @@
     if (isset($_REQUEST['del_id'])){
       $id = $_REQUEST['del_id'];
       // echo $id;
-      $del_login = $db -> prepare("DELETE FROM tb_login WHERE uuid = :id ");
+      $del_login = $db -> prepare("DELETE FROM tb_service WHERE serv_id = :id ");
       $del_login -> bindParam(":id",$id);
       $del_login -> execute();
-
-      $del_cus = $db -> prepare("DELETE FROM tb_customer WHERE uuid = :id ");
-      $del_cus -> bindParam(":id",$id);
-      $del_cus -> execute();
-
 
       // header('Location:index.php');
 
@@ -336,9 +331,9 @@
                         <td><?php echo $row["serv_price"]?></td>
                         <td><?php echo $row["serv_process_time"]?></td>                     
                         <td>
-                          <a href="editcustomer?update_id=<?php echo $row['uuid']?>" class="btn btn-warning">
+                          <a href="editserv?update_id=<?php echo $row['serv_id']?>" class="btn btn-warning">
                           <i class="fa fa-pencil-square-o"></i> Edit</a></td>
-                        <td><a href="?del_id=<?php echo $row['uuid']?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');" > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
+                        <td><a href="?del_id=<?php echo $row['serv_id']?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');" > <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
                         
                       </tr>
                   <?php } ?>

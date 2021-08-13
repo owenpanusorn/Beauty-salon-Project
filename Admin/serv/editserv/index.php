@@ -4,61 +4,62 @@
 require_once '../../require/config.php';
 
 if (isset($_REQUEST['update_id'])) {
-    try {
-        $uuid = $_REQUEST['update_id'];
-        $qry = $db->prepare("select * from tb_customer where uuid = :uuid");
-        $qry->bindParam(":uuid", $uuid);
-        $qry->execute();
-        $row = $qry->fetch(PDO::FETCH_ASSOC);
-        extract($row);
-
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
+  try {
+    $id_serv = $_REQUEST['update_id'];
+    $qry = $db->prepare("select * from tb_service where serv_id = :ser_id");
+    $qry->bindParam(":ser_id", $id_serv);
+    $qry->execute();
+    $row = $qry->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
 }
 
 if (isset($_REQUEST['btn_update'])) {
-    try {
-        $username = $_REQUEST['username'];
-        if (empty($_REQUEST['password'])) {
-            $pass = $password;
-        } else {
-            $pass = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
-        }
+  try {
 
-        $uuidup = $_REQUEST['update_id'];
-        $fname = $_REQUEST['fname'];
-        $lname = $_REQUEST['lname'];
-        $gender = $_REQUEST['gender'];        
-        $numberphone = $_REQUEST['numberphone'];
-        $address = $_REQUEST['address'];
-        $date = date("d/m/Y");
-        $time = date("h:i:sa");
-        $newtime = str_replace(['pm', 'am'], '', $time);
+    $update_serv_id = $_REQUEST['serv_id'];
+    $serv_code_up = $_REQUEST['serv_code'];
+    $serv_ser_up = $_REQUEST['serv_ser'];
+    $serv_price_up = $_REQUEST['serv_price'];
+    $serv_time_up = $_REQUEST['serv_time'];
 
-        $update_cus = $db->prepare('update tb_customer set username = :usernameup,password = :passwordup,fname = :fnameup,lname = :lnameup,gender = :genderup,nphone = :numberphoneup,address = :addressup,up_cus_date = :up_cus_dateup,up_cus_time = :up_cus_timeup where uuid = :uuidedit');
+    if (empty($serv_code_up)) {
+      $errorMsg = "Please Enter Service Code";
+    } else if (empty($serv_ser_up)) {
+      $errorMsg = "Please Enter Service Name";
+    } else if (empty($serv_price_up)) {
+      $errorMsg = "Please Enter Service Price";
+    } else if (empty($serv_time_up)) {
+      $errorMsg = "Please Enter Service Time";
+    } else {
+      try {
+        if (!isset($errorMsg)) {
 
-        $update_cus->bindParam(':usernameup', $username);
-        $update_cus->bindParam(':passwordup', $pass);
-        $update_cus->bindParam(':fnameup', $fname);
-        $update_cus->bindParam(':lnameup', $lname);
-        $update_cus->bindParam(':genderup', $gender);
-        $update_cus->bindParam(':numberphoneup', $numberphone);      
-        $update_cus->bindParam(':addressup', $address);
-        $update_cus->bindParam(':up_cus_dateup', $date);
-        $update_cus->bindParam(':up_cus_timeup', $newtime);
-        $update_cus->bindParam(':uuidedit', $uuidup);
+          $update_serv = $db->prepare('update tb_service set serv_code = :code_serv,serv_type = :type_serv,
+          serv_price = :price_serv ,serv_process_time = :process_time_serv,up_serv_date = :up_serv_date,up_serv_time = :up_serv_time where serv_id = :update_id');
 
-        if ($update_cus->execute()) {
+          $update_serv->bindParam(':update_id', $update_serv_id);
+          $update_serv->bindParam(':code_serv', $serv_code_up);
+          $update_serv->bindParam(':type_serv', $serv_ser_up);
+          $update_serv->bindParam(':price_serv', $serv_price_up);
+          $update_serv->bindParam(':process_time_serv', $serv_time_up);
+          $update_serv->bindParam(':up_serv_date', $date);
+          $update_serv->bindParam(':up_serv_time', $time);
 
+          if ($update_serv->execute()) {
             $insertMsg = "update Successfully . . .";
             header("refresh:2;../index.php");
+          }
         }
-
-    } catch (PDOException $e) {
+      } catch (PDOException $e) {
         echo $e->getMessage();
+      }
     }
-
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
 }
 
 ?>
@@ -130,7 +131,7 @@ if (isset($_REQUEST['btn_update'])) {
         </a>
 
         <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav">
             <!-- Notifications: style can be found in dropdown.less -->
             <li class="dropdown notifications-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -348,21 +349,21 @@ if (isset($_REQUEST['btn_update'])) {
       <!-- Main content -->
       <section class="content">
         <?php
-if (isset($errorMsg)) {
-    ?>
+        if (isset($errorMsg)) {
+        ?>
           <div class="alert alert-danger alert-dismissible">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php }?>
+        <?php } ?>
 
         <?php
-if (isset($insertMsg)) {
-    ?>
+        if (isset($insertMsg)) {
+        ?>
           <div class="alert alert-success alert-dismissible">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php }?>
+        <?php } ?>
 
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
@@ -378,31 +379,32 @@ if (isset($insertMsg)) {
                 <!-- /.box-header -->
                 <!-- form start -->
                 <div class="box-body kanitB">
+                  <input type="hidden" class="form-control" id="serv_id" name="serv_id" value="<?php echo $serv_id; ?>">
                   <div class="form-group">
                     <label for="title">รหัสบริการ</label>
-                    <input type="text" class="form-control" id="fname" name="fname" placeholder="S100X">
+                    <input type="text" class="form-control" id="serv_code" name="serv_code" placeholder="S100X" value="<?php echo $serv_code; ?>">
                   </div>
                   <div class="form-group">
                     <label for="description">ชื่อบริการ</label>
-                    <input type="text" class="form-control" id="lname" name="lname" placeholder="สระผม">
+                    <input type="text" class="form-control" id="serv_ser" name="serv_ser" placeholder="สระผม" value="<?php echo $serv_type; ?>">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">ราคา</label>
-                    <input type="number" class="form-control" id="lname" name="lname" placeholder="100.00" min='0' max='10000'>
+                    <input type="number" class="form-control" id="serv_price" name="serv_price" placeholder="100.00" min='0' max='10000' value="<?php echo $serv_price; ?>">
                   </div>
                   <!-- /.form group -->
                   <!-- Date -->
                   <div class="form-group">
                     <label>เวลาในการบริการ</label>
-
-                    <select class="form-control" name="process_time" >
-                    <option style="font-weight: bolder;" selected>เลือกเวลาในการบริการ</option>
-                    <option style="font-weight: bolder;" value="00:30:00">00:30:00</option>
-                    <option style="font-weight: bolder;" value="01:00:00">01:00:00</option>
-                    <option style="font-weight: bolder;" value="01:30:00">01:30:00</option>
-                    <option style="font-weight: bolder;" value="02:00:00">02:00:00</option>
-                  </select>
+                    <!-- selected -->
+                    <select class="form-control" name="serv_time">
+                      <option style="font-weight: bolder;">เลือกเวลาในการบริการ</option>
+                      <option style="font-weight: bolder;" value="00:30:00" <?php echo $serv_process_time == "00:30:00" ? 'selected' : ''  ?>>00:30:00</option>
+                      <option style="font-weight: bolder;" value="01:00:00" <?php echo $serv_process_time == "01:00:00" ? 'selected' : ''  ?>>01:00:00</option>
+                      <option style="font-weight: bolder;" value="01:30:00" <?php echo $serv_process_time == "01:30:00" ? 'selected' : ''  ?>>01:30:00</option>
+                      <option style="font-weight: bolder;" value="02:00:00" <?php echo $serv_process_time == "02:00:00" ? 'selected' : ''  ?>>02:00:00</option>
+                    </select>
                     <!-- /.input group -->
                   </div>
                   <!-- /.form group -->
@@ -410,7 +412,7 @@ if (isset($insertMsg)) {
                   <!-- /.box-body -->
 
                   <div class="box-footer">
-                    <button type="submit" name="btn_insert" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> Update</button>
+                    <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> Update</button>
                   </div>
                 </div>
                 <!-- /ข้อมูลส้วนตัว -->
