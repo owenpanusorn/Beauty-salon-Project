@@ -24,6 +24,66 @@ if (isset($_REQUEST['books_num'])) {
     extract($row);
 }
 
+if (isset($_REQUEST['btn_comment'])) {
+
+    try {
+        $date = date("d/m/Y");
+        $time = date("h:i:sa");
+        $newtime = str_replace(['pm', 'am'], '', $time);
+
+        if (empty($_POST['rate']) && empty($_POST['txt_comment'])) {
+            $errorMsg = 'กรุณาให้คะแนน หรือแสดงความคิดเห็น !';
+        } else if (!empty($_POST['rate']) && !empty($_POST['txt_comment'])) {
+            $rating = $_POST['rate'];
+            $comment = $_POST['txt_comment'];
+
+            $update_history = $db->prepare('UPDATE tb_booking SET book_score = :rate, book_comment = :bkcomment, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
+            $update_history->bindParam(":rate", $rating);
+            $update_history->bindParam(":bkcomment", $comment);
+            $update_history->bindParam(":upday", $date);
+            $update_history->bindParam(":uptime", $newtime);
+            $update_history->bindParam(":bknum", $book_num);
+
+            if ($update_history->execute()) {
+                $insertMsg = "บันทึกสำเร็จ . . .";
+                header("refresh:2;history.php");
+            }
+        } else {
+            if (isset($_POST['rate'])) {
+                $rating =  $_POST['rate'];
+
+                $update_history = $db->prepare('UPDATE tb_booking SET book_score = :rate, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
+                $update_history->bindParam(":rate", $rating);
+                $update_history->bindParam(":upday", $date);
+                $update_history->bindParam(":uptime", $newtime);
+                $update_history->bindParam(":bknum", $book_num);
+
+                if ($update_history->execute()) {
+                    $insertMsg = "บันทึกสำเร็จ . . .";
+                    header("refresh:2;history.php");
+                }
+            } else {
+                $comment =  $_POST['txt_comment'];
+
+                $update_history = $db->prepare('UPDATE tb_booking SET book_comment = :bkcomment, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
+                $update_history->bindParam(":bkcomment", $comment);
+                $update_history->bindParam(":upday", $date);
+                $update_history->bindParam(":uptime", $newtime);
+                $update_history->bindParam(":bknum", $book_num);
+
+                if ($update_history->execute()) {
+                    $insertMsg = "บันทึกสำเร็จ . . .";
+                    header("refresh:2;history.php");
+                }
+            }
+        }
+
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,9 +128,7 @@ if (isset($_REQUEST['books_num'])) {
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
     <!-- datatable -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-
-
-
+    <link rel="stylesheet" href="css/detail_history.css">
 
 </head>
 
@@ -78,21 +136,6 @@ if (isset($_REQUEST['books_num'])) {
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Main content -->
-        <?php
-        if (isset($errorMsg)) {
-        ?>
-            <div class="alert alert-danger">
-                <p class="kanitB"><i class="fa fa-ban"></i> <?php echo $errorMsg ?></p>
-            </div>
-        <?php } ?>
-
-        <?php
-        if (isset($seMsg)) {
-        ?>
-            <div class="alert alert-success" role="alert">
-                <p class="kanitB"><i class="fa fa-check"></i> <?php echo $seMsg ?></p>
-            </div>
-        <?php } ?>
 
         <div class="container">
             <a href="index.php" class="navbar-brand">Beautiful Salon</a>
@@ -226,15 +269,32 @@ if (isset($_REQUEST['books_num'])) {
             </div>
         </div>
     </div>
-
     <section>
+
         <div class="container kanitB">
+            <?php
+            if (isset($errorMsg)) {
+            ?>
+                <div class="alert alert-danger alert-dismissible mt-2">
+                    <strong><i class="icon fa fa-ban"></i> Wrong! <?php echo $errorMsg ?></strong>
+                </div>
+
+            <?php } ?>
+
+            <?php
+            if (isset($insertMsg)) {
+            ?>
+                <div class="alert alert-success alert-dismissible mt-2">
+                    <strong><i class="icon fa fa-check"></i> Success <?php echo $insertMsg ?></strong>
+                </div>
+            <?php } ?>
             <h5 class="mt-5">รายละเอียดการจอง</h5>
             <div class="row mt-4">
                 <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
                     <div class="row">
                         <div class="col-md-6">
                             <h6 class="mb-4">ข้อมูลการจอง</h6>
+                            <hr>
                             <div class="container">
                                 <div class="form-group ">
                                     <div class="row mb-2">
@@ -332,47 +392,63 @@ if (isset($_REQUEST['books_num'])) {
                         </div>
                         <div class="col-md-6">
                             <h6 class="mb-4">ความคิดเห็น</h6>
+                            <hr>
 
                             <div class="container">
-                                <div class="form-group">
-                                    <div class="row mb-2">
-                                        <div class="col-md-4 my-auto">
-                                            <label for="" class="kanitB ">ให้คะแนน</label>
-                                        </div>
-                                        <div class="col-md-8">
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="row mb-2">
-                                        <div class="col-md-4  my-auto">
-                                            <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="container">
+                                <form action="#" method="POST">
                                     <div class="form-group">
                                         <div class="row mb-2">
-                                            <div class="col-md-12 my-auto">
-                                                <textarea name="" id="" cols="30" rows="10" class="form-control border">
-
-                                                </textarea>
-                                            </div>                                            
+                                            <div class="col-md-4  my-auto">
+                                                <label for="" class="kanitB ">ให้คะแนน</label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <div class="row mb-2">
+                                            <div class="col-md-5">
+                                                <div class="rate">
+                                                    <input type="radio" id="star5" name="rate" value="5"  <?php echo $book_score == 5 ? "checked" : "" ?>/>
+                                                    <label for="star5" title="text">5 stars</label>
+                                                    <input type="radio" id="star4" name="rate" value="4"  <?php echo $book_score == 4 ? "checked" : "" ?>/>
+                                                    <label for="star4" title="text">4 stars</label>
+                                                    <input type="radio" id="star3" name="rate" value="3"  <?php echo $book_score == 3 ? "checked" : "" ?>/>
+                                                    <label for="star3" title="text">3 stars</label>
+                                                    <input type="radio" id="star2" name="rate" value="2"  <?php echo $book_score == 2 ? "checked" : "" ?>/>
+                                                    <label for="star2" title="text">2 stars</label>
+                                                    <input type="radio" id="star1" name="rate" value="1"  <?php echo $book_score == 1 ? "checked" : "" ?>/>
+                                                    <label for="star1" title="text">1 star</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row mb-2">
+                                            <div class="col-md-4  my-auto">
+                                                <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="container">
+                                        <div class="form-group">
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 my-auto">
+                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false"><?php echo $book_comment; ?></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-lg-12 text-right">
-                                <button type="button" class="btn btn-secondary">ยกเลิก</button>
-                                <button type="submit" class="btn btn-primary">บันทึก</button>
+                                <a href="history.php" type="button" class="btn btn-secondary mr-1">ยกเลิก</a>
+                                <button type="submit" name="btn_comment" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

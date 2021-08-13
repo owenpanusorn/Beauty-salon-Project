@@ -201,15 +201,15 @@ require_once 'require/session.php';
                 <form action="select_employee.php" method="get">
                     <div class="row">
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" placeholder="เลือกวันที่">
+                            <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" placeholder="เลือกวันที่" required>
                         </div>
 
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="startTime" name="startTime" placeholder="เวลาเริ่มต้น">
+                            <input type="text" class="form-control-lg kanitB" id="startTime" name="startTime" placeholder="เวลาเริ่มต้น" required>
                         </div>
 
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="endTime" name="endTime" placeholder="เวลาสิ้นสุด">
+                            <input type="text" class="form-control-lg kanitB" id="endTime" name="endTime" placeholder="เวลาสิ้นสุด" required>
                         </div>
                     </div>
             </div>
