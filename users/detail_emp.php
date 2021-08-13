@@ -230,7 +230,7 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                     <?php echo '<img src="../Admin/images/employee/' . $row["images"] . '" class="img-fluid d-blok mb-5 img-radius ">' ?>
                     <div class="contact-card">
                         <p class="text-justify kanitB">
-                        ร้านเสริมสวยหน่อยบิวตี้ 162/2 ถ.ต้นขาม2 ต.ท่าสาลา อ.เมืองเชียงใหม่ จ.เชียงใหม่ 50000
+                            ร้านเสริมสวยหน่อยบิวตี้ 162/2 ถ.ต้นขาม2 ต.ท่าสาลา อ.เมืองเชียงใหม่ จ.เชียงใหม่ 50000
                         </p>
                     </div>
                 </div>
@@ -245,15 +245,15 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
 
                                 <div class="col-md-6  text-end">
                                     <span class="text-warning mx-auto kanitB fw-bolder">
-                                    <?php 
-                                            
-                                            for ($i=0; $i <  5; $i++) { 
-                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                        <?php
+
+                                        for ($i = 0; $i <  5; $i++) {
+                                            echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                            </svg>' ;
-                                            }
-                                            
-                                            ?> 
+                                            </svg>';
+                                        }
+
+                                        ?>
                                         ( 5.0 คะแนน)
                                     </span>
                                 </div>
@@ -293,7 +293,7 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                                             <p class="kanitB fw-bolder fs-6"><?php echo $nphone; ?></p>
                                         </div>
                                     </div>
-                                  
+
                                     <div class="row detail-card">
                                         <div class="col-md-6 ">
                                             <p class="kanitB fw-bolder fs-6">จำนวนลูกค้า</p>
@@ -329,11 +329,76 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                                             <p class="kanitB fw-bolder fs-6"> 20 ชั่วโมง</p>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="row ">
                                         <div class="col-md-12 mt-5">
-                                            <a href="form_booking.php?uu_id=<?php echo $row['uuid'] ?>&fname=<?php echo $fname ?>&start_date=<?php echo $date?>&start_time=<?php echo $start_time?>&end_time=<?php echo $end_time?>" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
-                                            progress-bar-animated" >Booking</a>
+                                            <?php
+                                            if (!empty($_SESSION["token_loing"])) {
+                                            ?>
+                                                <a href="form_booking.php?uu_id=<?php echo $row['uuid'] ?>&fname=<?php echo $fname ?>&start_date=<?php echo $date ?>&start_time=<?php echo $start_time ?>&end_time=<?php echo $end_time ?>" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
+                                            progress-bar-animated">Booking</a>
+                                            <?php
+                                            } else {
+                                            ?><a href="#" class="btn-fluid btn-block btn-lg text-center set-btn progress-bar-striped
+                                            progress-bar-animated" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+                                                    Booking
+                                                </a>
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header text-center">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="limiter">
+                                                                    <div class="container-login100">
+                                                                        <div class="wrap-login100 p-t-20 p-b-10">
+                                                                            <form class="login100-form validate-form" method="post">
+                                                                                <span class="login100-form-title ">
+                                                                                    Beautiful Salon
+                                                                                </span>
+                                                                                <h5 class="text-center welcome-spacing">Welcome</h5>';
+                                                                                echo '
+                                                                                <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                                                    <input class="input100" type="text" name="username">
+                                                                                    <span class="focus-input100" data-placeholder="Username"></span>
+                                                                                </div>
+
+                                                                                <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                                                    <input class="input100" type="password" name="pass">
+                                                                                    <span class="focus-input100" data-placeholder="Password"></span>
+                                                                                </div>
+
+                                                                                <div class="container-login100-form-btn">
+                                                                                    <button type="submit" name="btn_login" class="login100-form-btn">
+                                                                                        Login
+                                                                                    </button>
+                                                                                </div>
+
+                                                                                <ul class="login-more p-t-50 ms-auto">
+                                                                                    <li>
+                                                                                        <span class="txt1">
+                                                                                            Don’t have an account?
+                                                                                        </span>
+
+                                                                                        <a href="signup.php" class="txt2">
+                                                                                            Sign up
+                                                                                        </a>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="dropDownSelect1"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            <?php } ?>
                                         </div>
                                     </div>
 
@@ -394,9 +459,8 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                                 $result->bindParam(':stardate', $date);
                                 $result->execute();
                                 $num = 0;
-                                while ($row = $result->fetch
-                                (PDO::FETCH_ASSOC)) {
-                                $num++;
+                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                    $num++;
                                 ?>
                                     <tr>
                                         <th><?php echo $num; ?></th>
@@ -421,15 +485,15 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUE
                                             <span class="text-warning 
                                             mx-auto kanitB fw-bolder">
 
-                                            <?php 
-                                            
-                                            for ($i=0; $i <  5; $i++) { 
-                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                <?php
+
+                                                for ($i = 0; $i <  5; $i++) {
+                                                    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                            </svg>' ;
-                                            }
-                                            
-                                            ?>
+                                            </svg>';
+                                                }
+
+                                                ?>
                                                 ( 5.0 คะแนน)
                                             </span>
                                         </div>
