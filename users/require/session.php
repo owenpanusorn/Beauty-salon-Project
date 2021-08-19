@@ -46,7 +46,7 @@ if (isset($_REQUEST['btn_login'])) {
                 }
             } else {
                 $errorMsg = 'ไม่พบ user';
-                header("refresh:2;");
+                header("refresh:2;../index.php");
             }
         }
     } catch (PDOException $e) {

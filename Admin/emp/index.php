@@ -1,26 +1,8 @@
 <?php
-  session_start();
-  require_once 'require/config.php';
-  require_once 'require/session.php';
-
-// if (isset($_REQUEST['btn_logout'])) {
-//   try {
-//     session_unset();
-//     $_SESSION["token_admin_loing"] = false;
-//     $seMsg = 'ออกจากระบบแล้ว';
-//     header("refresh:2;login.php");
-//   } catch (PDOException $e) {
-//     echo $e->getMessage();
-//   }
-// }
-
-// if (empty($_SESSION["token_admin_uuid"])) {
-//   header("refresh:0;login.php");
-// }
-
-
+session_start();
+require_once('../require/config.php');
+require_once('../require/session.php');
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -52,15 +34,9 @@
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
-  <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+  <link rel="stylesheet" href="css/fontkanit.css">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -138,7 +114,7 @@
                   <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                   <p>
-                    <?php echo $_SESSION["token_admin_username"] ?>
+                    Alexander Pierce - Web Developer
                     <small>Member since Nov. 2012</small>
                   </p>
                 </li>
@@ -157,15 +133,17 @@
                   </div>
                   <!-- /.row -->
                 </li>
-                <!-- Menu Footer-->
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  </div>
-                  <div class="pull-right">
-                    <button  type="submit" name="btn_logout" class="btn btn-default btn-flat" >Sign out</button>
-                  </div>
-                </li>
+                <!-- Menu Footer-->               
+                  <li class="user-footer">
+                    <div class="pull-left">
+                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                    </div>
+                    <div class="pull-right">
+                      <form method="post">
+                        <button class="btn btn-default btn-flat" type="submit" name="btn_logout">Sign out</button>
+                      </form>
+                    </div>
+                  </li>                
               </ul>
             </li>
             <!-- Control Sidebar Toggle Button -->
@@ -189,20 +167,13 @@
         </div>
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu" data-widget="tree">
+        <ul class="sidebar-menu kanitB" data-widget="tree">
           <li class="header">MENU BAR</li>
 
           <li class="active">
-            <a href="index.php">
+            <a href="#">
               <i class="fa fa-home"></i> <span>หน้าแรก</span>
-              <!-- <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span> -->
             </a>
-            <!-- <ul class="treeview-menu">
-            <li class="active"><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-          </ul> -->
           </li>
 
           <li class="treeview">
@@ -214,34 +185,15 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+              <li><a href="booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+              <li><a href="booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                   <span class="pull-right-container">
                     <span class="label label-primary pull-right">4</span>
                   </span>
                 </a></li>
-              <li><a href="pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+              <li><a href="booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
             </ul>
-          </li>
-          <li>
-
-          <li>
-            <a href="product/">
-              <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="users.php">
-              <i class="fa fa-users"></i> <span>ลูกค้า</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="employee/">
-              <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
-            </a>
           </li>
 
           <li class="treeview">
@@ -253,24 +205,9 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <li><a href="#"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
             </ul>
-          </li>
-
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-gear"></i>
-              <span>ตั้งค่า</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
-            </ul>
-          </li>
           </li>
         </ul>
       </section>
