@@ -233,7 +233,7 @@ require_once 'require/session.php';
                             <tbody>
                                 <?php
                                 $uuid_cus = $_SESSION["token_uuid"];
-                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus');
+                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus order by cre_bks_date desc');
                                 $result->bindParam(":uuid_cus", $uuid_cus);
                                 $result->execute();
 
@@ -243,6 +243,8 @@ require_once 'require/session.php';
 
                                     if ($row['book_st'] == 'wait') {
                                         $status = 'รอดำเนินการ';
+                                    } else if ($row['book_st'] == 'success') {
+                                        $status = 'จองคิวสำเร็จ';
                                     }
                                 ?>
                                     <tr>
@@ -255,7 +257,11 @@ require_once 'require/session.php';
                                             if ($status == 'รอดำเนินการ') {
                                                 $txt_color = 'text-warning';
                                                 $icon = 'fa fa-clock-o';
-                                            } else {
+                                            } else if ($status == 'จองคิวสำเร็จ'){
+                                                $txt_color = 'text-success';
+                                                $icon = 'fa fa-check';
+                                            }
+                                            else {
                                                 $txt_color = '';
                                             }
 

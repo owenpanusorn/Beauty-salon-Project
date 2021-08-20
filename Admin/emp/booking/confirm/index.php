@@ -1,7 +1,26 @@
 <?php
-require_once('../../require/config.php');
+session_start();
+require_once('../../../require/config.php');
+require_once('../../../require/session.php');
 
+if ($_SESSION["token_admin_uuid"]) {
+    $uuid_emp = $_SESSION["token_admin_uuid"];
 
+    $select_emp = $db->prepare("select * from tb_employee where uuid = :uuid_emp");
+    $select_emp->bindParam(":uuid_emp", $uuid_emp);
+    $select_emp->execute();
+    $row = $select_emp->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+
+    $date = date("d-m-Y");
+    $book_status = 'wait';
+
+    $sql = "select count(uuid_emp) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'wait' and cre_bks_date = '$date'";
+    $res = $db->query($sql);
+    $count = $res->fetchColumn();
+
+    
+}
 ?>
 
 <!DOCTYPE html>
@@ -14,19 +33,19 @@ require_once('../../require/config.php');
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.css">
-    <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../../bower_components/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="../../../bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="../../bower_components/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="../../../bower_components/Ionicons/css/ionicons.min.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="../../bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="../../../bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="../../../dist/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../../../dist/css/skins/_all-skins.min.css">
     <!-- sweetalert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
@@ -105,13 +124,13 @@ require_once('../../require/config.php');
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                <span class="hidden-xs">Alexander Pierce</span>
+                                <img src="../../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                <span class="hidden-xs"><?php echo $fname . ' ' . $lname ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                                     <p>
                                         Alexander Pierce - Web Developer
@@ -156,7 +175,7 @@ require_once('../../require/config.php');
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
                         <p>Alexander Pierce</p>
@@ -170,8 +189,8 @@ require_once('../../require/config.php');
 
                     <li>
                         <a href="../../index.php">
-                            <i class="fa fa-home"></i> <span>หน้าแรก</span>                        
-                        </a>                       
+                            <i class="fa fa-home"></i> <span>หน้าแรก</span>
+                        </a>
                     </li>
 
                     <li class="treeview active">
@@ -179,20 +198,20 @@ require_once('../../require/config.php');
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right">4</span>
+                                <span class="label label-primary pull-right"><?php echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="../databooking/index.php"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li class="active"><a href="#"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">4</span>
+                                        <span class="label label-primary pull-right"><?php echo $count ?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
                         </ul>
-                    </li>              
+                    </li>
 
                     <li class="treeview">
                         <a href="#">
@@ -216,8 +235,24 @@ require_once('../../require/config.php');
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
             <section class="content-header">
+                <?php
+                if (isset($errorMsg)) {
+                ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
+                    </div>
+
+                <?php } ?>
+
+                <?php
+                if (isset($insertMsg)) {
+                ?>
+                    <div class="alert alert-success alert-dismissible">
+                        <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
+                    </div>
+                <?php } ?>
                 <h1 class="kanitB">
-               อนุมัติการจอง
+                    อนุมัติการจอง      
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
                 </h1>
                 <ol class="breadcrumb kanitB">
@@ -245,20 +280,59 @@ require_once('../../require/config.php');
                             <div class="box-body">
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
-                                        <tr>
-                                            <th>CODE</th>
-                                            <th>Product</th>
-                                            <th>Details</th>                                            
+                                        <tr class="kanitB">
+                                            <th>ลำดับ</th>  
+                                            <th>เลขที่รายการ</th>                                         
+                                            <th>ชื่อลูกค้า</th>
+                                            <th>รายละเอียดบริการ</th>
+                                            <th>ราคา</th>
+                                            <th>เวลาในการบริการ</th>
+                                            <th>ว/ด/ป เวลา</th>
+                                            <th>สถานะ</th>
+                                            <th>รายละเอียด</th>                                         
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php                                       
+                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date = :cre_bks_date');
+                                        $result->bindParam(":uuid_emp", $uuid_emp);
+                                        $result->bindParam(":book_st", $book_status);
+                                        $result->bindParam(":cre_bks_date", $date);
+                                        $result->execute();
 
-                                        <tr class="kanitB">
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                        $num = 0;
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $num++;
 
+                                            if ($row['book_st'] == 'wait') {
+                                                $status = 'รอดำเนินการ';
+                                            }
+                                        ?>
+                                            <form method="POST">
+                                            <tr class="kanitB">
+                                                <td><?php echo $num ?></td>  
+                                                <td><?php echo $row['books_nlist'] ?></td>                                            
+                                                <td><?php echo $row['book_cus'] ?></td>
+                                                <td><?php echo $row['book_serv'] ?></td>
+                                                <td class="text-right"><?php echo $row['books_price'] ?></td>
+                                                <td><?php echo $row['books_hours'] ?></td>
+                                                <td><?php echo $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                <?php
+                                                if ($status == 'รอดำเนินการ') {
+                                                    $txt_color = '#f0ad4e';
+                                                    $icon = 'fa fa-clock-o';
+                                                } else {
+                                                    $txt_color = '';
+                                                }
+
+                                                echo '<td style="color : ' . $txt_color . '">';
+                                                echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                                echo '</td>';
+                                                ?>
+                                                <td><a href="confirm.php?num_list=<?php echo $row['books_nlist']?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa fa-check-square-o"></i> ยืนยัน</a></td>                                               
+                                            </tr>
+                                        </form>
+                                        <?php } ?>
                                     </tbody>
 
                                 </table>
@@ -284,27 +358,26 @@ require_once('../../require/config.php');
         </footer>
 
         <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
+
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
 
     <!-- jQuery 3 -->
-    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
-    <script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- DataTables -->
-    <script src="../../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="../../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../../../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
     <!-- SlimScroll -->
-    <script src="../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
-    <script src="../../bower_components/fastclick/lib/fastclick.js"></script>
+    <script src="../../../bower_components/fastclick/lib/fastclick.js"></script>
     <!-- AdminLTE App -->
-    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../../dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="../../dist/js/demo.js"></script>
+    <script src="../../../dist/js/demo.js"></script>
     <!-- page script -->
     <script>
         $(function() {
