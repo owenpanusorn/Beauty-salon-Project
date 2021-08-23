@@ -1,7 +1,35 @@
 <?php
+session_start();
 require_once('../../../require/config.php');
+require_once('../../../require/session.php');
 
+if (!empty($_SESSION["token_admin_uuid"])) {
+    $uuid_emp = $_SESSION["token_admin_uuid"];
 
+    $select_emp = $db->prepare("select * from tb_employee where uuid = :uuid_emp");
+    $select_emp->bindParam(":uuid_emp", $uuid_emp);
+    $select_emp->execute();
+    $row = $select_emp->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+
+    $date = date("d-m-Y");
+    $book_status = 'success';
+
+    $sql = "select count(uuid_emp) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'wait' and cre_bks_date = '$date'";
+    $res = $db->query($sql);
+    $count = $res->fetchColumn();
+
+    if (isset($_REQUEST['btn_logout'])) {
+        try {
+            session_unset();
+            $_SESSION["token_admin_loing"] = false;
+            $seMsg = 'ออกจากระบบแล้ว';
+            header("refresh:0;../../../login.php");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,9 +67,9 @@ require_once('../../../require/config.php');
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="index.php" class="logo">
+            <a href="../../index.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>A</b>LT</span>
+                <span class="logo-mini"><b>BT</b>S</span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Beautiful</b> Salon</span>
             </a>
@@ -57,89 +85,28 @@ require_once('../../../require/config.php');
 
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-
-                        <!-- Notifications: style can be found in dropdown.less -->
-                        <li class="dropdown notifications-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">10</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 10 notifications</li>
-                                <li>
-                                    <!-- inner menu: contains the actual data -->
-                                    <ul class="menu">
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                                                page and may cause design problems
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-red"></i> 5 new members joined
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-user text-red"></i> You changed your username
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="footer"><a href="#">View all</a></li>
-                            </ul>
-                        </li>
-
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="../../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                <span class="hidden-xs">Alexander Pierce</span>
+                                <?php echo '<img src="../../../images/employee/' . $images . '" class="user-image" alt="User Image">' ?>
+                                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
 
                                     <p>
-                                        Alexander Pierce - Web Developer
-                                        <small>Member since Nov. 2012</small>
+                                        <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                                        <small class="kanitB">พนักงาน</small>
                                     </p>
-                                </li>
-                                <!-- Menu Body -->
-                                <li class="user-body">
-                                    <div class="row">
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Followers</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Sales</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Friends</a>
-                                        </div>
-                                    </div>
-                                    <!-- /.row -->
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                    </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <form method="post">
+                                            <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                                        </form>
                                     </div>
                                 </li>
                             </ul>
@@ -156,22 +123,22 @@ require_once('../../../require/config.php');
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
                     </div>
                     <div class="pull-left info">
-                        <p>Alexander Pierce</p>
+                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
 
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu kanitB" data-widget="tree">
-                    <li class="header">MENU BAR</li>
+                    <li class="header">เมนูบาร์</li>
 
                     <li>
                         <a href="../../index.php">
-                            <i class="fa fa-home"></i> <span>หน้าแรก</span>                        
-                        </a>                       
+                            <i class="fa fa-home"></i> <span>หน้าแรก</span>
+                        </a>
                     </li>
 
                     <li class="treeview active">
@@ -179,20 +146,20 @@ require_once('../../../require/config.php');
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right">4</span>
+                                <span class="label label-primary pull-right"><?php echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li class="active"><a href="#"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li><a href="../confirm/index.php"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">4</span>
+                                        <span class="label label-primary pull-right"><?php echo $count ?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
                         </ul>
-                    </li>              
+                    </li>
 
                     <li class="treeview">
                         <a href="#">
@@ -204,7 +171,7 @@ require_once('../../../require/config.php');
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-                            <li><a href="#"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
+                            <li><a href="../report/"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -217,7 +184,7 @@ require_once('../../../require/config.php');
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1 class="kanitB">
-                ข้อมูลการจองคิว
+                    ข้อมูลการจองคิว
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
                 </h1>
                 <ol class="breadcrumb kanitB">
@@ -245,20 +212,58 @@ require_once('../../../require/config.php');
                             <div class="box-body">
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
-                                        <tr>
-                                            <th>CODE</th>
-                                            <th>Product</th>
-                                            <th>Details</th>                                            
+                                        <tr class="kanitB">
+                                            <th>ลำดับ</th>
+                                            <th>เลขที่รายการ</th>
+                                            <th>ชื่อลูกค้า</th>
+                                            <th>รายละเอียดบริการ</th>
+                                            <th>ราคา</th>
+                                            <th>เวลาในการบริการ</th>
+                                            <th>ว/ด/ป เวลา</th>
+                                            <th>สถานะ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <?php
+                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date = :cre_bks_date');
+                                        $result->bindParam(":uuid_emp", $uuid_emp);
+                                        $result->bindParam(":book_st", $book_status);
+                                        $result->bindParam(":cre_bks_date", $date);
+                                        $result->execute();
 
-                                        <tr class="kanitB">
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                        $num = 0;
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $num++;
 
+                                            if ($row['book_st'] == 'success') {
+                                                $status = 'จองคิวสำเร็จ';
+                                            }
+                                        ?>
+                                            <form method="POST">
+                                                <tr class="kanitB">
+                                                    <td><?php echo $num ?></td>
+                                                    <td><?php echo $row['books_nlist'] ?></td>
+                                                    <td><?php echo $row['book_cus'] ?></td>
+                                                    <td><?php echo $row['book_serv'] ?></td>
+                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
+                                                    <td><?php echo $row['books_hours'] ?></td>
+                                                    <td><?php echo $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                    <?php
+                                                    if ($status == 'จองคิวสำเร็จ') {
+                                                        // $txt_color = '#f0ad4e';
+                                                        $txt_color = '#1E9F75';
+                                                        $icon = 'fa fa-check-circle-o';
+                                                    } else {
+                                                        $txt_color = '';
+                                                    }
+
+                                                    echo '<td style="color : ' . $txt_color . '">';
+                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                                    echo '</td>';
+                                                    ?>
+                                                </tr>
+                                            </form>
+                                        <?php } ?>
                                     </tbody>
 
                                 </table>
@@ -275,16 +280,14 @@ require_once('../../../require/config.php');
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs">
-                <b>Version</b> 2.4.0
+            <div class="pull-right hidden-xs kanitB">
+                <b>เวอร์ชั่น</b> 1.0.1
             </div>
             <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
-            reserved.
-            reserved.
         </footer>
 
         <!-- /.control-sidebar -->
-        
+
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
@@ -308,7 +311,7 @@ require_once('../../../require/config.php');
     <script>
         $(function() {
             $('#example1').DataTable()
-          
+
         });
     </script>
 </body>

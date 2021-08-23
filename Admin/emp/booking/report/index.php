@@ -3,7 +3,6 @@ session_start();
 require_once('../../../require/config.php');
 require_once('../../../require/session.php');
 
-
 if (!empty($_SESSION["token_admin_uuid"])) {
     $uuid_emp = $_SESSION["token_admin_uuid"];
 
@@ -20,6 +19,24 @@ if (!empty($_SESSION["token_admin_uuid"])) {
     $res = $db->query($sql);
     $count = $res->fetchColumn();
 
+    $sql1 = "select sum(book_score) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'success' and book_score is not null";
+    $res1 = $db->query($sql1);
+    $score_all = $res1->fetchColumn();
+
+    $sql2 = "select count(book_score) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'success' and book_score is not null";
+    $res2 = $db->query($sql2);
+    $count_score = $res2->fetchColumn();
+
+    $total = $score_all / $count_score;
+
+    if ($total >= 3.5) {
+        $bg = 'bg-green';
+    } else if ($total >= 2) {
+        $bg = 'bg-yellow';
+    } else {
+        $bg = 'bg-red';
+    }
+
     if (isset($_REQUEST['btn_logout'])) {
         try {
             session_unset();
@@ -31,7 +48,6 @@ if (!empty($_SESSION["token_admin_uuid"])) {
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +56,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ประวัติการจองคิว | Beautiful Salon</title>
+    <title>รายงานการประเมิน | Beautiful Salon</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -87,7 +103,6 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -104,7 +119,6 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                                         <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
-
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-right">
@@ -145,27 +159,27 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                         </a>
                     </li>
 
-                    <li class="treeview active">
+                    <li class="treeview">
                         <a href="#">
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right">4</span>
+                                <span class="label label-primary pull-right"><?php echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="../databooking/index.php"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+                            <li><a href="#"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li><a href="../confirm/index.php"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">4</span>
+                                        <span class="label label-primary pull-right"><?php echo $count ?></span>
                                     </span>
                                 </a></li>
-                            <li class="active"><a href="#"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+                            <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
                         </ul>
                     </li>
 
-                    <li class="treeview">
+                    <li class="treeview active">
                         <a href="#">
                             <i class="fa fa-file-text-o"></i>
                             <span>รายงาน</span>
@@ -175,7 +189,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-                            <li><a href="../report/"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
+                            <li class="active"><a href="#"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -185,16 +199,42 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1 class="kanitB">
-                    ประวัติการจองคิว
+                    คะแนนเฉลี่ยทั้งหมด
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
                 </h1>
                 <ol class="breadcrumb kanitB">
                     <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
-                    <li class="active ">ประวัติการจองคิว</li>
+                    <li class="active ">รายงานการประเมิน</li>
                 </ol>
+            </section>
+
+            <section class="content-header kanitB">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box <?php echo $bg; ?>">
+                            <div class="inner">
+                                <h3><?php echo number_format((float)$total, 1, '.', ''); ?></h3>
+                                <p>คะแนนเฉลี่ยทั้งหมด</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </section>
+
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1 class="kanitB">
+                    รายงานการประเมิน
+                    <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
+                </h1>
             </section>
 
             <!-- Main content -->
@@ -218,18 +258,13 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                                     <thead>
                                         <tr class="kanitB">
                                             <th>ลำดับ</th>
-                                            <th>เลขที่รายการ</th>
-                                            <th>ชื่อลูกค้า</th>
-                                            <th>รายละเอียดบริการ</th>
-                                            <th>ราคา</th>
-                                            <th>เวลาในการบริการ</th>
-                                            <th>ว/ด/ป เวลา</th>
-                                            <th>สถานะ</th>
+                                            <th>ผลการประเมิน</th>
+                                            <th>คะแนน</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st order by cre_bks_date desc');
+                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and book_st = :book_st and book_comment is not null and book_score is not null');
                                         $result->bindParam(":uuid_emp", $uuid_emp);
                                         $result->bindParam(":book_st", $book_status);
                                         $result->execute();
@@ -238,32 +273,25 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                                         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $num++;
 
-                                            if ($row['book_st'] == 'success') {
-                                                $status = 'จองคิวสำเร็จ';
+                                            if ($row['book_comment'] == null) {
                                             }
                                         ?>
                                             <form method="POST">
                                                 <tr class="kanitB">
                                                     <td><?php echo $num ?></td>
-                                                    <td><?php echo $row['books_nlist'] ?></td>
-                                                    <td><?php echo $row['book_cus'] ?></td>
-                                                    <td><?php echo $row['book_serv'] ?></td>
-                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
-                                                    <td><?php echo $row['books_hours'] ?></td>
-                                                    <td><?php echo $row['cre_bks_date'] . ' ' . $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
-                                                    <?php
-                                                    if ($status == 'จองคิวสำเร็จ') {
-                                                        // $txt_color = '#f0ad4e';
-                                                        $txt_color = '#1E9F75';
-                                                        $icon = 'fa fa-check-circle-o';
-                                                    } else {
-                                                        $txt_color = '';
-                                                    }
-
-                                                    echo '<td style="color : ' . $txt_color . '">';
-                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
-                                                    echo '</td>';
-                                                    ?>
+                                                    <td><?php echo $row['book_comment']; ?></td>
+                                                    <td>
+                                                        <span style="color : #f0ad4e;">
+                                                            <?php
+                                                            for ($i = 0; $i <  $row['book_score']; $i++) {
+                                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                                    </svg>';
+                                                            }
+                                                            ?>
+                                                        </span>
+                                                        <?php echo '(' . $row['book_score'] . '.0 คะแนน)' ?>
+                                                    </td>
                                                 </tr>
                                             </form>
                                         <?php } ?>
@@ -287,24 +315,23 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                 <b>เวอร์ชั่น</b> 1.0.1
             </div>
             <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
-
         </footer>
 
         <!-- /.control-sidebar -->
-        <div class="control-sidebar-bg"></div>
 
+        <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
 
     <!-- jQuery 3 -->
     <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
-    <!-- SlimScroll -->
-    <script src="../../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <script src="../../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- DataTables -->
     <script src="../../../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="../../../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <!-- SlimScroll -->
+    <script src="../../../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
     <script src="../../../bower_components/fastclick/lib/fastclick.js"></script>
     <!-- AdminLTE App -->
@@ -313,8 +340,9 @@ if (!empty($_SESSION["token_admin_uuid"])) {
     <script src="../../../dist/js/demo.js"></script>
     <!-- page script -->
     <script>
-        $(document).ready(function() {
-            $('#example1').DataTable();
+        $(function() {
+            $('#example1').DataTable()
+
         });
     </script>
 </body>

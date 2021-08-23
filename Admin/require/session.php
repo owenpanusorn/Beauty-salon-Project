@@ -5,17 +5,6 @@ require_once('config.php');
 //     // header("refresh:0;index.php");
 // }
 
-if (isset($_REQUEST['btn_logout'])) {
-    try {
-      session_unset();
-      $_SESSION["token_admin_loing"] = false;
-      $seMsg = 'ออกจากระบบแล้ว';
-      header("refresh:0;../login.php");
-    } catch (PDOException $e) {
-      echo $e->getMessage();
-    }
-  }
-  
 //   if (empty($_SESSION["token_admin_uuid"])) {
 //     header("refresh:0;../../../login.php");
 //   }

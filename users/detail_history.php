@@ -31,8 +31,8 @@ if (isset($_REQUEST['btn_comment'])) {
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 
-        if (empty($_POST['rate']) && empty($_POST['txt_comment'])) {
-            $errorMsg = 'กรุณาให้คะแนน หรือแสดงความคิดเห็น !';
+        if (empty($_POST['rate']) || empty($_POST['txt_comment'])) {
+            $errorMsg = 'กรุณาให้คะแนน และแสดงความคิดเห็น !';
         } else if (!empty($_POST['rate']) && !empty($_POST['txt_comment'])) {
             $rating = $_POST['rate'];
             $comment = $_POST['txt_comment'];
@@ -48,35 +48,36 @@ if (isset($_REQUEST['btn_comment'])) {
                 $insertMsg = "บันทึกสำเร็จ . . .";
                 header("refresh:2;history.php");
             }
-        } else {
-            if (isset($_POST['rate'])) {
-                $rating =  $_POST['rate'];
+        } 
+        // else {
+        //     if (isset($_POST['rate'])) {
+        //         $rating =  $_POST['rate'];
 
-                $update_history = $db->prepare('UPDATE tb_booking SET book_score = :rate, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
-                $update_history->bindParam(":rate", $rating);
-                $update_history->bindParam(":upday", $date);
-                $update_history->bindParam(":uptime", $newtime);
-                $update_history->bindParam(":bknum", $book_num);
+        //         $update_history = $db->prepare('UPDATE tb_booking SET book_score = :rate, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
+        //         $update_history->bindParam(":rate", $rating);
+        //         $update_history->bindParam(":upday", $date);
+        //         $update_history->bindParam(":uptime", $newtime);
+        //         $update_history->bindParam(":bknum", $book_num);
 
-                if ($update_history->execute()) {
-                    $insertMsg = "บันทึกสำเร็จ . . .";
-                    header("refresh:2;history.php");
-                }
-            } else {
-                $comment =  $_POST['txt_comment'];
+        //         if ($update_history->execute()) {
+        //             $insertMsg = "บันทึกสำเร็จ . . .";
+        //             header("refresh:2;history.php");
+        //         }
+        //     } else {
+        //         $comment =  $_POST['txt_comment'];
 
-                $update_history = $db->prepare('UPDATE tb_booking SET book_comment = :bkcomment, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
-                $update_history->bindParam(":bkcomment", $comment);
-                $update_history->bindParam(":upday", $date);
-                $update_history->bindParam(":uptime", $newtime);
-                $update_history->bindParam(":bknum", $book_num);
+        //         $update_history = $db->prepare('UPDATE tb_booking SET book_comment = :bkcomment, up_bks_date = :upday, up_bks_time = :uptime WHERE books_nlist = :bknum');
+        //         $update_history->bindParam(":bkcomment", $comment);
+        //         $update_history->bindParam(":upday", $date);
+        //         $update_history->bindParam(":uptime", $newtime);
+        //         $update_history->bindParam(":bknum", $book_num);
 
-                if ($update_history->execute()) {
-                    $insertMsg = "บันทึกสำเร็จ . . .";
-                    header("refresh:2;history.php");
-                }
-            }
-        }
+        //         if ($update_history->execute()) {
+        //             $insertMsg = "บันทึกสำเร็จ . . .";
+        //             header("refresh:2;history.php");
+        //         }
+        //     }
+        // }
 
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -379,11 +380,28 @@ if (isset($_REQUEST['btn_comment'])) {
                                             </div>
                                             <div class="col-md-8">
                                                 <?php
-                                                if ($book_st == 'wait') {
+                                                if ($row['book_st'] == 'wait') {
                                                     $status = 'รอดำเนินการ';
+                                                } else if ($row['book_st'] == 'success') {
+                                                    $status = 'จองคิวสำเร็จ';
                                                 }
+
+                                                if ($status == 'รอดำเนินการ') {
+                                                    $txt_color = 'text-warning';
+                                                    $icon = 'fa fa-clock-o';
+                                                } else if ($status == 'จองคิวสำเร็จ'){
+                                                    $txt_color = 'text-success';
+                                                    $icon = 'fa fa-check';
+                                                }
+                                                else {
+                                                    $txt_color = '';
+                                                }
+
+                                                echo '<p class="kanitB '. $txt_color .'">';
+                                                echo  '<i class="'.$icon.'"></i>'.' '.$status;
+                                                echo '</p>';
                                                 ?>
-                                                <p class="kanitB"><?php echo $status ?></p>
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -403,19 +421,67 @@ if (isset($_REQUEST['btn_comment'])) {
                                             </div>
                                         </div>
                                     </div>
+                                    <?php 
+                                     if ($row['book_st'] == 'wait') {
+                                    ?>
                                     <div class="form-group">
                                         <div class="row mb-2">
                                             <div class="col-md-5">
                                                 <div class="rate">
-                                                    <input type="radio" id="star5" name="rate" value="5"  <?php echo $book_score == 5 ? "checked" : "" ?>/>
+                                                    <input type="radio" id="star5"  name="rate" value="5"  disabled />
+                                                    <label for="star5" title="text" disabled>5 stars</label>
+
+                                                    <input type="radio" id="star4"  name="rate" value="4"  disabled />
+                                                    <label for="star4" title="text" disabled>4 stars</label>
+
+                                                    <input type="radio" id="star3"  name="rate" value="3"  disabled/>
+                                                    <label for="star3" title="text" disabled>3 stars</label>
+
+                                                    <input type="radio" id="star2"  name="rate" value="2"  disabled/>
+                                                    <label for="star2" title="text" disabled>2 stars</label>
+
+                                                    <input type="radio" id="star1"  name="rate" value="1"  disabled/>
+                                                    <label for="star1" title="text" disabled>1 star</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row mb-2">
+                                            <div class="col-md-4  my-auto">
+                                                <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="container">
+                                        <div class="form-group">
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 my-auto">
+                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" disabled><?php echo $book_comment; ?></textarea>
+                                                    <p class="kanitB mt-2">* หากต้องการแสดงความคิดเห็นต้อง "จองคิวสำเร็จ" เท่านั้น</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php }?>
+                                    <?php 
+                                     if ($row['book_st'] == 'success') {
+                                    ?>
+                                    <div class="form-group">
+                                        <div class="row mb-2">
+                                            <div class="col-md-5">
+                                                <div class="rate">
+                                                    <input type="radio" id="star5"  name="rate" value="5"  disabled <?php echo $book_score == 5 ? "checked" : "" ?> />
                                                     <label for="star5" title="text">5 stars</label>
-                                                    <input type="radio" id="star4" name="rate" value="4"  <?php echo $book_score == 4 ? "checked" : "" ?>/>
+                                                    <input type="radio" id="star4"  name="rate" value="4"  disabled <?php echo $book_score == 4 ? "checked" : "" ?> />
                                                     <label for="star4" title="text">4 stars</label>
-                                                    <input type="radio" id="star3" name="rate" value="3"  <?php echo $book_score == 3 ? "checked" : "" ?>/>
+                                                    <input type="radio" id="star3"  name="rate" value="3"  disabled<?php echo $book_score == 3 ? "checked" : "" ?> />
                                                     <label for="star3" title="text">3 stars</label>
-                                                    <input type="radio" id="star2" name="rate" value="2"  <?php echo $book_score == 2 ? "checked" : "" ?>/>
+                                                    <input type="radio" id="star2"  name="rate" value="2"  disabled<?php echo $book_score == 2 ? "checked" : "" ?> />
                                                     <label for="star2" title="text">2 stars</label>
-                                                    <input type="radio" id="star1" name="rate" value="1"  <?php echo $book_score == 1 ? "checked" : "" ?>/>
+                                                    <input type="radio" id="star1"  name="rate" value="1"  disabled<?php echo $book_score == 1 ? "checked" : "" ?> />
                                                     <label for="star1" title="text">1 star</label>
                                                 </div>
                                             </div>
@@ -434,18 +500,29 @@ if (isset($_REQUEST['btn_comment'])) {
                                         <div class="form-group">
                                             <div class="row mb-2">
                                                 <div class="col-md-12 my-auto">
-                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false"><?php echo $book_comment; ?></textarea>
+                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" autocomplete="off"><?php echo $book_comment; ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <?php }?>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-lg-12 text-right">
                                 <a href="history.php" type="button" class="btn btn-secondary mr-1">ยกเลิก</a>
+                                <?php 
+                                     if ($row['book_st'] == 'wait') {
+                                ?>
+                                <button type="submit" name="btn_comment" class="btn btn-primary" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
+                                <?php }?>
+
+                                <?php 
+                                     if ($row['book_st'] == 'success') {
+                                ?>
                                 <button type="submit" name="btn_comment" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
+                                <?php }?>
                             </div>
                         </div>
                         </form>
@@ -456,7 +533,7 @@ if (isset($_REQUEST['btn_comment'])) {
 
 
     <!-- Footer -->
-    <!-- <footer class="bg-light">
+    <footer class="bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -464,7 +541,7 @@ if (isset($_REQUEST['btn_comment'])) {
                 </div>
             </div>
         </div>
-    </footer> -->
+    </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -503,6 +580,8 @@ if (isset($_REQUEST['btn_comment'])) {
         var date_end = new Date()
         date_start.setDate(date_start.getDate());
         date_end.setDate(date_end.getDate() + 30);
+
+        document.getElementById("myRadio").disabled = true;
 
         $('#datepicker').datepicker({
             format: 'dd-mm-yyyy',

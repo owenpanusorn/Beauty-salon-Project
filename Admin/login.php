@@ -25,22 +25,23 @@ require_once 'require/session.php';
 
 <body>
     <div class="wrapper">
-        <?php
-        if (isset($errorMsg)) {
-        ?>
-            <div class="alert alert-danger">
-                <p class="kanitB"><i class="fa fa-ban"></i> <?php echo $errorMsg ?></p>
-            </div>
-        <?php } ?>
 
-        <?php
-        if (isset($seMsg)) {
-        ?>
-            <div class="alert alert-success" role="alert">
-                <p class="kanitB"><i class="fa fa-check"></i> <?php echo $seMsg ?></p>
-            </div>
-        <?php } ?>
         <form class="form-signin" method="POST" enctype="multipart/form-data">
+            <?php
+            if (isset($errorMsg)) {
+            ?>
+                <div class="alert alert-danger">
+                    <p class="kanitB"><i class="fa fa-ban"></i> <?php echo $errorMsg ?></p>
+                </div>
+            <?php } ?>
+
+            <?php
+            if (isset($seMsg)) {
+            ?>
+                <div class="alert alert-success" role="alert">
+                    <p class="kanitB"><i class="fa fa-check"></i> <?php echo $seMsg ?></p>
+                </div>
+            <?php } ?>
             <h2 class="form-signin-heading ms-auto kanitB text-center mt-2">เข้าสู่ระบบ</h2>
             <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
             <input type="password" class="form-control" name="password" placeholder="Password" required="" />

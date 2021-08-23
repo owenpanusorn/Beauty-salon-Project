@@ -19,7 +19,16 @@ if ($_SESSION["token_admin_uuid"]) {
     $res = $db->query($sql);
     $count = $res->fetchColumn();
 
-    
+    if (isset($_REQUEST['btn_logout'])) {
+        try {
+            session_unset();
+            $_SESSION["token_admin_loing"] = false;
+            $seMsg = 'ออกจากระบบแล้ว';
+            header("refresh:0;../../../login.php");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 }
 ?>
 
@@ -58,9 +67,9 @@ if ($_SESSION["token_admin_uuid"]) {
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="index.php" class="logo">
+            <a href="../../index.php" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>A</b>LT</span>
+                <span class="logo-mini"><b>BT</b>S</span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Beautiful</b> Salon</span>
             </a>
@@ -76,89 +85,29 @@ if ($_SESSION["token_admin_uuid"]) {
 
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-
-                        <!-- Notifications: style can be found in dropdown.less -->
-                        <li class="dropdown notifications-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">10</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 10 notifications</li>
-                                <li>
-                                    <!-- inner menu: contains the actual data -->
-                                    <ul class="menu">
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                                                page and may cause design problems
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-users text-red"></i> 5 new members joined
-                                            </a>
-                                        </li>
-
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-user text-red"></i> You changed your username
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="footer"><a href="#">View all</a></li>
-                            </ul>
-                        </li>
-
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="../../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                <?php echo '<img src="../../../images/employee/' . $images . '" class="user-image" alt="User Image">' ?>
                                 <span class="hidden-xs"><?php echo $fname . ' ' . $lname ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
 
                                     <p>
-                                        Alexander Pierce - Web Developer
-                                        <small>Member since Nov. 2012</small>
+                                        <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                                        <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
-                                <!-- Menu Body -->
-                                <li class="user-body">
-                                    <div class="row">
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Followers</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Sales</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Friends</a>
-                                        </div>
-                                    </div>
-                                    <!-- /.row -->
-                                </li>
+
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                    </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <form method="post">
+                                            <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                                        </form>
                                     </div>
                                 </li>
                             </ul>
@@ -175,17 +124,17 @@ if ($_SESSION["token_admin_uuid"]) {
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="../../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
                     </div>
                     <div class="pull-left info">
-                        <p>Alexander Pierce</p>
+                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
 
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu kanitB" data-widget="tree">
-                    <li class="header">MENU BAR</li>
+                    <li class="header">เมนูบาร์</li>
 
                     <li>
                         <a href="../../index.php">
@@ -223,7 +172,7 @@ if ($_SESSION["token_admin_uuid"]) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-                            <li><a href="#"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
+                            <li><a href="../report/"><i class="fa fa-comments"></i>รายงานการประเมิน</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -252,7 +201,7 @@ if ($_SESSION["token_admin_uuid"]) {
                     </div>
                 <?php } ?>
                 <h1 class="kanitB">
-                    อนุมัติการจอง      
+                    อนุมัติการจอง
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
                 </h1>
                 <ol class="breadcrumb kanitB">
@@ -281,19 +230,20 @@ if ($_SESSION["token_admin_uuid"]) {
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
                                         <tr class="kanitB">
-                                            <th>ลำดับ</th>  
-                                            <th>เลขที่รายการ</th>                                         
+                                            <th>ลำดับ</th>
+                                            <th>เลขที่รายการ</th>
                                             <th>ชื่อลูกค้า</th>
                                             <th>รายละเอียดบริการ</th>
                                             <th>ราคา</th>
                                             <th>เวลาในการบริการ</th>
                                             <th>ว/ด/ป เวลา</th>
                                             <th>สถานะ</th>
-                                            <th>รายละเอียด</th>                                         
+                                            <th>ยืนยัน</th>
+                                            <th>เลื่อนนัด</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php                                       
+                                        <?php
                                         $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date = :cre_bks_date');
                                         $result->bindParam(":uuid_emp", $uuid_emp);
                                         $result->bindParam(":book_st", $book_status);
@@ -309,29 +259,30 @@ if ($_SESSION["token_admin_uuid"]) {
                                             }
                                         ?>
                                             <form method="POST">
-                                            <tr class="kanitB">
-                                                <td><?php echo $num ?></td>  
-                                                <td><?php echo $row['books_nlist'] ?></td>                                            
-                                                <td><?php echo $row['book_cus'] ?></td>
-                                                <td><?php echo $row['book_serv'] ?></td>
-                                                <td class="text-right"><?php echo $row['books_price'] ?></td>
-                                                <td><?php echo $row['books_hours'] ?></td>
-                                                <td><?php echo $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
-                                                <?php
-                                                if ($status == 'รอดำเนินการ') {
-                                                    $txt_color = '#f0ad4e';
-                                                    $icon = 'fa fa-clock-o';
-                                                } else {
-                                                    $txt_color = '';
-                                                }
+                                                <tr class="kanitB">
+                                                    <td><?php echo $num ?></td>
+                                                    <td><?php echo $row['books_nlist'] ?></td>
+                                                    <td><?php echo $row['book_cus'] ?></td>
+                                                    <td><?php echo $row['book_serv'] ?></td>
+                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
+                                                    <td><?php echo $row['books_hours'] ?></td>
+                                                    <td><?php echo $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                    <?php
+                                                    if ($status == 'รอดำเนินการ') {
+                                                        $txt_color = '#f0ad4e';
+                                                        $icon = 'fa fa-clock-o';
+                                                    } else {
+                                                        $txt_color = '';
+                                                    }
 
-                                                echo '<td style="color : ' . $txt_color . '">';
-                                                echo '<i class="' . $icon . '"></i>' . ' ' . $status;
-                                                echo '</td>';
-                                                ?>
-                                                <td><a href="confirm.php?num_list=<?php echo $row['books_nlist']?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa fa-check-square-o"></i> ยืนยัน</a></td>                                               
-                                            </tr>
-                                        </form>
+                                                    echo '<td style="color : ' . $txt_color . '">';
+                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                                    echo '</td>';
+                                                    ?>
+                                                    <td><a href="confirm.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยัน</a></td>
+                                                    <td><a href="postpone.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-warning btn-block"><i class="fa fa-clock-o"></i> เลื่อนนัด</a></td>
+                                                </tr>
+                                            </form>
                                         <?php } ?>
                                     </tbody>
 
@@ -349,8 +300,8 @@ if ($_SESSION["token_admin_uuid"]) {
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs">
-                <b>Version</b> 2.4.0
+            <div class="pull-right hidden-xs kanitB">
+                <b>เวอร์ชั่น</b> 1.0.1
             </div>
             <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
             reserved.

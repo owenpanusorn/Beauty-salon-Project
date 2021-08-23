@@ -1,0 +1,171 @@
+@font-face {
+    font-family: FontKanit;
+    src: url('../fonts/kanit/Kanit-Regular.ttf');
+  }  
+
+    .kanitB {
+    font-family: FontKanit;
+  }
+
+header {
+    background: url('../img/wp6699074.jpg') no-repeat center center;
+    background-size: cover;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+    height: auto;
+}
+
+.features-icons {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.features-icons-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #0080ff;
+}
+
+.showcase-img {
+    background-size: cover;
+    min-height: 30rem;
+}
+
+.showcase-text {
+    padding: 8rem 8rem 8rem 8rem !important;
+}
+
+.testimonials {
+    padding-top: 7rem;
+    padding-bottom: 7rem;    
+}
+
+.testimonials .testimonails-item img{
+    
+    max-width: 12rem;
+    box-shadow: 0 5px 5px #adb5bd;
+}
+
+.sign-up-username {
+    width: 75%;
+    margin: 0 auto;
+    border: 0px none;
+    border-bottom: 1px solid #CED4dA;
+    outline: none !important;
+}
+
+.welcome-spacing {    
+    margin-top: 1rem;
+}
+
+.sDate{
+    margin-right: 2rem;
+}
+
+.eTime {
+    margin-left: 2rem;
+}
+
+.btn_booking{
+    background-color: #9E7B6C;
+    color: #fff;
+}
+
+.btn_booking:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.headsignup {
+    background: url('../img/wp6699074.jpg') no-repeat center center;
+    background-size: cover;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+    
+}
+
+.formregis {
+    background-color: #fff;
+    color: #000;
+    height: 500px;;
+}
+
+.bcrumb {
+    background-color: #9E7B6C;
+    margin-top: -20px;
+}
+
+.changcrumb {
+    background-color: #9E7B6C !important;
+    display:block;
+    height: 40px;
+}
+
+.changcrumb a {
+      color: #fff !important;
+}
+
+.changcrumb li {
+    display:block;  
+    text-indent:5px;   
+    float:left;
+}
+
+.changcrumb .active{
+    color: #CED4dA;
+}
+
+.breadcrumb-item {
+    color: #fff !important;
+}
+
+/* start rating */
+
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover{
+    color: #c59b08;
+}
+
+footer {
+    padding-bottom: 2rem; 
+}
+@media screen and (max-width : 435px) {
+    .showcase-text {
+        padding: 4rem;
+    }
+    
+    .showcase-img {
+        background-size: cover;
+        min-height: 18rem;
+    }
+}
+
+
+/* 9E7B6C */
