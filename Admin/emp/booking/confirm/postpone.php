@@ -3,6 +3,12 @@ session_start();
 require_once('../../../require/config.php');
 require_once('../../../require/session.php');
 
+
+if(empty($_SESSION["token_admin_uuid"])){
+    session_unset();
+    header("refresh:0;../../../login.php");
+  }
+
 if ($_SESSION["token_admin_uuid"]) {
     $uuid_emp = $_SESSION["token_admin_uuid"];
 
