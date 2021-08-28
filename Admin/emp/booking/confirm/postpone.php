@@ -3,6 +3,7 @@ session_start();
 require_once('../../../require/config.php');
 require_once('../../../require/session.php');
 
+<<<<<<< Updated upstream
 
 if(empty($_SESSION["token_admin_uuid"])){
     session_unset();
@@ -11,6 +12,10 @@ if(empty($_SESSION["token_admin_uuid"])){
 
 if ($_SESSION["token_admin_uuid"]) {
     $uuid_emp = $_SESSION["token_admin_uuid"];
+=======
+if ($_SESSION["token_emp_uuid"]) {
+    $uuid_emp = $_SESSION["token_emp_uuid"];
+>>>>>>> Stashed changes
 
     $select_emp = $db->prepare("select * from tb_employee where uuid = :uuid_emp");
     $select_emp->bindParam(":uuid_emp", $uuid_emp);
@@ -145,7 +150,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                     <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
 
                                     <p>
-                                        <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                                        <?php if (!empty($_SESSION["token_emp_uuid"])) echo $fname . ' ' . $lname; ?>
                                         <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
@@ -175,7 +180,7 @@ if (isset($_REQUEST['btn_agree'])) {
                         <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
                     </div>
                     <div class="pull-left info">
-                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+                        <p><?php if (!empty($_SESSION["token_emp_uuid"])) echo $fname . ' ' . $lname; ?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
@@ -195,14 +200,14 @@ if (isset($_REQUEST['btn_agree'])) {
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right"><?php echo $count ?></span>
+                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="../databooking/index.php"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li class="active"><a href="index.php"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right"><?php echo $count ?></span>
+                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>

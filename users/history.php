@@ -4,6 +4,23 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;index.php");
+  }
+
+  if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;index.php");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 // if(isset($_REQUEST['btn_booking'])){
 //     $date = $_REQUEST['startDate'];
 //     $stime = $_REQUEST['startTime'];
@@ -23,7 +40,7 @@ require_once 'require/session.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Bootstrap 5</title>
+    <title>ประวัติการจอง</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -59,10 +76,8 @@ require_once 'require/session.php';
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
     <!-- datatable -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-
-
-
-
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
+    
 </head>
 
 <body>

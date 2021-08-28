@@ -3,6 +3,24 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;index.php");
+  }
+
+
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;index.php");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
 
 if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['start_date']) && isset($_REQUEST['start_time']) && isset($_REQUEST['end_time'])) {
@@ -512,7 +530,7 @@ if (isset($_REQUEST['btn_booking'])) {
                                         </div>
                                     </div>
                                     <div class="modal-footer kanitB">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                        <a herf="index.php" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</a>
                                         <button type="submit" class="btn btn-primary" name="btn_booking">ยืนยัน</button>
                                     </div>
                                 </div>

@@ -1,87 +1,128 @@
-<!DOCTYPE html>
-<html>
 <?php
+session_start();
 require_once '../../require/config.php';
+require_once '../../require/session.php';
+
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;../../login.php");
+}
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;../../login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
+if (!empty($_SESSION["token_admin_uuid"])) {
+  $uuid_mng = $_SESSION["token_admin_uuid"];
+
+  $select_mng = $db->prepare("select * from tb_manager where uuid = :uuid_mng");
+  $select_mng->bindParam(":uuid_mng", $uuid_mng);
+  $select_mng->execute();
+  $row = $select_mng->fetch(PDO::FETCH_ASSOC);
+  extract($row);
+
+  $date = date("d-m-Y");
+
+  $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
+  $res = $db->query($sql);
+  $count = $res->fetchColumn();
+
+  $sql1 = "select count(books_nlist) from tb_booking where cre_bks_date = '$date'";
+  $res1 = $db->query($sql1);
+  $count_cus = $res1->fetchColumn();
+
+  $sql2 = "select sum(books_price) as price from tb_booking where cre_bks_date = '$date'";
+  $res2 = $db->query($sql2);
+  $sum_price = $res2->fetchColumn();
+}
 
 if (isset($_REQUEST['update_id'])) {
-    try {
-        $uuid = $_REQUEST['update_id'];
-        $qry = $db->prepare("select * from tb_product where prod_id = :id");
-        $qry->bindParam(":id", $uuid);
-        $qry->execute();
-        $row = $qry->fetch(PDO::FETCH_ASSOC);
-        extract($row);
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
+  try {
+    $uuid = $_REQUEST['update_id'];
+    $qry = $db->prepare("select * from tb_product where prod_id = :id");
+    $qry->bindParam(":id", $uuid);
+    $qry->execute();
+    $row = $qry->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
 }
 
 if (isset($_REQUEST['btn_update'])) {
-    try {
+  try {
 
-        $prodid = $_REQUEST['prod_id_update'];
-        $prodcode = $_REQUEST['prod_code'];
-        $prodname = $_REQUEST['prod_name'];
-        $proddetails = $_REQUEST['prod_details_up'];
-        $prodprice = $_REQUEST['prod_price'];
+    $prodid = $_REQUEST['prod_id_update'];
+    $prodcode = $_REQUEST['prod_code'];
+    $prodname = $_REQUEST['prod_name'];
+    $proddetails = $_REQUEST['prod_details_up'];
+    // $prodprice = $_REQUEST['prod_price'];
 
-        $image_file = $_FILES['prod_img_up']['name'];
-        $type = $_FILES['prod_img_up']['type'];
-        $size = $_FILES['prod_img_up']['size'];
-        $temp = $_FILES['prod_img_up']['tmp_name'];
-        $newname = substr(str_shuffle("0123456789"), 0, 5) . $image_file;
-        $path = "../../images/prod_img/" . $newname;
-        $directory = "../../images/prod_img/";
+    $image_file = $_FILES['prod_img_up']['name'];
+    $type = $_FILES['prod_img_up']['type'];
+    $size = $_FILES['prod_img_up']['size'];
+    $temp = $_FILES['prod_img_up']['tmp_name'];
+    $newname = substr(str_shuffle("0123456789"), 0, 5) . $image_file;
+    $path = "../../images/prod_img/" . $newname;
+    $directory = "../../images/prod_img/";
 
-        if ($image_file) {
-            if ($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png" || $type == "image/gif") {
-                if (!file_exists($path)) {
-                    if ($size < 5000000) {
-                        unlink($directory . $prod_img); // ลบไฟล์เดิม
-                        move_uploaded_file($temp, '../../images/prod_img/' . $newname);
-                    } else {
-                        $errorMsg = "ขนาดรูปใหญ่เกินไป กรุณาอัปโหลดรูปต่ำกว่า 5 MB";
-                    }
-
-                } else {
-                    $errorMsg = "กรุณาอัปโหลดรูปภาพ";
-                }
-
-            } else {
-                $errorMsg = "กรุณาอัปโหลดรูปภาพประเภทไฟล์ JPG, JPEG, PNG และ GIF. . .";
-            }
-
+    if ($image_file) {
+      if ($type == "image/jpg" || $type == "image/jpeg" || $type == "image/png" || $type == "image/gif") {
+        if (!file_exists($path)) {
+          if ($size < 5000000) {
+            unlink($directory . $prod_img); // ลบไฟล์เดิม
+            move_uploaded_file($temp, '../../images/prod_img/' . $newname);
+          } else {
+            $errorMsg = "ขนาดรูปใหญ่เกินไป กรุณาอัปโหลดรูปต่ำกว่า 5 MB";
+          }
         } else {
-            $newname = $prod_img;
+          $errorMsg = "กรุณาอัปโหลดรูปภาพ";
         }
-
-        $update_prod = $db->prepare("update tb_product set prod_code = :prod_code_up,prod_name = :prod_name_up,prod_details = :prod_details_up,prod_price = :prod_price_up, prod_img = :prod_img_up,up_prod_date = :up_prod_date_up,up_prod_time = :up_prod_time_up where prod_id = :id_up");
-
-        $update_prod->bindParam(':id_up', $prodid);
-        $update_prod->bindParam(':prod_code_up', $prodcode);
-        $update_prod->bindParam(':prod_name_up', $prodname);
-        $update_prod->bindParam(':prod_details_up', $proddetails);
-        $update_prod->bindParam(':prod_price_up', $prodprice);
-        $update_prod->bindParam(':prod_img_up', $newname);
-        $update_prod->bindParam(':up_prod_date_up', $date);
-        $update_prod->bindParam(':up_prod_time_up', $time);
-
-        if ($update_prod->execute()) {
-
-            $insertMsg = "update Successfully . . .";
-            header("refresh:2;../index.php");
-        }
-    } catch (PDOException $e) {
-        echo $e->getMessage();
+      } else {
+        $errorMsg = "กรุณาอัปโหลดรูปภาพประเภทไฟล์ JPG, JPEG, PNG และ GIF. . .";
+      }
+    } else {
+      $newname = $prod_img;
     }
+
+    $update_prod = $db->prepare("update tb_product set prod_code = :prod_code_up,prod_name = :prod_name_up,prod_details = :prod_details_up, prod_img = :prod_img_up,up_prod_date = :up_prod_date_up,up_prod_time = :up_prod_time_up where prod_id = :id_up");
+
+    $update_prod->bindParam(':id_up', $prodid);
+    $update_prod->bindParam(':prod_code_up', $prodcode);
+    $update_prod->bindParam(':prod_name_up', $prodname);
+    $update_prod->bindParam(':prod_details_up', $proddetails);
+    // $update_prod->bindParam(':prod_price_up', $prodprice);
+    $update_prod->bindParam(':prod_img_up', $newname);
+    $update_prod->bindParam(':up_prod_date_up', $date);
+    $update_prod->bindParam(':up_prod_time_up', $time);
+
+    if ($update_prod->execute()) {
+
+      $insertMsg = "update Successfully . . .";
+      header("refresh:2;../index.php");
+    }
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
 }
 
 ?>
+<!DOCTYPE html>
+<html>
 
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Product | Beautiful Salon</title>
+  <title>สินค้า | Beautiful Salon</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -121,6 +162,7 @@ if (isset($_REQUEST['btn_update'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="icon" href="../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -130,7 +172,7 @@ if (isset($_REQUEST['btn_update'])) {
       <!-- Logo -->
       <a href="index.php" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>A</b>LT</span>
+        <span class="logo-mini"><b>BT</b>S</span>
         <!-- logo for regular state and mobile devices -->
         <span class="logo-lg"><b>Beautiful</b> Salon</span>
       </a>
@@ -146,87 +188,30 @@ if (isset($_REQUEST['btn_update'])) {
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell-o"></i>
-                <span class="label label-warning">10</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="header">You have 10 notifications</li>
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                        page and may cause design problems
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-red"></i> 5 new members joined
-                      </a>
-                    </li>
 
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-user text-red"></i> You changed your username
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">View all</a></li>
-              </ul>
-            </li>
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+                <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
+                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                  <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
 
                   <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                    <small class="kanitB">ผู้จัดการ</small>
                   </p>
                 </li>
-                <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!-- /.row -->
-                </li>
+
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <form method="post">
+                      <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                    </form>
                   </div>
                 </li>
               </ul>
@@ -242,29 +227,22 @@ if (isset($_REQUEST['btn_update'])) {
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>Alexander Pierce</p>
+          <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu" data-widget="tree">
-          <li class="header">MENU BAR</li>
+        <ul class="sidebar-menu kanitB" data-widget="tree">
+          <li class="header">เมนูบาร์</li>
 
           <li>
             <a href="../../index.php">
               <i class="fa fa-home"></i> <span>หน้าแรก</span>
-              <!-- <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span> -->
             </a>
-            <!-- <ul class="treeview-menu">
-            <li class="active"><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-          </ul> -->
           </li>
 
           <li class="treeview">
@@ -272,30 +250,30 @@ if (isset($_REQUEST['btn_update'])) {
               <i class="fa fa-calendar"></i>
               <span>การจองคิว</span>
               <span class="pull-right-container">
-                <span class="label label-primary pull-right">4</span>
+                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="../../pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="../../pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+              <li><a href="../../booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+              <li><a href="../../booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                   <span class="pull-right-container">
-                    <span class="label label-primary pull-right">4</span>
+                    <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
                   </span>
                 </a></li>
-              <li><a href="../../pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+              <li><a href="../../booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
             </ul>
           </li>
           <li>
 
           <li class="active">
-            <a href="../index.php">
+            <a href="../../product/">
               <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
             </a>
           </li>
 
           <li>
-            <a href="users.php">
+            <a href="../../customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
           </li>
@@ -303,6 +281,12 @@ if (isset($_REQUEST['btn_update'])) {
           <li>
             <a href="../../employee/">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="../../manager/">
+              <i class="fa fa-user"></i> <span>ผู้จัดการ</span>
             </a>
           </li>
 
@@ -315,8 +299,8 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="../../pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="../../pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
             </ul>
           </li>
 
@@ -329,8 +313,8 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="../../pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
-              <li><a href="../../pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
+              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -347,31 +331,31 @@ if (isset($_REQUEST['btn_update'])) {
           Product
           <small class="kanitB"><b>แก้ไชรายการสินค้า</b></small>
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li><a href="../">Product</a></li>
-          <li class="active">Edit Product</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li><a href="../">สินค้า</a></li>
+          <li class="active">แก้ไขรายการสินค้า</li>
         </ol>
       </section>
 
       <!-- Main content -->
       <section class="content">
         <?php
-if (isset($errorMsg)) {
-    ?>
-          <div class="alert alert-danger alert-dismissible">
+        if (isset($errorMsg)) {
+        ?>
+          <div class="alert alert-danger alert-dismissible kanitB">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php }?>
+        <?php } ?>
 
         <?php
-if (isset($insertMsg)) {
-    ?>
-          <div class="alert alert-success alert-dismissible">
+        if (isset($insertMsg)) {
+        ?>
+          <div class="alert alert-success alert-dismissible kanitB">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php }?>
+        <?php } ?>
         <form role="form" method="POST" enctype="multipart/form-data">
           <div class="row">
             <div class="col-xs-12">
@@ -385,64 +369,64 @@ if (isset($insertMsg)) {
                 </div> -->
                 <!-- /.box-header -->
                 <!-- form start -->
-                <div class="box-body">
+                <div class="box-body kanitB">
                   <div class="form-group">
-                    <label for="title">Product ID</label>
+                    <label for="title">รหัสสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-barcode"></i>
                       </div>
-                      <input  type="hidden" class="form-control" id="prod_id" name="prod_id_update" value="<?php echo $prod_id; ?>">
-                      <input type="text" class="form-control kanitB" name="prod_code" value="<?php echo $prod_code; ?>">
+                      <input type="hidden" class="form-control" id="prod_id" name="prod_id_update" value="<?php if (!empty($_SESSION["token_admin_uuid"])) echo $prod_id; ?>">
+                      <input type="text" class="form-control kanitB" name="prod_code" value="<?php if (!empty($_SESSION["token_admin_uuid"])) echo $prod_code; ?>">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="description">Product Name</label>
+                    <label for="description">ชื่อสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-tags"></i>
                       </div>
 
-                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" value="<?php echo $prod_name; ?>">
+                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" value="<?php if (!empty($_SESSION["token_admin_uuid"])) echo $prod_name; ?>">
                     </div>
                   </div>
 
                   <!-- Text area -->
                   <div class="form-group">
-                    <label>Details</label>
+                    <label>รายละเอียดสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa  fa-align-left"></i>
                       </div>
-                      <textarea class="form-control kanitB" name="prod_details_up" rows="3" value=""><?php echo $prod_details; ?></textarea>
+                      <textarea class="form-control kanitB" name="prod_details_up" rows="3" value=""><?php if (!empty($_SESSION["token_admin_uuid"])) echo $prod_details; ?></textarea>
                     </div>
                   </div>
                   <!-- Text area -->
                   <!-- Price -->
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <label>Price</label>
 
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="glyphicon glyphicon-usd"></i>
                       </div>
-                      <input type="number" class="form-control" name="prod_price" min="0" max="10000" value="<?php echo $prod_price; ?>">
+                      <input type="number" class="form-control" name="prod_price" min="0" max="10000" value="">
                     </div>
-                  </div>
+                  </div> -->
                   <!-- /.input group -->
                   <!-- Price -->
                   <!-- fileupload-->
                   <div class="form-group">
-                    <label for="fileupload">Product picture</label><br>
-                    <img src="../../images/prod_img/<?php echo $prod_img; ?>" height="100">
+                    <label for="fileupload">รูปภาพสินค้า</label><br>
+                    <img src="../../images/prod_img/<?php if (!empty($_SESSION["token_admin_uuid"])) echo $prod_img; ?>" height="100">
                     <input type="file" class="form-control" name="prod_img_up">
                   </div>
                   <!-- fileupload-->
 
 
                   <div class="box-footer">
-                    <button type="submit" name="btn_update" class="btn btn-success"><i class="fa  fa-cart-plus"></i> Update</button>
+                    <button type="submit" name="btn_update" class="btn btn-success"><i class="fa fa-pencil-square-o"></i> อัปเดตรายการสินค้า</button>
                   </div>
                   <!-- /.input group -->
                 </div>
@@ -461,9 +445,9 @@ if (isset($insertMsg)) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <footer class="main-footer kanitB">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        <b>เวอร์ชั่น</b> 1.0.1
       </div>
       <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
       reserved.

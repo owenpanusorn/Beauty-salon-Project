@@ -4,6 +4,25 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;index.php");
+  }
+
+
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;index.php");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
 // if(isset($_REQUEST['btn_booking'])){
 //     $date = $_REQUEST['startDate'];
 //     $stime = $_REQUEST['startTime'];
@@ -93,7 +112,7 @@ if (isset($_REQUEST['btn_comment'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Bootstrap 5</title>
+    <title>รายละเอียดการจอง</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -130,6 +149,7 @@ if (isset($_REQUEST['btn_comment'])) {
     <!-- datatable -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="css/detail_history.css">
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
 </head>
 
@@ -233,7 +253,7 @@ if (isset($_REQUEST['btn_comment'])) {
                     ?>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-                                คุณ <?php echo $_SESSION["token_username"] ?>
+                                คุณ <?php if (!empty($_SESSION["token_uuid"])) echo $_SESSION["token_username"] ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                 <li><a href="history.php" class="dropdown-item"><i class="fa fa-book" aria-hidden="true"></i> ประวัติการจอง</a></li>
@@ -303,7 +323,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                             <label for="" class="kanitB ">เลขที่บิลการจอง</label>
                                         </div>
                                         <div class="col-md-8">
-                                            <p><?php echo $books_nlist ?></p>
+                                            <p><?php if (!empty($_SESSION["token_uuid"])) echo $books_nlist ?></p>
                                         </div>
                                     </div>
 
@@ -313,7 +333,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                                 <label for="" class="kanitB ">วันที่จอง</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <p><?php echo $cre_bks_date ?></p>
+                                                <p><?php if (!empty($_SESSION["token_uuid"])) echo  $cre_bks_date ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -335,7 +355,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                                     $process = "30 นาที";
                                                 }
                                                 ?>
-                                                <p class="kanitB"><?php echo $cre_bks_time ?> - <?php echo $end_bks_time ?> ( <?php echo $process ?> )</p>
+                                                <p class="kanitB"><?php if (!empty($_SESSION["token_uuid"])) echo $cre_bks_time ?> - <?php if (!empty($_SESSION["token_uuid"])) echo $end_bks_time ?> ( <?php if (!empty($_SESSION["token_uuid"])) echo $process ?> )</p>
                                             </div>
                                         </div>
                                     </div>
@@ -346,7 +366,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                                 <label for="" class="kanitB ">โดยช่าง</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <p><?php echo $book_emp ?></p>
+                                                <p><?php if (!empty($_SESSION["token_uuid"])) echo $book_emp ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -357,7 +377,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                                 <label for="" class="kanitB ">รายการบริการ</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <p class="kanitB"><?php echo $book_serv ?></p>
+                                                <p class="kanitB"><?php if (!empty($_SESSION["token_uuid"])) echo $book_serv ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -368,7 +388,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                                 <label for="" class="kanitB ">ราคา</label>
                                             </div>
                                             <div class="col-md-8">
-                                                <p class="kanitB"><?php echo $books_price ?></p>
+                                                <p class="kanitB"><?php if (!empty($_SESSION["token_uuid"])) echo $books_price ?></p>
                                             </div>
                                         </div>
                                     </div>
@@ -473,15 +493,15 @@ if (isset($_REQUEST['btn_comment'])) {
                                         <div class="row mb-2">
                                             <div class="col-md-5">
                                                 <div class="rate">
-                                                    <input type="radio" id="star5"  name="rate" value="5"  disabled <?php echo $book_score == 5 ? "checked" : "" ?> />
+                                                    <input type="radio" id="star5"  name="rate" value="5"   <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 5 ? "checked" : "" ?> />
                                                     <label for="star5" title="text">5 stars</label>
-                                                    <input type="radio" id="star4"  name="rate" value="4"  disabled <?php echo $book_score == 4 ? "checked" : "" ?> />
+                                                    <input type="radio" id="star4"  name="rate" value="4"   <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 4 ? "checked" : "" ?> />
                                                     <label for="star4" title="text">4 stars</label>
-                                                    <input type="radio" id="star3"  name="rate" value="3"  disabled<?php echo $book_score == 3 ? "checked" : "" ?> />
+                                                    <input type="radio" id="star3"  name="rate" value="3"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 3 ? "checked" : "" ?> />
                                                     <label for="star3" title="text">3 stars</label>
-                                                    <input type="radio" id="star2"  name="rate" value="2"  disabled<?php echo $book_score == 2 ? "checked" : "" ?> />
+                                                    <input type="radio" id="star2"  name="rate" value="2"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 2 ? "checked" : "" ?> />
                                                     <label for="star2" title="text">2 stars</label>
-                                                    <input type="radio" id="star1"  name="rate" value="1"  disabled<?php echo $book_score == 1 ? "checked" : "" ?> />
+                                                    <input type="radio" id="star1"  name="rate" value="1"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 1 ? "checked" : "" ?> />
                                                     <label for="star1" title="text">1 star</label>
                                                 </div>
                                             </div>
@@ -500,7 +520,7 @@ if (isset($_REQUEST['btn_comment'])) {
                                         <div class="form-group">
                                             <div class="row mb-2">
                                                 <div class="col-md-12 my-auto">
-                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" autocomplete="off"><?php echo $book_comment; ?></textarea>
+                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" autocomplete="off"><?php if (!empty($_SESSION["token_uuid"])) echo $book_comment; ?></textarea>
                                                 </div>
                                             </div>
                                         </div>

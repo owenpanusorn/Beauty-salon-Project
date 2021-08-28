@@ -13,7 +13,16 @@ require_once 'require/session.php';
 //     print_r($stime);
 //     print_r($etime);
 // }
-
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;index.php");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -23,8 +32,9 @@ require_once 'require/session.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Bootstrap 5</title>
+    <title>Beautiful Salon</title>
 
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <!--===============================================================================================-->
@@ -128,7 +138,7 @@ require_once 'require/session.php';
                                                             </span>
                                                             <h5 class="text-center welcome-spacing kanitB">ยินดีต้อนรับ</h5>
                                                             <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                                <input class="input100" type="text" name="username" placeholder="Username">
+                                                                <input class="input100" type="text" name="username" placeholder="Username" autocomplete="off">
                                                                 <!-- <span class="focus-input100" data-placeholder="Username"></span> -->
                                                             </div>
 
@@ -201,15 +211,15 @@ require_once 'require/session.php';
                 <form action="select_employee.php" method="get">
                     <div class="row">
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" placeholder="เลือกวันที่" required>
+                            <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" autocomplete="off" placeholder="เลือกวันที่" required>
                         </div>
 
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="startTime" name="startTime" placeholder="เวลาเริ่มต้น" required>
+                            <input type="text" class="form-control-lg kanitB" id="startTime" name="startTime" autocomplete="off" placeholder="เวลาเริ่มต้น" required>
                         </div>
 
                         <div class="col-12 col-md-4 mb-2">
-                            <input type="text" class="form-control-lg kanitB" id="endTime" name="endTime" placeholder="เวลาสิ้นสุด" required>
+                            <input type="text" class="form-control-lg kanitB" id="endTime" name="endTime" autocomplete="off" placeholder="เวลาสิ้นสุด" required>
                         </div>
                     </div>
             </div>
