@@ -23,34 +23,55 @@ if (isset($_REQUEST['btn_login'])) {
             $errorMsg = "Please Enter password";
         } else {
 
+
             if ($select_ch == 'ADMIN') {
-            } else if ($select_ch == 'USER') {
-                $qry = $db->prepare("select * from tb_login where username = :username_login limit 1");
+                $qry = $db->prepare("select * from tb_manager where username = :username_login");
                 $qry->bindParam(":username_login", $username_login);
-                $qry->execute();
-                $row = $qry->fetch(PDO::FETCH_ASSOC);
+                $qry->execute();  
+                $row = $qry->fetch(PDO::FETCH_ASSOC);             
                 echo '<br>';
 
-                if (!empty($row['password']) && !empty($row['username'])) {
-                    if (!password_verify($password_login, $row['password'])) {
+                    if (!empty($row['password']) && !empty($row['username'])) {
+                        if (!password_verify($password_login, $row['password'])) {
+                            $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
+                            // header("refresh:2;");
+                        } else {
+                            $_SESSION["token_admin_uuid"] = $row['uuid'];
+                            $_SESSION["token_admin_loing"] = true;
+                            $_SESSION["token_admin_username"] = $_REQUEST['username'];
+                            $seMsg = 'เข้าสูระบบแล้ว';
+                            header("refresh:2;index.php");
+                        }
+                    } else {
+                        $errorMsg = 'ไม่พบ User';
+                        // header("refresh:2;");
+                    }
+               
+            } else if ($select_ch == 'USER') {
+                $qry = $db->prepare("select * from tb_login where username = :username_login");
+                $qry->bindParam(":username_login", $username_login);
+                $qry->execute();
+                $row = $qry->fetch(PDO::FETCH_ASSOC);               
+                echo '<br>';
+
+                    if (!empty($row['password']) && !empty($row['username'])) {
+                        if (!password_verify($password_login, $row['password'])) {
+                            $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
+                            // header("refresh:2;");
+                        } else {
+                            $_SESSION["token_emp_uuid"] = $row['uuid'];
+                            $_SESSION["token_emp_loing"] = true;
+                            $_SESSION["token_emp_username"] = $_REQUEST['username'];
+                            $seMsg = 'เข้าสูระบบแล้ว';
+                            header("refresh:2;emp/index.php");
+                        }
+                    } else {
                         $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
                         // header("refresh:2;");
-                    } else {
-                        $_SESSION["token_admin_uuid"] = $row['uuid'];
-                        $_SESSION["token_admin_loing"] = true;
-                        $_SESSION["token_admin_username"] = $_REQUEST['username'];
-                        $seMsg = 'เข้าสูระบบแล้ว';
-                        header("refresh:2;emp/index.php");
-                    }
-                } else {
-                    $errorMsg = 'ไม่พบ user';
-                    // header("refresh:2;");
-                }
+                    }        
             }
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
 }
-
-?>

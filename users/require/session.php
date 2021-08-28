@@ -2,17 +2,6 @@
 
 require_once 'config.php';
 
-if (isset($_REQUEST['btn_logout'])) {
-    try {
-        session_unset();
-        $_SESSION["token_loing"] = false;
-        $seMsg = 'ออกจากระบบแล้ว';
-        header("refresh:2;");
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
-
 if (isset($_REQUEST['btn_login'])) {
     try {
 
@@ -36,7 +25,7 @@ if (isset($_REQUEST['btn_login'])) {
             if (!empty($password) && !empty($username)) {
                 if (!password_verify($password_login, $password)) {
                     $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
-                    header("refresh:2;");
+                    // header("refresh:2;");
                 } else {
                     $_SESSION["token_uuid"] = $uuid;
                     $_SESSION["token_loing"] = true;
@@ -45,8 +34,8 @@ if (isset($_REQUEST['btn_login'])) {
                     header("refresh:2;");
                 }
             } else {
-                $errorMsg = 'ไม่พบ user';
-                header("refresh:2;../index.php");
+                $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
+                // header("refresh:2;");
             }
         }
     } catch (PDOException $e) {

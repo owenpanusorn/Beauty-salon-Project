@@ -3,6 +3,17 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
+if (isset($_REQUEST['btn_logout'])) {
+    try {
+        session_unset();
+        $_SESSION["token_loing"] = false;
+        $seMsg = 'ออกจากระบบแล้ว';
+        header("refresh:2;index.php");
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
 if (isset($_REQUEST['uu_id']) && isset($_REQUEST['start_date']) && isset($_REQUEST['start_time']) && isset($_REQUEST['end_time'])) {
 
     $date = $_REQUEST['start_date'];

@@ -2,8 +2,10 @@
 session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
-?>
 
+// print_r($_REQUEST);
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +45,7 @@ require_once 'require/session.php';
                 </div>
             <?php } ?>
             <h2 class="form-signin-heading ms-auto kanitB text-center mt-2">เข้าสู่ระบบ</h2>
-            <input type="text" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
+            <input type="text" class="form-control" name="username" autocomplete="off" placeholder="Username" required="" autofocus="" />
             <input type="password" class="form-control" name="password" placeholder="Password" required="" />
             <select class="form-control kanitB role" name="select_login">
                 <option value="USER" selected>พนักงาน</option>

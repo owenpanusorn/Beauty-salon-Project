@@ -3,20 +3,49 @@
   require_once 'require/config.php';
   require_once 'require/session.php';
 
-// if (isset($_REQUEST['btn_logout'])) {
-//   try {
-//     session_unset();
-//     $_SESSION["token_admin_loing"] = false;
-//     $seMsg = 'ออกจากระบบแล้ว';
-//     header("refresh:2;login.php");
-//   } catch (PDOException $e) {
-//     echo $e->getMessage();
-//   }
-// }
+  $message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
 
-// if (empty($_SESSION["token_admin_uuid"])) {
-//   header("refresh:0;login.php");
-// }
+  if (empty($_SESSION["token_admin_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;login.php");
+  }
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
+
+if (!empty($_SESSION["token_admin_uuid"])) {
+  $uuid_mng = $_SESSION["token_admin_uuid"];
+
+  $select_mng = $db->prepare("select * from tb_manager where uuid = :uuid_mng");
+  $select_mng->bindParam(":uuid_mng", $uuid_mng);
+  $select_mng->execute();
+  $row = $select_mng->fetch(PDO::FETCH_ASSOC);
+  extract($row);
+
+  $date = date("d-m-Y");
+
+   $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
+    $res = $db->query($sql);
+    $count = $res->fetchColumn();
+
+  $sql1 = "select count(books_nlist) from tb_booking where cre_bks_date = '$date'";
+  $res1 = $db->query($sql1);
+  $count_cus = $res1->fetchColumn();
+
+  $sql2 = "select sum(books_price) as price from tb_booking where cre_bks_date = '$date'";
+  $res2 = $db->query($sql2);
+  $sum_price = $res2->fetchColumn();
+ 
+}
 
 
 ?>
@@ -61,6 +90,9 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="stylesheet" href="css/fontkanit.css"> 
+  <link rel="icon" href="images/hairsalon-icon.png" type="image/gif" sizes="16x16">
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -70,7 +102,7 @@
       <!-- Logo -->
       <a href="index.php" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>A</b>LT</span>
+        <span class="logo-mini"><b>BT</b>S</span>
         <!-- logo for regular state and mobile devices -->
         <span class="logo-lg"><b>Beautiful</b> Salon</span>
       </a>
@@ -83,87 +115,30 @@
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-
-            <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell-o"></i>
-                <span class="label label-warning">10</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="header">You have 10 notifications</li>
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                        page and may cause design problems
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-red"></i> 5 new members joined
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-user text-red"></i> You changed your username
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">View all</a></li>
-              </ul>
-            </li>
+        
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+              <img src="images/manager/manager.png" class="user-image" alt="User Image">                
+                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                  <img src="images/manager/manager.png" class="img-circle" alt="User Image">
 
                   <p>
-                    <?php echo $_SESSION["token_admin_username"] ?>
-                    <small>Member since Nov. 2012</small>
+                    <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                    <small class="kanitB">ผู้จัดการ</small>
                   </p>
                 </li>
-                <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!-- /.row -->
-                </li>
+               
                 <!-- Menu Footer-->
-                <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  </div>
+                <li class="user-footer">                 
                   <div class="pull-right">
-                    <button  type="submit" name="btn_logout" class="btn btn-default btn-flat" >Sign out</button>
+                  <form method="post">
+                      <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                    </form>
                   </div>
                 </li>
               </ul>
@@ -180,29 +155,22 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            <img src="images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>Alexander Pierce</p>
+            <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu" data-widget="tree">
-          <li class="header">MENU BAR</li>
+        <ul class="sidebar-menu kanitB" data-widget="tree">
+          <li class="header">เมนูบาร์</li>
 
           <li class="active">
             <a href="index.php">
               <i class="fa fa-home"></i> <span>หน้าแรก</span>
-              <!-- <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span> -->
             </a>
-            <!-- <ul class="treeview-menu">
-            <li class="active"><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-          </ul> -->
           </li>
 
           <li class="treeview">
@@ -210,17 +178,17 @@
               <i class="fa fa-calendar"></i>
               <span>การจองคิว</span>
               <span class="pull-right-container">
-                <span class="label label-primary pull-right">4</span>
+                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+              <li><a href="booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+              <li><a href="booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                   <span class="pull-right-container">
-                    <span class="label label-primary pull-right">4</span>
+                    <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
                   </span>
                 </a></li>
-              <li><a href="pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+              <li><a href="booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
             </ul>
           </li>
@@ -233,7 +201,7 @@
           </li>
 
           <li>
-            <a href="users.php">
+            <a href="customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
           </li>
@@ -241,6 +209,12 @@
           <li>
             <a href="employee/">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="manager/">
+              <i class="fa fa-user"></i> <span>ผู้จัดการ</span>
             </a>
           </li>
 
@@ -253,8 +227,8 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <li><a href="report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
             </ul>
           </li>
 
@@ -267,7 +241,7 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
+              <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
               <li><a href="pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
@@ -281,153 +255,70 @@
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <section class="content-header">
-        <h1>
-          Dashboard
-          <small>Control panel</small>
+        <h1 class="kanitB">
+        แดชบอร์ด
+          <!-- <small>Control panel</small> -->
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-          <li class="active">Dashboard</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="#"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li class="active">แดชบอร์ด</li>
         </ol>
       </section>
 
       <!-- Main content -->
       <section class="content">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-aqua">
-              <div class="inner">
-                <h3>150</h3>
-
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-green">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
+        <div class="row kanitB">         
+          
           <!-- ./col -->
           <div class="col-lg-3 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-yellow">
               <div class="inner">
-                <h3>44</h3>
+                <h3><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count_cus ?></h3>
 
-                <p>User Registrations</p>
+                <p>จำนวนลูกค้าทั้งหมด</p>
               </div>
               <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <i class="ion ion-person"></i>
+              </div>            
             </div>
-          </div>
-          <!-- ./col -->
+          </div>          
+         
           <div class="col-lg-3 col-xs-6">
             <!-- small box -->
-            <div class="small-box bg-red">
+            <div class="small-box bg-green">
               <div class="inner">
-                <h3>65</h3>
+                <h3 class="kanitB"><?php if (!empty($_SESSION["token_admin_uuid"])) echo number_format($sum_price); ?> <sup style="font-size: 20px">บาท</sup></h3>
 
-                <p>Unique Visitors</p>
+                <p>รายรับทั้งหมด</p>
               </div>
               <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="ion ion-cash"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              
             </div>
           </div>
-          <!-- ./col -->
+           <!-- ./col -->
         </div>
         <!-- /.row -->
         <!-- Main row -->
-        <div class="row">
+        <div class="row kanitB">
           <!-- Left col -->
           <section class="container-fluid">
             <!-- Custom tabs (Charts with tabs)-->
             <div class="nav-tabs-custom">
               <!-- Tabs within a box -->
               <ul class="nav nav-tabs pull-right">
-                <li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-                <li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
-                <li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
+                <li class="active"><a href="#revenue-chart" data-toggle="tab">กราฟ</a></li>
+                <li class="pull-left header"><i class="ion ion-person"></i> กราฟลูกค้า </li>
               </ul>
               <div class="tab-content no-padding">
                 <!-- Morris chart - Sales -->
                 <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
-                <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
               </div>
             </div>
             <!-- /.nav-tabs-custom -->
-
-
-
-
-            <section class="container-fluid">
-              <!-- solid sales graph -->
-              <div class="box box-solid bg-teal-gradient">
-                <div class="box-header">
-                  <i class="fa fa-th"></i>
-
-                  <h3 class="box-title">Sales Graph</h3>
-
-                  <div class="box-tools pull-right">
-                    <button type="button" class="btn bg-teal btn-sm" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn bg-teal btn-sm" data-widget="remove"><i class="fa fa-times"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="box-body border-radius-none">
-                  <div class="chart" id="line-chart" style="height: 250px;"></div>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer no-border">
-                  <div class="row">
-                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                      <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60" data-fgColor="#39CCCC">
-
-                      <div class="knob-label">Mail-Orders</div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                      <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60" data-fgColor="#39CCCC">
-
-                      <div class="knob-label">Online</div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-xs-4 text-center">
-                      <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60" data-fgColor="#39CCCC">
-
-                      <div class="knob-label">In-Store</div>
-                    </div>
-                    <!-- ./col -->
-                  </div>
-                  <!-- /.row -->
-                </div>
-                <!-- /.box-footer -->
-              </div>
-              <!-- /.box -->
-
-            </section>
-            <!-- right col -->
         </div>
         <!-- /.row (main row) -->
 

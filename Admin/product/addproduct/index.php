@@ -1,78 +1,126 @@
-<!DOCTYPE html>
-<html>
 <?php
+session_start();
 require_once '../../require/config.php';
+require_once '../../require/session.php';
+
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;../../login.php");
+}
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;../../login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
+if (!empty($_SESSION["token_admin_uuid"])) {
+  $uuid_mng = $_SESSION["token_admin_uuid"];
+
+  $select_mng = $db->prepare("select * from tb_manager where uuid = :uuid_mng");
+  $select_mng->bindParam(":uuid_mng", $uuid_mng);
+  $select_mng->execute();
+  $row = $select_mng->fetch(PDO::FETCH_ASSOC);
+  extract($row);
+
+  $date = date("d-m-Y");
+
+  $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
+  $res = $db->query($sql);
+  $count = $res->fetchColumn();
+
+  $sql1 = "select count(books_nlist) from tb_booking where cre_bks_date = '$date'";
+  $res1 = $db->query($sql1);
+  $count_cus = $res1->fetchColumn();
+
+  $sql2 = "select sum(books_price) as price from tb_booking where cre_bks_date = '$date'";
+  $res2 = $db->query($sql2);
+  $sum_price = $res2->fetchColumn();
+}
 
 if (isset($_REQUEST['btn_insert'])) {
-    $data = $data ?? random_bytes(16);
-    assert(strlen($data) == 16);
+  // $data = $data ?? random_bytes(16);
+  // assert(strlen($data) == 16);
 
-    // Set version to 0100
-    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-    // Set bits 6-7 to 10
-    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+  // Set version to 0100
+  // $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+  // Set bits 6-7 to 10
+  // $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
 
-    // Output the 36 character UUID.
-    $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+  // Output the 36 character UUID.
+  // $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-    $prodname = $_REQUEST['prod_name'];
-    $proddetails = $_REQUEST['prod_details'];
-    $prodprice = $_REQUEST['prod_price'];
+  $prodid = $_REQUEST['prod_code'];
+  $prodname = $_REQUEST['prod_name'];
+  $proddetails = $_REQUEST['prod_details'];
+  // $prodprice = $_REQUEST['prod_price'];
 
-    if (empty($_REQUEST['prod_code'])) {
-        $prodid = $myuuid;
-    } else {
-        $prodid = $_REQUEST['prod_code'];
-    }
+  if (empty($_REQUEST['prod_code'])) {
+    $errorMsg = "โปรดใส่รหัสสินค้า";
+  }
+  // else {
+  //     $prodid = $_REQUEST['prod_code'];
+  // }
 
-    if (empty($prodname)) {
-        $errorMsg = "Please Enter Product Name";
-    } else if (empty($proddetails)) {
-        $errorMsg = "Please Enter Details";
-    } else if (empty($prodprice)) {
-        $errorMsg = "Please Enter Price";
-    } else if (empty($_FILES['prod_img']['name'])) {
-        $errorMsg = "Please Select Images";
-    } else {
-        try {
-            if (!isset($errorMsg)) {
-                $insert_prod = $db->prepare("INSERT INTO tb_product(prod_code, prod_name, prod_details, prod_price,prod_img, cre_prod_date, cre_prod_time) VALUES (:id, :prodname, :proddetail, :profprice,:prodimg, :cre_prod_date, :cre_prod_time)");
-                if (isset($_FILES['prod_img'])) {
-                    $file_name = $_FILES['prod_img']['name'];
-                    $file_size = $_FILES['prod_img']['size'];
-                    $file_tmp = $_FILES['prod_img']['tmp_name'];
-                    $file_type = $_FILES['prod_img']['type'];
-                    $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
+  //   else if (empty($prodprice)) {
+  //     $errorMsg = "Please Enter Price";
+  // }
 
-                    if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
-                        $$errorMsg = "Wrong! i . . .";
-                    }
-                }
-                $insert_prod->bindParam(':id', $prodid);
-                $insert_prod->bindParam(':prodname', $prodname);
-                $insert_prod->bindParam(':proddetail', $proddetails);
-                $insert_prod->bindParam(':profprice', $prodprice);
-                $insert_prod->bindParam(':prodimg', $file_ext);
-                $insert_prod->bindParam(':cre_prod_date', $date);
-                $insert_prod->bindParam(':cre_prod_time', $time);
+  if (empty($prodname)) {
+    $errorMsg = "โปรดใส่ชื่อสินค้า";
+  } else if (empty($proddetails)) {
+    $errorMsg = "โปรดใส่รายละเอียดสินค้า";
+  } else if (empty($_FILES['prod_img']['name'])) {
+    $errorMsg = "โปรดใส่เลือกรูปสินค้า";
+  } else {
+    try {
+      if (!isset($errorMsg)) {
+        $insert_prod = $db->prepare("INSERT INTO tb_product(prod_code, prod_name, prod_details,prod_img, cre_prod_date, cre_prod_time) VALUES (:id, :prodname, :proddetail,:prodimg, :cre_prod_date, :cre_prod_time)");
+        if (isset($_FILES['prod_img'])) {
+          $file_name = $_FILES['prod_img']['name'];
+          $file_size = $_FILES['prod_img']['size'];
+          $file_tmp = $_FILES['prod_img']['tmp_name'];
+          $file_type = $_FILES['prod_img']['type'];
+          $file_ext = substr(str_shuffle("0123456789"), 0, 5) . $file_name;
 
-                if ($insert_prod->execute()) {
-                    $insertMsg = "Insert Successfully . . .";
-                    header("refresh:2;../index.php");
-                }
-            }
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+          if (!move_uploaded_file($file_tmp, "../../images/prod_img/" . $file_ext)) {
+            $$errorMsg = "Wrong! i . . .";
+          }
         }
+        $insert_prod->bindParam(':id', $prodid);
+        $insert_prod->bindParam(':prodname', $prodname);
+        $insert_prod->bindParam(':proddetail', $proddetails);
+        // $insert_prod->bindParam(':profprice', $prodprice);
+        $insert_prod->bindParam(':prodimg', $file_ext);
+        $insert_prod->bindParam(':cre_prod_date', $date);
+        $insert_prod->bindParam(':cre_prod_time', $time);
+
+        if ($insert_prod->execute()) {
+          $insertMsg = "บันทึกข้อมูลสินค้าสำเร็จ . . .";
+          header("refresh:2;../index.php");
+        }
+      }
+    } catch (PDOException $e) {
+      echo $e->getMessage();
     }
+  }
 }
 
 ?>
+<!DOCTYPE html>
+<html>
 
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Product | Beautiful Salon</title>
+  <title>สินค้า | Beautiful Salon</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -112,6 +160,9 @@ if (isset($_REQUEST['btn_insert'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="stylesheet" href="../../css/fontkanit.css">
+  <link rel="icon" href="../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -121,7 +172,7 @@ if (isset($_REQUEST['btn_insert'])) {
       <!-- Logo -->
       <a href="index.php" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>A</b>LT</span>
+        <span class="logo-mini"><b>BT</b>S</span>
         <!-- logo for regular state and mobile devices -->
         <span class="logo-lg"><b>Beautiful</b> Salon</span>
       </a>
@@ -137,87 +188,30 @@ if (isset($_REQUEST['btn_insert'])) {
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-            <!-- Notifications: style can be found in dropdown.less -->
-            <li class="dropdown notifications-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-bell-o"></i>
-                <span class="label label-warning">10</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li class="header">You have 10 notifications</li>
-                <li>
-                  <!-- inner menu: contains the actual data -->
-                  <ul class="menu">
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                        page and may cause design problems
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-users text-red"></i> 5 new members joined
-                      </a>
-                    </li>
 
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="fa fa-user text-red"></i> You changed your username
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="footer"><a href="#">View all</a></li>
-              </ul>
-            </li>
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+                <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
+                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                  <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
 
                   <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                    <small class="kanitB">ผู้จัดการ</small>
                   </p>
                 </li>
-                <!-- Menu Body -->
-                <li class="user-body">
-                  <div class="row">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!-- /.row -->
-                </li>
+
                 <!-- Menu Footer-->
                 <li class="user-footer">
-                  <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <form method="post">
+                      <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                    </form>
                   </div>
                 </li>
               </ul>
@@ -233,29 +227,22 @@ if (isset($_REQUEST['btn_insert'])) {
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-            <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-            <p>Alexander Pierce</p>
+            <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
 
         <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu" data-widget="tree">
-          <li class="header">MENU BAR</li>
+        <ul class="sidebar-menu kanitB" data-widget="tree">
+          <li class="header">เมนูบาร์</li>
 
           <li>
             <a href="../../index.php">
               <i class="fa fa-home"></i> <span>หน้าแรก</span>
-              <!-- <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span> -->
             </a>
-            <!-- <ul class="treeview-menu">
-            <li class="active"><a href="index.php"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-          </ul> -->
           </li>
 
           <li class="treeview">
@@ -263,30 +250,30 @@ if (isset($_REQUEST['btn_insert'])) {
               <i class="fa fa-calendar"></i>
               <span>การจองคิว</span>
               <span class="pull-right-container">
-                <span class="label label-primary pull-right">4</span>
+                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="pages/layout/boxed.html"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+              <li><a href="../../booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+              <li><a href="../../booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                   <span class="pull-right-container">
-                    <span class="label label-primary pull-right">4</span>
+                    <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
                   </span>
                 </a></li>
-              <li><a href="pages/layout/fixed.html"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+              <li><a href="../../booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
             </ul>
           </li>
           <li>
 
           <li class="active">
-            <a href="../index.php">
+            <a href="../../product/">
               <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
             </a>
           </li>
 
           <li>
-            <a href="users.php">
+            <a href="../../customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
           </li>
@@ -294,6 +281,12 @@ if (isset($_REQUEST['btn_insert'])) {
           <li>
             <a href="../../employee/">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="../../manager/">
+              <i class="fa fa-user"></i> <span>ผู้จัดการ</span>
             </a>
           </li>
 
@@ -306,8 +299,8 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
             </ul>
           </li>
 
@@ -320,8 +313,8 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li>
-              <li><a href="pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
+              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -338,32 +331,32 @@ if (isset($_REQUEST['btn_insert'])) {
           Product
           <small class="kanitB"><b>เพิ่มรายการสินค้า</b></small>
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li><a href="../">Product</a></li>
-          <li class="active">Add Product</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li><a href="../">สินค้า</a></li>
+          <li class="active">เพิ่มรายการสินค้า</li>
         </ol>
       </section>
 
       <!-- Main content -->
       <section class="content">
         <?php
-if (isset($errorMsg)) {
-    ?>
-          <div class="alert alert-danger alert-dismissible">
+        if (isset($errorMsg)) {
+        ?>
+          <div class="alert alert-danger alert-dismissible kanitB">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
-        <?php }?>
+        <?php } ?>
 
         <?php
-if (isset($insertMsg)) {
-    ?>
-          <div class="alert alert-success alert-dismissible">
+        if (isset($insertMsg)) {
+        ?>
+          <div class="alert alert-success alert-dismissible kanitB">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
-        <?php }?>
-        <form role="form" method="POST" enctype="multipart/form-data">
+        <?php } ?>
+        <form role="form" method="POST" enctype="multipart/form-data" class="kanitB">
           <div class="row">
             <div class="col-xs-12">
 
@@ -378,39 +371,39 @@ if (isset($insertMsg)) {
                 <!-- form start -->
                 <div class="box-body">
                   <div class="form-group">
-                    <label for="title">Product CODE</label>
+                    <label for="title">รหัสสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-barcode"></i>
                       </div>
-                      <input type="text" class="form-control kanitB" name="prod_code" placeholder="ตัวอย่าง เช่น P001">
+                      <input type="text" class="form-control kanitB" name="prod_code" autocomplete="off" placeholder="ตัวอย่าง เช่น P001">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="description">Product Name</label>
+                    <label for="description">ชื่อสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa fa-tags"></i>
                       </div>
 
-                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" placeholder="ตัวอย่าง เช่น L'Oreal Professionnel Serie Expert inforcer Shampoo">
+                      <input type="text" class="form-control kanitB" id="prod_name" name="prod_name" autocomplete="off" placeholder="ตัวอย่าง เช่น L'Oreal Professionnel Serie Expert inforcer Shampoo">
                     </div>
                   </div>
 
                   <!-- Text area -->
                   <div class="form-group">
-                    <label>Details</label>
+                    <label>รายละเอียดสินค้า</label>
                     <div class="input-group">
                       <div class="input-group-addon">
                         <i class="fa  fa-align-left"></i>
                       </div>
-                      <textarea class="form-control kanitB" name="prod_details" rows="3" placeholder="รายละเอียด . . ."></textarea>
+                      <textarea class="form-control kanitB" name="prod_details" rows="3" autocomplete="off" placeholder="รายละเอียด . . ."></textarea>
                     </div>
                   </div>
                   <!-- Text area -->
                   <!-- Price -->
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <label>Price</label>
 
                     <div class="input-group">
@@ -419,26 +412,21 @@ if (isset($insertMsg)) {
                       </div>
                       <input type="number" class="form-control" name="prod_price" min="0" max="10000">
                     </div>
-                  </div>
+                  </div> -->
                   <!-- /.input group -->
                   <!-- Price -->
                   <!-- fileupload-->
                   <div class="form-group">
-                    <label for="fileupload">Product picture</label>
+                    <label for="fileupload">รูปสินค้า</label>
                     <input type="file" class="form-control" name="prod_img">
                   </div>
                   <!-- fileupload-->
-
-
                   <div class="box-footer">
-                    <button type="submit" name="btn_insert" class="btn btn-success"><i class="fa  fa-cart-plus"></i> Product</button>
+                    <button type="submit" name="btn_insert" class="btn btn-success kanitB"><i class="fa  fa-cart-plus"></i> เพิ่มรายการสินค้า</button>
                   </div>
                   <!-- /.input group -->
                 </div>
                 <!-- /.form group -->
-
-
-
               </div>
               <!-- /ข้อมูลส้วนตัว -->
             </div>
@@ -450,16 +438,14 @@ if (isset($insertMsg)) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <footer class="main-footer kanitB">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        <b>เวอร์ชั่น</b> 1.0.1
       </div>
       <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
       reserved.
     </footer>
-
-    <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
+ 
     <div class="control-sidebar-bg"></div>
   </div>
   <!-- ./wrapper -->

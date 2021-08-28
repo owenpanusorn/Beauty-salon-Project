@@ -3,6 +3,10 @@
 <?php
 require_once '../../require/config.php';
 
+if(empty($_SESSION["token_admin_uuid"])){
+  session_unset();
+  header("refresh:0;../../../login.php");
+}
 if (isset($_REQUEST['update_id'])) {
     try {
         $uuid = $_REQUEST['update_id'];

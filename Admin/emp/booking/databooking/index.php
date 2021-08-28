@@ -3,8 +3,8 @@ session_start();
 require_once('../../../require/config.php');
 require_once('../../../require/session.php');
 
-if (!empty($_SESSION["token_admin_uuid"])) {
-    $uuid_emp = $_SESSION["token_admin_uuid"];
+if (!empty($_SESSION["token_emp_uuid"])) {
+    $uuid_emp = $_SESSION["token_emp_uuid"];
 
     $select_emp = $db->prepare("select * from tb_employee where uuid = :uuid_emp");
     $select_emp->bindParam(":uuid_emp", $uuid_emp);
@@ -89,7 +89,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <?php echo '<img src="../../../images/employee/' . $images . '" class="user-image" alt="User Image">' ?>
-                                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
+                                <span class="hidden-xs"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $fname . ' ' . $lname; ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -97,7 +97,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                                     <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
 
                                     <p>
-                                        <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                                        <?php if (!empty($_SESSION["token_emp_uuid"])) echo $fname . ' ' . $lname; ?>
                                         <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
@@ -126,7 +126,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                         <?php echo '<img src="../../../images/employee/' . $images . '" class="img-circle" alt="User Image">' ?>
                     </div>
                     <div class="pull-left info">
-                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+                        <p><?php if (!empty($_SESSION["token_emp_uuid"])) echo $fname . ' ' . $lname; ?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
@@ -146,14 +146,14 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right"><?php echo $count ?></span>
+                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li class="active"><a href="#"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li><a href="../confirm/index.php"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right"><?php echo $count ?></span>
+                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
