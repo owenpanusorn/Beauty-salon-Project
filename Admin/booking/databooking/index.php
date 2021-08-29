@@ -132,7 +132,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                    <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+                        <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
                         <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
@@ -142,88 +142,94 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu kanitB" data-widget="tree">
-          <li class="header">เมนูบาร์</li>
+                    <li class="header">เมนูบาร์</li>
 
-          <li>
-            <a href="../../index.php">
-              <i class="fa fa-home"></i> <span>หน้าแรก</span>             
-            </a>           
-          </li>
+                    <li>
+                        <a href="../../index.php">
+                            <i class="fa fa-home"></i> <span>หน้าแรก</span>
+                        </a>
+                    </li>
 
-          <li class="treeview active">
-            <a href="#">
-              <i class="fa fa-calendar"></i>
-              <span>การจองคิว</span>
-              <span class="pull-right-container">
-                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count?></span>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li class="active"><a href="booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
-              <li><a href="../confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
-                  <span class="pull-right-container">
-                    <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count?></span>
-                  </span>
-                </a></li>
-              <li><a href="../history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
-              <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
-            </ul>
-          </li>
-          <li>
+                    <li class="treeview active">
+                        <a href="#">
+                            <i class="fa fa-calendar"></i>
+                            <span>การจองคิว</span>
+                            <span class="pull-right-container">
+                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="active"><a href="booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
+                            <li><a href="../confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
+                                    <span class="pull-right-container">
+                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
+                                    </span>
+                                </a></li>
+                            <li><a href="../history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
+                            <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a></li> -->
+                        </ul>
+                    </li>
+                    <li>
 
-          <li>
-            <a href="../../product/">
-              <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
-            </a>
-          </li>
+                    <li>
+                        <a href="../../product/">
+                            <i class="fa fa-shopping-cart"></i> <span>สินค้า</span>
+                        </a>
+                    </li>
 
-          <li>
-            <a href="../../customer/">
-              <i class="fa fa-users"></i> <span>ลูกค้า</span>
-            </a>
-          </li>
+                    <li>
+                        <a href="../../serv/">
+                            <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+                        </a>
+                    </li>
 
-          <li>
-            <a href="../../employee/">
-              <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
-            </a>
-          </li>
+                    <li>
+                        <a href="../../customer/">
+                            <i class="fa fa-users"></i> <span>ลูกค้า</span>
+                        </a>
+                    </li>
 
-          <li>
-            <a href="../../manager/">
-              <i class="fa fa-user"></i> <span>ผู้จัดการ</span>             
-            </a>            
-          </li>
+                    <li>
+                        <a href="../../employee/">
+                            <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
+                        </a>
+                    </li>
 
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-file-text-o"></i>
-              <span>รายงาน</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-              <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
-            </ul>
-          </li>
+                    <li>
+                        <a href="../../manager/">
+                            <i class="fa fa-user"></i> <span>ผู้จัดการ</span>
+                        </a>
+                    </li>
 
-          <li class="treeview">
-            <a href="#">
-              <i class="fa fa-gear"></i>
-              <span>ตั้งค่า</span>
-              <span class="pull-right-container">
-                <i class="fa fa-angle-left pull-right"></i>
-              </span>
-            </a>
-            <ul class="treeview-menu">
-              <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
-            </ul>
-          </li>
-          </li>
-        </ul>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-file-text-o"></i>
+                            <span>รายงาน</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+                            <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-gear"></i>
+                            <span>ตั้งค่า</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
+                            <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+                        </ul>
+                    </li>
+                    </li>
+                </ul>
             </section>
             <!-- /.sidebar -->
         </aside>
@@ -275,7 +281,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date = :cre_bks_date');                                      
+                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date = :cre_bks_date');
                                         $result->bindParam(":book_st", $book_status);
                                         $result->bindParam(":cre_bks_date", $date);
                                         $result->execute();

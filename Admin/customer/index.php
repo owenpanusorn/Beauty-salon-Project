@@ -206,11 +206,18 @@ if (isset($_REQUEST['del_id'])) {
             </a>
           </li>
 
+          <li>
+            <a href="../serv/">
+              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
+            </a>            
+          </li>
+
           <li class="active">
             <a href="index.php">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
           </li>
+          
 
           <li>
             <a href="../employee/">

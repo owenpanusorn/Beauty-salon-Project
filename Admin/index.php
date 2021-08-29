@@ -201,6 +201,12 @@ if (!empty($_SESSION["token_admin_uuid"])) {
           </li>
 
           <li>
+            <a href="serv/">
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>             
+            </a>            
+          </li>
+
+          <li>
             <a href="customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>

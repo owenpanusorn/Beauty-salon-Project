@@ -138,13 +138,13 @@ if (isset($_REQUEST['btn_agree'])) {
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
+                                <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
                                 <span class="hidden-xs"><?php echo $fname . ' ' . $lname ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+                                    <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
 
                                     <p>
                                         <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
@@ -174,7 +174,7 @@ if (isset($_REQUEST['btn_agree'])) {
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                    <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+                        <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
                         <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
@@ -220,10 +220,18 @@ if (isset($_REQUEST['btn_agree'])) {
                     </li>
 
                     <li>
+                        <a href="../../serv/">
+                            <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="../../customer/">
                             <i class="fa fa-users"></i> <span>ลูกค้า</span>
                         </a>
                     </li>
+
+                   
 
                     <li>
                         <a href="../../employee/">

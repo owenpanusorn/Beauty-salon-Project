@@ -273,10 +273,18 @@ if (isset($_REQUEST['btn_insert'])) {
           </li>
 
           <li>
+            <a href="../../serv/">
+              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
+            </a>            
+          </li>
+
+          <li>
             <a href="../../customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
           </li>
+
+          
 
           <li>
             <a href="../../employee/">
