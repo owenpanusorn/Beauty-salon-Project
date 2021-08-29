@@ -5,6 +5,24 @@ session_start();
 require_once '../../require/config.php';
 require_once '../../require/session.php';
 
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;../../login.php");
+}
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;../../login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
 if (!empty($_SESSION["token_admin_uuid"])) {
   $uuid_mng = $_SESSION["token_admin_uuid"];
 
@@ -46,20 +64,18 @@ if (isset($_REQUEST['btn_update'])) {
   try {
 
     $update_serv_id = $_REQUEST['serv_id'];
-    $serv_code_up = $_REQUEST['serv_code'];
+    // $serv_code_up = $_REQUEST['serv_code'];
     $serv_ser_up = $_REQUEST['serv_ser'];
     $serv_price_up = $_REQUEST['serv_price'];
     $serv_time_up = $_REQUEST['serv_time'];
 
-    if (empty($serv_code_up)) {
-      $errorMsg = "Please Enter Service Code";
-    } else if (empty($serv_ser_up)) {
-      $errorMsg = "Please Enter Service Name";
+    if (empty($serv_ser_up)) {
+      $errorMsg = "กรุณากรอกชื่อบริการ";
     } else if (empty($serv_price_up)) {
-      $errorMsg = "Please Enter Service Price";
-    } else if (empty($serv_time_up)) {
-      $errorMsg = "Please Enter Service Time";
-    } else {
+      $errorMsg = "กรุณากรอกราคา";
+    } else if ($serv_time_up == 'null') {
+      $errorMsg = "กรุณาเลือกเวลา";
+     } else {
       try {
         if (!isset($errorMsg)) {
 
@@ -67,7 +83,7 @@ if (isset($_REQUEST['btn_update'])) {
           serv_price = :price_serv ,serv_process_time = :process_time_serv,up_serv_date = :up_serv_date,up_serv_time = :up_serv_time where serv_id = :update_id');
 
           $update_serv->bindParam(':update_id', $update_serv_id);
-          $update_serv->bindParam(':code_serv', $serv_code_up);
+          $update_serv->bindParam(':code_serv', $serv_code);
           $update_serv->bindParam(':type_serv', $serv_ser_up);
           $update_serv->bindParam(':price_serv', $serv_price_up);
           $update_serv->bindParam(':process_time_serv', $serv_time_up);
@@ -133,6 +149,7 @@ if (isset($_REQUEST['btn_update'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="icon" href="../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -155,11 +172,11 @@ if (isset($_REQUEST['btn_update'])) {
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-        
+
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="../../images/manager/manager.png" class="user-image" alt="User Image">                
+                <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
                 <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
@@ -172,11 +189,11 @@ if (isset($_REQUEST['btn_update'])) {
                     <small class="kanitB">ผู้จัดการ</small>
                   </p>
                 </li>
-               
+
                 <!-- Menu Footer-->
-                <li class="user-footer">                 
+                <li class="user-footer">
                   <div class="pull-right">
-                  <form method="post">
+                    <form method="post">
                       <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
                     </form>
                   </div>
@@ -242,8 +259,8 @@ if (isset($_REQUEST['btn_update'])) {
 
           <li class="active">
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -305,10 +322,10 @@ if (isset($_REQUEST['btn_update'])) {
           Service
           <small class="kanitB"><b>แก้ไขการบริการ</b></small>
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li><a href="../">Service</a></li>
-          <li class="active">Edit Service</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li><a href="../">บริการ</a></li>
+          <li class="active">แก้ไขรายการบริการ</li>
         </ol>
       </section>
 
@@ -317,7 +334,7 @@ if (isset($_REQUEST['btn_update'])) {
         <?php
         if (isset($errorMsg)) {
         ?>
-          <div class="alert alert-danger alert-dismissible">
+          <div class="alert alert-danger alert-dismissible kanitB">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
@@ -326,7 +343,7 @@ if (isset($_REQUEST['btn_update'])) {
         <?php
         if (isset($insertMsg)) {
         ?>
-          <div class="alert alert-success alert-dismissible">
+          <div class="alert alert-success alert-dismissible kanitB">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
         <?php } ?>
@@ -348,7 +365,7 @@ if (isset($_REQUEST['btn_update'])) {
                   <input type="hidden" class="form-control" id="serv_id" name="serv_id" value="<?php echo $serv_id; ?>">
                   <div class="form-group">
                     <label for="title">รหัสบริการ</label>
-                    <input type="text" class="form-control" id="serv_code" name="serv_code" placeholder="S100X" value="<?php echo $serv_code; ?>">
+                    <input type="text" class="form-control" id="serv_code" value="<?php echo $serv_code; ?>"  disabled> 
                   </div>
                   <div class="form-group">
                     <label for="description">ชื่อบริการ</label>
@@ -365,7 +382,7 @@ if (isset($_REQUEST['btn_update'])) {
                     <label>เวลาในการบริการ</label>
                     <!-- selected -->
                     <select class="form-control" name="serv_time">
-                      <option style="font-weight: bolder;">เลือกเวลาในการบริการ</option>
+                      <option style="font-weight: bolder;" value="null">เลือกเวลาในการบริการ</option>
                       <option style="font-weight: bolder;" value="00:30:00" <?php echo $serv_process_time == "00:30:00" ? 'selected' : ''  ?>>00:30:00</option>
                       <option style="font-weight: bolder;" value="01:00:00" <?php echo $serv_process_time == "01:00:00" ? 'selected' : ''  ?>>01:00:00</option>
                       <option style="font-weight: bolder;" value="01:30:00" <?php echo $serv_process_time == "01:30:00" ? 'selected' : ''  ?>>01:30:00</option>
@@ -378,7 +395,7 @@ if (isset($_REQUEST['btn_update'])) {
                   <!-- /.box-body -->
 
                   <div class="box-footer">
-                    <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> Update</button>
+                    <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> อัปเดตรายการบริการ</button>
                   </div>
                 </div>
                 <!-- /ข้อมูลส้วนตัว -->
@@ -391,9 +408,9 @@ if (isset($_REQUEST['btn_update'])) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <footer class="main-footer kanitB">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        <b>เวอร์ชั่น</b> 1.0.1
       </div>
       <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
       reserved.

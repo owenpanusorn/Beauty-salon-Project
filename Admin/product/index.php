@@ -313,9 +313,9 @@ if (isset($_REQUEST['del_id'])) {
                     <?php
                     $result = $db->prepare('SELECT * from tb_product');
                     $result->execute();
-
+                   
                     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-
+                    
                     ?>
                       <tr class="kanitB">
                         <td><?php echo $row["prod_code"] ?></td>

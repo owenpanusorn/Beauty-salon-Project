@@ -23,6 +23,7 @@ require_once 'require/session.php';
     <!-- Ionicons -->
     <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
     <title>Sing In</title>
+    <link rel="icon" href="images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body>

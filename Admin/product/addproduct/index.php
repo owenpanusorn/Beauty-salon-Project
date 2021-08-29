@@ -21,6 +21,28 @@ if (isset($_REQUEST['btn_logout'])) {
   }
 }
 
+try {
+  $result = $db->prepare('SELECT * from tb_product');
+  $result->execute();
+ 
+  $num = 0;
+  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+   $num++;
+  }
+  $total = $num + 1;
+
+  if(strlen($total) == 1) {
+    $codeauto = 'P00'.$total.'';
+  } else if (strlen($total) == 2) {
+    $codeauto = 'P0'.$total.'';
+  } else if (strlen($total) > 2) {
+    $codeauto = 'P'.$total.'';
+  }
+
+} catch (PDOException $e) {
+  echo $e->getMessage();
+}
+
 if (!empty($_SESSION["token_admin_uuid"])) {
   $uuid_mng = $_SESSION["token_admin_uuid"];
 
@@ -57,14 +79,14 @@ if (isset($_REQUEST['btn_insert'])) {
   // Output the 36 character UUID.
   // $myuuid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 
-  $prodid = $_REQUEST['prod_code'];
+  $prodid = $codeauto;
   $prodname = $_REQUEST['prod_name'];
   $proddetails = $_REQUEST['prod_details'];
   // $prodprice = $_REQUEST['prod_price'];
 
-  if (empty($_REQUEST['prod_code'])) {
-    $errorMsg = "โปรดใส่รหัสสินค้า";
-  }
+  // if (empty($_REQUEST['prod_code'])) {
+  //   $errorMsg = "โปรดใส่รหัสสินค้า";
+  // }
   // else {
   //     $prodid = $_REQUEST['prod_code'];
   // }
@@ -336,7 +358,7 @@ if (isset($_REQUEST['btn_insert'])) {
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Product
+          Product 
           <small class="kanitB"><b>เพิ่มรายการสินค้า</b></small>
         </h1>
         <ol class="breadcrumb kanitB">
@@ -384,7 +406,7 @@ if (isset($_REQUEST['btn_insert'])) {
                       <div class="input-group-addon">
                         <i class="fa fa-barcode"></i>
                       </div>
-                      <input type="text" class="form-control kanitB" name="prod_code" autocomplete="off" placeholder="ตัวอย่าง เช่น P001">
+                      <input type="text" class="form-control kanitB"  autocomplete="off" value="<?php echo $codeauto;?>" disabled>
                     </div>
                   </div>
 

@@ -1,9 +1,27 @@
-<!DOCTYPE html>
-<html>
+
 <?php
 session_start();
 require_once '../../require/config.php';
 require_once '../../require/session.php';
+
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;../../login.php");
+}
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;../../login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
 
 if (!empty($_SESSION["token_admin_uuid"])) {
   $uuid_mng = $_SESSION["token_admin_uuid"];
@@ -29,22 +47,44 @@ if (!empty($_SESSION["token_admin_uuid"])) {
   $sum_price = $res2->fetchColumn();
 }
 
+try {
+  $result = $db->prepare('SELECT * from tb_service');
+  $result->execute();
+ 
+  $num = 0;
+  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+   $num++;
+  }
+  $total = $num + 1;
+
+  if(strlen($total) == 1) {
+    $codeauto = 'S100'.$total.'';
+  } else if (strlen($total) == 2) {
+    $codeauto = 'S10'.$total.'';
+  } else if (strlen($total) == 3) {
+    $codeauto = 'S1'.$total.'';
+  } else if (strlen($total) > 3) {
+    $codeauto = 'S'.$total.'';
+  }
+
+} catch (PDOException $e) {
+  echo $e->getMessage();
+}
+
 if (isset($_REQUEST['btn_insert'])) {
 
-  $serv_id = $_REQUEST['serv_id'];
+  $serv_id = $codeauto;
   $serv_ser = $_REQUEST['serv_ser'];
   $serv_price = $_REQUEST['serv_price'];
   $serv_time = $_REQUEST['serv_time'];
 
 
-  if (empty($serv_id)) {
-    $errorMsg = "Please Enter Service Code";
-  } else if (empty($serv_ser)) {
-    $errorMsg = "Please Enter Service Name";
+   if (empty($serv_ser)) {
+    $errorMsg = "กรุณากรอกชื่อบริการ";
   } else if (empty($serv_price)) {
-    $errorMsg = "Please Enter Service Price";
-  } else if (empty($serv_time)) {
-    $errorMsg = "Please Enter Service Time";
+    $errorMsg = "กรุณากรอกราคา";
+  } else if ($serv_time == 'null') {
+    $errorMsg = "กรุณาเลือกเวลา";
   } else {
     try {
       if (!isset($errorMsg)) {
@@ -59,7 +99,7 @@ if (isset($_REQUEST['btn_insert'])) {
 
 
         if ($insert_serv->execute()) {
-          $insertMsg = "Insert Successfully . . .";
+          $insertMsg = "เพิ่มรายการบริการสำเร็จ . . .";
           header("refresh:2;../index.php");
         }
       }
@@ -70,7 +110,8 @@ if (isset($_REQUEST['btn_insert'])) {
 }
 
 ?>
-
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -114,6 +155,7 @@ if (isset($_REQUEST['btn_insert'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="icon" href="../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -286,10 +328,10 @@ if (isset($_REQUEST['btn_insert'])) {
           Service
           <small class="kanitB"><b>เพิ่มรายการบริการ</b></small>
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li><a href="../">Service</a></li>
-          <li class="active">Add Service</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li><a href="../">บริการ</a></li>
+          <li class="active">เพิ่มรายการบริการ</li>
         </ol>
       </section>
 
@@ -298,7 +340,7 @@ if (isset($_REQUEST['btn_insert'])) {
         <?php
         if (isset($errorMsg)) {
         ?>
-          <div class="alert alert-danger alert-dismissible">
+          <div class="alert alert-danger alert-dismissible kanitB">
             <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
           </div>
 
@@ -307,7 +349,7 @@ if (isset($_REQUEST['btn_insert'])) {
         <?php
         if (isset($insertMsg)) {
         ?>
-          <div class="alert alert-success alert-dismissible">
+          <div class="alert alert-success alert-dismissible kanitB">
             <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
           </div>
         <?php } ?>
@@ -327,11 +369,11 @@ if (isset($_REQUEST['btn_insert'])) {
                 <div class="box-body kanitB">
                   <div class="form-group">
                     <label for="title">รหัสบริการ</label>
-                    <input type="text" class="form-control" id="serv_id" name="serv_id" placeholder="S100X">
+                    <input type="text" class="form-control" id="serv_id" value="<?php echo $codeauto; ?>" disabled>
                   </div>
                   <div class="form-group">
                     <label for="description">ชื่อบริการ</label>
-                    <input type="text" class="form-control" id="serv_ser" name="serv_ser" placeholder="สระผม">
+                    <input type="text" class="form-control" id="serv_ser" name="serv_ser" placeholder="สระผม" autocomplete="off">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
@@ -343,7 +385,7 @@ if (isset($_REQUEST['btn_insert'])) {
                   <div class="form-group">
                     <label>เวลาในการบริการ</label>
                     <select class="form-control" name="serv_time">
-                      <option style="font-weight: bolder;" selected>เลือกเวลาในการบริการ</option>
+                      <option style="font-weight: bolder;" value="null" selected>เลือกเวลาในการบริการ</option>
                       <option style="font-weight: bolder;" value="00:30:00">00:30:00</option>
                       <option style="font-weight: bolder;" value="01:00:00">01:00:00</option>
                       <option style="font-weight: bolder;" value="01:30:00">01:30:00</option>
@@ -356,7 +398,7 @@ if (isset($_REQUEST['btn_insert'])) {
                   <!-- /.box-body -->
 
                   <div class="box-footer">
-                    <button type="submit" name="btn_insert" class="btn btn-success"> <i class="fa fa-plus"></i> Service</button>
+                    <button type="submit" name="btn_insert" class="btn btn-success"> <i class="fa fa-plus"></i> เพิ่มรายการบริการ</button>
                   </div>
                 </div>
                 <!-- /ข้อมูลส้วนตัว -->
@@ -370,9 +412,9 @@ if (isset($_REQUEST['btn_insert'])) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <footer class="main-footer kanitB">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        <b>เวอร์ชั่น</b> 1.0.1
       </div>
       <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
       reserved.

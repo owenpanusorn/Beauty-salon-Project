@@ -3,6 +3,24 @@ session_start();
 require_once '../require/config.php';
 require_once '../require/session.php';
 
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;../login.php");
+}
+
+if (isset($_REQUEST['btn_logout'])) {
+  try {
+    session_unset();
+    $_SESSION["token_admin_loing"] = false;
+    $seMsg = 'ออกจากระบบแล้ว';
+    header("refresh:2;../login.php");
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+}
+
 if (!empty($_SESSION["token_admin_uuid"])) {
   $uuid_mng = $_SESSION["token_admin_uuid"];
 
@@ -35,7 +53,6 @@ if (isset($_REQUEST['del_id'])) {
   $del_login->execute();
 
   // header('Location:index.php');
-
 }
 ?>
 
@@ -45,7 +62,7 @@ if (isset($_REQUEST['del_id'])) {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Service | Beautiful Salon</title>
+  <title>บริการ | Beautiful Salon</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -74,6 +91,7 @@ if (isset($_REQUEST['del_id'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <link rel="icon" href="../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -246,9 +264,9 @@ if (isset($_REQUEST['del_id'])) {
           Service
           <small class="kanitB"><b>รายการบริการ</b></small>
         </h1>
-        <ol class="breadcrumb">
-          <li><a href="../index.php"><i class="fa fa-home"></i> Home</a></li>
-          <li class="active">Service</li>
+        <ol class="breadcrumb kanitB">
+          <li><a href="../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
+          <li class="active">บริการ</li>
         </ol>
       </section>
 
@@ -263,7 +281,7 @@ if (isset($_REQUEST['del_id'])) {
                   <button type="button" class="btn btn-box-tool" data-widget="collapse">
                     <i class="fa fa-minus"></i>
                   </button>
-                  <button type="button" class='btn btn-success' onclick="window.location.href='addserv/'"> <i class="fa fa-plus"></i> Service</button>
+                  <button type="button" class='btn btn-success kanitB' onclick="window.location.href='addserv/'"> <i class="fa fa-plus"></i> เพิ่มรายการบริการ</button>
                 </div>
               </div>
 
@@ -290,15 +308,15 @@ if (isset($_REQUEST['del_id'])) {
 
                     ?>
                       <tr class="kanitB">
-                        <td><?php echo $row["serv_code"] ?></td>
+                        <td width="100"><?php echo $row["serv_code"] ?></td>
                         <td><?php echo $row["serv_type"] ?></td>
-                        <td><?php echo $row["serv_price"] ?></td>
-                        <td><?php echo $row["serv_process_time"] ?></td>
-                        <td>
+                        <td width="100"><?php echo $row["serv_price"] ?></td>
+                        <td width="200"><?php echo $row["serv_process_time"] ?></td>
+                        <td width="60">
                           <a href="editserv?update_id=<?php echo $row['serv_id'] ?>" class="btn btn-warning">
-                            <i class="fa fa-pencil-square-o"></i> Edit</a>
+                            <i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูล</a>
                         </td>
-                        <td><a href="?del_id=<?php echo $row['serv_id'] ?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"> <i class="glyphicon glyphicon-trash"></i> Delete</a></td>
+                        <td width="60"><a href="?del_id=<?php echo $row['serv_id'] ?>" class='btn btn-danger' onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"> <i class="glyphicon glyphicon-trash"></i> ลบข้อมูล</a></td>
 
                       </tr>
                     <?php } ?>
@@ -316,11 +334,11 @@ if (isset($_REQUEST['del_id'])) {
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
+    <footer class="main-footer kanitB">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        <b>เวอร์ชั่น</b> 1.0.1
       </div>
-      <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+      <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
       reserved.
     </footer>
 

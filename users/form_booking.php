@@ -8,7 +8,7 @@ $message = 'คุณไม่มีสิทธิ์เข้าถึงห�
 if (empty($_SESSION["token_uuid"])) {
     echo "<script type='text/javascript'>alert('$message');</script>";
     header("refresh:0;index.php");
-  }
+}
 
 
 if (isset($_REQUEST['btn_logout'])) {
@@ -23,21 +23,19 @@ if (isset($_REQUEST['btn_logout'])) {
 }
 
 
-if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['start_date']) && isset($_REQUEST['start_time']) && isset($_REQUEST['end_time'])) {
+if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['start_date']) && isset($_REQUEST['start_time'])) {
 
     $uuid_emp = $_REQUEST['uu_id'];
     $name_emp = $_REQUEST['fname'];
     $bil = "NOIBEAUTI-";
     $date = $_REQUEST['start_date'];
     $start_time = $_REQUEST['start_time'];
-    $end_time = $_REQUEST['end_time'];
 
 
 
     $new_date = str_replace("-", "", $date);
     $new_start_time = str_replace(":", "", $start_time);
-    $new_end_time = str_replace(":", "", $end_time);
-    $newbil = $bil . $new_date . $new_start_time . $new_end_time;
+    $newbil = $bil . $new_date . $new_start_time;
 }
 
 if (!empty($_SESSION["token_uuid"])) {
@@ -59,7 +57,7 @@ if (isset($_REQUEST['btn_booking'])) {
         $total_price = $_REQUEST['price'];
         $total_time = $_REQUEST['time'];
         $status = "wait";
-    
+
         $insert_book = $db->prepare("INSERT INTO tb_booking(uuid_cus, uuid_emp, books_nlist, book_cus, book_emp, book_serv, books_price, books_hours, book_st, cre_bks_date, cre_bks_time, end_bks_time) 
         VALUES (:uuid_cus, :uuid_emp, :books_nlist, :book_cus, :book_emp, :book_serv, :books_price, :books_hours, :book_st, :cre_bks_date, :cre_bks_time, :end_bks_time )");
         $insert_book->bindParam(':uuid_cus', $uuid_cus);
@@ -129,6 +127,15 @@ if (isset($_REQUEST['btn_booking'])) {
     <!-- Select Employee -->
     <link rel="stylesheet" type="text/css" href="css/select_emp.css">
 
+    <style>
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -158,100 +165,32 @@ if (isset($_REQUEST['btn_booking'])) {
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 kanitB">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active" aria-current="page">Home</a>
+                        <a href="index.php" class="nav-link active" aria-current="page">หน้าหลัก</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link ">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">Contact</a>
+                        <a href="#p1" class="nav-link active" aria-current="page">เลือกรายการบริการ</a>
                     </li>
 
                     <?php
-                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
-                        echo '
-                    <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+                    if ($_SESSION["token_loing"] === true) {
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="limiter">
-                                            <div class="container-login100">
-                                                <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form" method="post">
-                                                        <span class="login100-form-title ">
-                                                            Beautiful Salon
-                                                        </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
-                        echo '
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                            <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Username"></span>
-                                                        </div>
-
-                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
-                                                            <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Password"></span>
-                                                        </div>
-
-                                                        <div class="container-login100-form-btn">
-                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
-                                                                Login
-                                                            </button>
-                                                        </div>
-
-                                                        <ul class="login-more p-t-50 ms-auto">
-                                                            <li>
-                                                                <span class="txt1">
-                                                                    Don’t have an account?
-                                                                </span>
-
-                                                                <a href="signup.php" class="txt2">
-                                                                    Sign up
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div id="dropDownSelect1"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    ';
-                    } else if ($_SESSION["token_loing"] === true) {
-                        echo '
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Username : ' . $_SESSION["token_username"] .  '</a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post">
-                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
-                        </form>
-                    </li>
-                    ';
-                    }
                     ?>
+
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                คุณ <?php echo $_SESSION["token_username"] ?>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><a href="history.php" class="dropdown-item" type="button"><i class="fa fa-book" aria-hidden="true"></i> ประวัติการจอง</a></li>
+                                <li>
+                                    <form method="post">
+                                        <button type="submit" name="btn_logout" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> ออกจากระบบ</button>
+                                    </form>
+                                </li>
+                        </div>
+                    <?php } ?>
                 </ul>
             </div>
 
@@ -276,23 +215,25 @@ if (isset($_REQUEST['btn_booking'])) {
 
     <section class="">
         <div class="container">
-        <?php
-        if (isset($errorMsg)) {
-        ?>
-          <div class="alert alert-danger alert-dismissible kanitB mt-3">
-            <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
-          </div>
+            <?php
+            if (isset($errorMsg)) {
+            ?>
+                <div class="alert alert-danger alert-dismissible kanitB mt-3">
+                    <strong><i class="icon fa fa-ban"></i>Wrong! <?php echo $errorMsg ?></strong>
+                </div>
 
-        <?php } ?>
+            <?php } ?>
 
-        <?php
-        if (isset($insertMsg)) {
-        ?>
-          <div class="alert alert-success alert-dismissible kanitB mt-3">
-            <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
-          </div>
-        <?php } ?>
-            <h5 class="kanitB fw-bolder mt-5 mb-3">ฟอร์มการจอง</h5>
+            <?php
+            if (isset($insertMsg)) {
+            ?>
+                <div class="alert alert-success alert-dismissible kanitB mt-3">
+                    <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
+                </div>
+            <?php } ?>
+            <a name="p1">
+                <h5 class="kanitB fw-bolder mt-5 mb-3">ฟอร์มการจอง</h5>
+            </a>
             <div class="form-booking border rounded-2 p-5 mb-5">
                 <form role="form" method="POST" enctype="multipart/form-data" name="frm">
                     <div class="form-group">
@@ -331,12 +272,6 @@ if (isset($_REQUEST['btn_booking'])) {
                             <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" value=" <?php echo $start_time ?>" disabled>
                             </div>
-                            <div class="col-12 col-md-1 text-center my-auto">
-                                <label for="" class="kanitB ">ถึง</label>
-                            </div>
-                            <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" value=" <?php echo $end_time ?>" disabled>
-                            </div>
                         </div>
                     </div>
 
@@ -351,6 +286,10 @@ if (isset($_REQUEST['btn_booking'])) {
                             </div>
                         </div>
                     </div>
+
+                    <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
+                        <i class="fa fa-arrow-up"></i>
+                    </button>
 
                     <div class="form-group">
                         <div class="row mt-5">
@@ -699,6 +638,32 @@ if (isset($_REQUEST['btn_booking'])) {
                 scrollbar: true,
             });
         });
+
+        //Get the button
+        let mybutton = document.getElementById("btn-back-to-top");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 20 ||
+                document.documentElement.scrollTop > 20
+            ) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        mybutton.addEventListener("click", backToTop);
+
+        function backToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
     </script>
 </body>
 
