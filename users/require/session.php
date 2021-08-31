@@ -8,7 +8,7 @@ if (isset($_REQUEST['btn_login'])) {
         $username_login = $_REQUEST['username'];
         $password_login = $_REQUEST['pass'];
         if (empty($username_login)) {
-            $errorMsg = "กรุณากรอก Usernaem";
+            $errorMsg = "กรุณากรอก Username";
             header("refresh:2;");
         } else if (empty($password_login)) {
             $errorMsg = "กรุณากรอก Password";

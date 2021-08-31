@@ -5,10 +5,10 @@ require_once('../../../require/session.php');
 
 $message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
 
-if (empty($_SESSION["token_admin_uuid"])) {
-  echo "<script type='text/javascript'>alert('$message');</script>";
-  header("refresh:0;../../../login.php");
-}
+if (empty($_SESSION["token_emp_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;../../../login.php");
+  }
 
 if (!empty($_SESSION["token_emp_uuid"])) {
     $uuid_emp = $_SESSION["token_emp_uuid"];
@@ -67,6 +67,7 @@ if (!empty($_SESSION["token_emp_uuid"])) {
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="icon" href="../../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">

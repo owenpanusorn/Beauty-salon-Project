@@ -23,7 +23,7 @@ if ($_SESSION["token_admin_uuid"]) {
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
-    $book_status = 'wait';
+    $book_status = 'success';
 
     $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
     $res = $db->query($sql);
@@ -387,6 +387,94 @@ if (isset($_REQUEST['btn_agree'])) {
                 <!-- /.row -->
             </section>
             <!-- /.content -->
+            <section class="content-header">             
+                <h1 class="kanitB">
+                    การจองล่องหน้า
+                    <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
+                </h1>               
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <!-- <h3 class="box-title kanitB">ตารางอนุมัติการจอง</h3> -->
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr class="kanitB">
+                                            <th>ลำดับ</th>
+                                            <th>เลขที่รายการ</th>
+                                            <th>ชื่อลูกค้า</th>
+                                            <th>รายละเอียดบริการ</th>
+                                            <th>ราคา</th>
+                                            <th>เวลาในการบริการ</th>
+                                            <th>ว/ด/ป เวลา</th>
+                                            <th>สถานะ</th>                                           
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date <= :cre_bks_date');
+                                        $result->bindParam(":book_st", $book_status);
+                                        $result->bindParam(":cre_bks_date", $date);                                           
+                                        $result->execute();
+
+                                        $num = 0;
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $num++;
+
+                                            if ($row['book_st'] == 'success') {
+                                                $status = 'จองคิวสำเร็จ';
+                                            }
+                                        ?>
+                                            <form method="POST">
+                                                <tr class="kanitB">
+                                                    <td><?php echo $num ?></td>
+                                                    <td><?php echo $row['books_nlist'] ?></td>
+                                                    <td><?php echo $row['book_cus'] ?></td>
+                                                    <td><?php echo $row['book_serv'] ?></td>
+                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
+                                                    <td><?php echo $row['books_hours'] ?></td>
+                                                    <td><?php echo $row['cre_bks_date'].' '.$row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                    <?php
+                                                    if ($status == 'จองคิวสำเร็จ') {
+                                                        $txt_color = 'text-success';
+                                                        $icon = 'fa fa-check';
+                                                    } else {
+                                                        $txt_color = '';
+                                                    }
+
+                                                    echo '<td style="color : ' . $txt_color . '">';
+                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                                    echo '</td>';
+                                                    ?>                                                    
+                                                </tr>
+                                            </form>
+                                        <?php } ?>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
@@ -433,6 +521,10 @@ if (isset($_REQUEST['btn_agree'])) {
         var date_end = new Date()
         date_start.setDate(date_start.getDate());
         date_end.setDate(date_end.getDate() + 30);
+
+        $(function() {
+            $('#example1').DataTable()           
+        })
 
         $('#datepicker').datepicker({
             format: 'dd-mm-yyyy',

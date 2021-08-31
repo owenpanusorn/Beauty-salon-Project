@@ -5,9 +5,9 @@ require_once('../../../require/session.php');
 
 $message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
 
-if (empty($_SESSION["token_admin_uuid"])) {
-  echo "<script type='text/javascript'>alert('$message');</script>";
-  header("refresh:0;../../../login.php");
+if (empty($_SESSION["token_emp_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;../../../login.php");
 }
 
 if ($_SESSION["token_emp_uuid"]) {
@@ -67,6 +67,7 @@ if ($_SESSION["token_emp_uuid"]) {
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="icon" href="../../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -154,14 +155,14 @@ if ($_SESSION["token_emp_uuid"]) {
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right"><?php  if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
+                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="../databooking/index.php"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li class="active"><a href="#"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right"><?php  if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
+                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_emp_uuid"])) echo $count ?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../history/index.php"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
@@ -303,7 +304,100 @@ if ($_SESSION["token_emp_uuid"]) {
                 </div>
                 <!-- /.row -->
             </section>
-            <!-- /.content -->
+
+            <section class="content-header">             
+                <h1 class="kanitB">
+                    การจองล่องหน้า
+                    <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
+                </h1>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <!-- <h3 class="box-title kanitB">ตารางอนุมัติการจอง</h3> -->
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <table id="example2" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr class="kanitB">
+                                            <th>ลำดับ</th>
+                                            <th>เลขที่รายการ</th>
+                                            <th>ชื่อลูกค้า</th>
+                                            <th>รายละเอียดบริการ</th>
+                                            <th>ราคา</th>
+                                            <th>เวลาในการบริการ</th>
+                                            <th>ว/ด/ป เวลา</th>
+                                            <th>สถานะ</th>
+                                            <th>ยืนยัน</th>
+                                            <th>เลื่อนนัด</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date > :cre_bks_date');
+                                        $result->bindParam(":uuid_emp", $uuid_emp);
+                                        $result->bindParam(":book_st", $book_status);
+                                        $result->bindParam(":cre_bks_date", $date);
+                                        $result->execute();
+
+                                        $num = 0;
+                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                            $num++;
+
+                                            if ($row['book_st'] == 'wait') {
+                                                $status = 'รอดำเนินการ';
+                                            }
+                                        ?>
+                                            <form method="POST">
+                                                <tr class="kanitB">
+                                                    <td><?php echo $num ?></td>
+                                                    <td><?php echo $row['books_nlist'] ?></td>
+                                                    <td><?php echo $row['book_cus'] ?></td>
+                                                    <td><?php echo $row['book_serv'] ?></td>
+                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
+                                                    <td><?php echo $row['books_hours'] ?></td>
+                                                    <td><?php echo $row['cre_bks_date'].' '.$row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                    <?php
+                                                    if ($status == 'รอดำเนินการ') {
+                                                        $txt_color = '#f0ad4e';
+                                                        $icon = 'fa fa-clock-o';
+                                                    } else {
+                                                        $txt_color = '';
+                                                    }
+
+                                                    echo '<td style="color : ' . $txt_color . '">';
+                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                                    echo '</td>';
+                                                    ?>
+                                                    <td><a href="confirm.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยัน</a></td>
+                                                    <td><a href="postpone.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-warning btn-block"><i class="fa fa-clock-o"></i> เลื่อนนัด</a></td>
+                                                </tr>
+                                            </form>
+                                        <?php } ?>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
@@ -340,14 +434,7 @@ if ($_SESSION["token_emp_uuid"]) {
     <script>
         $(function() {
             $('#example1').DataTable()
-            $('#example2').DataTable({
-                'paging': true,
-                'lengthChange': false,
-                'searching': true,
-                'ordering': true,
-                'info': true,
-                'autoWidth': false
-            })
+            $('#example2').DataTable()
         })
     </script>
 </body>

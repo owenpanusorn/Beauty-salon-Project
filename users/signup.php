@@ -2,6 +2,7 @@
 // Start the session
 session_start();
 require_once 'require/config.php';
+// require_once 'require/session.php';
 ?>
 
 <!DOCTYPE html>
@@ -12,6 +13,47 @@ require_once 'require/config.php';
 // if ($_SESSION["token_loing"] === true) {
 //     header("refresh:0;index.php");
 // }
+
+if (isset($_REQUEST['btn_login'])) {
+    try {
+
+        $username_login = $_REQUEST['username'];
+        $password_login = $_REQUEST['pass'];
+        if (empty($username_login)) {
+            $errorMsg = "กรุณากรอก Username";
+            header("refresh:2;");
+        } else if (empty($password_login)) {
+            $errorMsg = "กรุณากรอก Password";
+            header("refresh:2;");
+        } else {
+            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
+            $qry1->bindParam(":usernmae_login", $username_login);
+            $qry1->execute();
+            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
+
+            if (!empty($row1) && count($row1) > 0) {
+                extract($row1);
+            }
+            if (!empty($password) && !empty($username)) {
+                if (!password_verify($password_login, $password)) {
+                    $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
+                    // header("refresh:2;");
+                } else {
+                    $_SESSION["token_uuid"] = $uuid;
+                    $_SESSION["token_loing"] = true;
+                    $_SESSION["token_username"] = $_REQUEST['username'];
+                    $seMsg = 'เข้าสูระบบแล้ว';
+                    header("refresh:2;index.php");
+                }
+            } else {
+                $errorMsg = 'รหัสผ่านไม่ถูกต้อง';
+                // header("refresh:2;");
+            }
+        }
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
 if (isset($_REQUEST['btn_singup'])) {
     try {
@@ -86,55 +128,11 @@ if (isset($_REQUEST['btn_logout'])) {
         session_unset();
         $_SESSION["token_loing"] = false;
         $seMsg = 'ออกจากระบบแล้ว';
-        header("refresh:2;");
+        header("refresh:2;index.php");
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
 }
-
-if (isset($_REQUEST['btn_login'])) {
-    try {
-
-        $username_login = $_REQUEST['username'];
-        $password_login = $_REQUEST['pass'];
-        if (empty($username_login)) {
-            $errorMsg = "Please Enter Username";
-            header("refresh:2;");
-        } else if (empty($password_login)) {
-            $errorMsg = "Please Enter Password";
-            header("refresh:2;");
-        } else {
-            $qry1 = $db->prepare("select * from tb_customer where username = :usernmae_login LIMIT 1");
-            $qry1->bindParam(":usernmae_login", $username_login);
-            $qry1->execute();
-            $row1 = $qry1->fetch(PDO::FETCH_ASSOC);
-
-            if (!empty($row1) && count($row1) > 0) {
-                extract($row1);
-            }
-            if (!empty($password) && !empty($username)) {
-                if (!password_verify($password_login, $password)) {
-                    $errorMsg = 'password Fail';
-                    header("refresh:3;");
-                } else {
-                    $_SESSION["token_uuid"] = $uuid;
-                    $_SESSION["token_loing"] = true;
-                    $_SESSION["token_fname"] = $fname;
-                    $_SESSION["token_lname"] = $lname;
-                    $_SESSION["token_username"] = $_REQUEST['username'];
-                    $seMsg = 'เข้าสูระบบแล้ว';
-                    header("refresh:2;");
-                }
-            } else {
-                $errorMsg = 'ไม่พบ user';
-                header("refresh:2;");
-            }
-        }
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
-
 
 ?>
 
@@ -142,7 +140,7 @@ if (isset($_REQUEST['btn_login'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Bootstrap 5</title>
+    <title>สมัครสมาชิก</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -172,6 +170,7 @@ if (isset($_REQUEST['btn_login'])) {
     <link rel="stylesheet" href="jquery/jquery.timepicker.css">
     <!-- regisform -->
     <link rel="stylesheet" href="css/style1.css">
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
 
 </head>
@@ -187,7 +186,7 @@ if (isset($_REQUEST['btn_login'])) {
         if (isset($errorMsg)) {
         ?>
             <div class="alert alert-danger alert-dismissible">
-                <p><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></p>
+                <p class="kanitB"><i class="icon fa fa-ban"></i> <?php echo $errorMsg ?></p>
             </div>
         <?php } ?>
 
@@ -195,122 +194,98 @@ if (isset($_REQUEST['btn_login'])) {
         if (isset($seMsg)) {
         ?>
             <div class="alert alert-success alert-dismissible">
-                <p><i class="icon fa fa-check"></i><?php echo $seMsg ?></p>
+                <p class="kanitB"><i class="icon fa fa-check"></i> <?php echo $seMsg ?></p>
             </div>
         <?php } ?>
 
         <div class="container">
-            <a href="#" class="navbar-brand">Beautiful Salon</a>
+            <a href="index.php" class="navbar-brand">Beautiful Salon</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 kanitB">
+
                     <li class="nav-item">
-                        <a href="#" class="nav-link active" aria-current="page">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">Contact</a>
+                        <a href="index.php" class="nav-link active" aria-current="page">หน้าหลัก</a>
                     </li>
 
                     <?php
-                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
-                        echo '
-                    <li class="navbar-item">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+                    if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) { ?>
+                        <li class="navbar-item">
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">เข้าสู่ระบบ</button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="limiter">
-                                            <div class="container-login100">
-                                                <div class="wrap-login100 p-t-20 p-b-10">
-                                                    <form class="login100-form validate-form" method="post">
-                                                        <span class="login100-form-title ">
-                                                            Beautiful Salon
-                                                        </span>
-                                                        <h5 class="text-center welcome-spacing">Welcome</h5>';
-                        echo '
-                                                        <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                            <input class="input100" type="text" name="username">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Username"></span>
-                                                        </div>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h5 class="modal-title" id="exampleModalLabel">เข้าสู่ระบบ</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="limiter">
+                                                <div class="container-login100">
+                                                    <div class="wrap-login100 p-t-20 p-b-10">
+                                                        <form class="login100-form validate-form" method="post">
+                                                            <span class="login100-form-title ">
+                                                                Beautiful Salon
+                                                            </span>
+                                                            <h5 class="text-center welcome-spacing kanitB">ยินดีต้อนรับ</h5>
+                                                            <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
+                                                                <input class="input100" type="text" name="username" placeholder="Username" autocomplete="off">
+                                                                <!-- <span class="focus-input100" data-placeholder="Username"></span> -->
+                                                            </div>
 
-                                                        <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
-                                                            <input class="input100" type="password" name="pass">
-                                                            <span class="focus-input100"
-                                                                data-placeholder="Password"></span>
-                                                        </div>
+                                                            <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                                                                <input class="input100" type="password" name="pass" placeholder="Password">
+                                                                <!-- <span class="focus-input100" data-placeholder="Password"></span> -->
+                                                            </div>
 
-                                                        <div class="container-login100-form-btn">
-                                                            <button  type="submit" name="btn_login" class="login100-form-btn">
-                                                                Login
-                                                            </button>
-                                                        </div>
+                                                            <div class="container-login100-form-btn">
+                                                                <button type="submit" name="btn_login" class="login100-form-btn">
+                                                                    Login
+                                                                </button>
+                                                            </div>
 
-                                                        <ul class="login-more p-t-50 ms-auto">
-                                                            <li class="m-b-8">
-                                                                <span class="txt1">
-                                                                    Forgot
-                                                                </span>
+                                                            <ul class="login-more p-t-50 ms-auto ">
+                                                                <li>
+                                                                    <span class="kanitB" style="color: #999999;">
+                                                                        สามารถสมัครได้ที่นี่ >
+                                                                    </span>
 
-                                                                <a href="#" class="txt2">
-                                                                    Username / Password?
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <span class="txt1">
-                                                                    Don’t have an account?
-                                                                </span>
-
-                                                                <a href="signup.php" class="txt2">
-                                                                    Sign up
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </form>
+                                                                    <a href="signup.php" class="kanitB" style="color: #57b846;">
+                                                                        สมัครสมาชิก
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div id="dropDownSelect1"></div>
+                                            <div id="dropDownSelect1"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </li>
+
+                    <?php } else if ($_SESSION["token_loing"] === true) { ?>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                คุณ <?php echo $_SESSION["token_username"] ?>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><a href="history.php" class="dropdown-item" type="button"><i class="fa fa-book" aria-hidden="true"></i> ประวัติการจอง</a></li>
+                                <li>
+                                    <form method="post">
+                                        <button type="submit" name="btn_logout" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> ออกจากระบบ</button>
+                                    </form>
+                                </li>
                         </div>
-                    </li>
-                    ';
-                    } else if ($_SESSION["token_loing"] === true) {
-                        echo '
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">' . $_SESSION["token_fname"] . ' ' . $_SESSION["token_lname"] . ' </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="post">
-                            <button type="submit" name="btn_logout" class="btn btn-danger">Logout</button>
-                        </form>
-                    </li>
-                    ';
-                    }
-                    ?>
+                    <?php } ?>
                 </ul>
             </div>
         </div>
@@ -321,9 +296,9 @@ if (isset($_REQUEST['btn_login'])) {
             <div class="row">
                 <div class="col-md-12 mt-3">
                     <nav>
-                        <ul class=" changcrumb">
-                            <li class=""><a href="index.php">Home / </a></li>
-                            <li class="active">Sign Up</li>
+                        <ul class=" changcrumb kanitB">
+                            <li class=""><a href="index.php">หน้าหลัก / </a></li>
+                            <li class="active">สมัครสมาชิก</li>
                         </ul>
                     </nav>
                 </div>
@@ -343,56 +318,41 @@ if (isset($_REQUEST['btn_login'])) {
                     </div>
 
                     <div class="col-md-6">
-                        <form role="form" method="POST" enctype="multipart/form-data">
-                            <h3>Registration Form</h3>
-                            <?php
-                            if (isset($errorMsg)) {
-                            ?>
-                                <div class="alert alert-danger alert-dismissible">
-                                    <strong><i class="icon fa fa-ban"></i><?php echo $errorMsg ?></strong>
-                                </div>
-                            <?php } ?>
-
-                            <?php
-                            if (isset($seMsg)) {
-                            ?>
-                                <div class="alert alert-success alert-dismissible">
-                                    <strong><i class="icon fa fa-check"></i><?php echo $seMsg ?></strong>
-                                </div>
-                            <?php } ?>
+                        <form role="form" method="POST" enctype="multipart/form-data" class="kanitB">
+                            <h3>สมัครสมาชิก</h3>
+                          
                             <div class="form-group">
-                                <input type="text" placeholder="First Name" name="fname" class="form-control kanitB">
-                                <input type="text" placeholder="Last Name" name="lname" class="form-control kanitB">
+                                <input type="text" placeholder="ชื่อ" name="fname" class="form-control kanitB">
+                                <input type="text" placeholder="นามสกุล" name="lname" class="form-control kanitB">
                             </div>
                             <div class="form-wrapper">
-                                <input type="text" placeholder="Username" name="username" class="form-control kanitB">
+                                <input type="text" placeholder="ชื่อผู้ใช้" name="username" class="form-control kanitB">
                                 <i class="zmdi zmdi-account"></i>
                             </div>
                             <div class="form-wrapper">
-                                <input type="password" placeholder="Password" name="pass" class="form-control kanitB">
+                                <input type="password" placeholder="พาสเวิร์ด" name="pass" class="form-control kanitB">
                                 <i class="zmdi zmdi-lock"></i>
                             </div>
 
                             <div class="form-wrapper">
-                                <select name="gender" class="form-control">
-                                    <option value="null" selected>Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="femal">Female</option>
-                                    <option value="other">Other</option>
+                                <select name="gender" class="form-control kanitB">
+                                    <option value="null" selected>เพศ</option>
+                                    <option value="male">ชาย</option>
+                                    <option value="femal">หญิง</option>                                    
                                 </select>
                                 <i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
                             </div>
 
                             <div class="form-wrapper">
-                                <input type="text" placeholder="Number Phone" name="nphon" class="form-control kanitB">
+                                <input type="text" placeholder="เบอร์โทร" name="nphon" class="form-control kanitB">
                                 <i class="zmdi zmdi-phone"></i>
                             </div>
                             <div class="form-wrapper">
-                                <textarea name="adder" cols="30" rows="30" class="form-control kanitB" placeholder="Address . . ."></textarea>
+                                <textarea name="adder" cols="30" rows="30" class="form-control kanitB" placeholder="รายละเอียดที่อยู่ . . ."></textarea>
                                 <i class="zmdi zmdi-home"></i>
                             </div>
 
-                            <button type="submit" name="btn_singup" class="btn_regis">Register
+                            <button type="submit" name="btn_singup kanitB" class="btn_regis">ยืนยันสมัครสมาชิก
                                 <i class="zmdi zmdi-arrow-right"></i>
                             </button>
                         </form>

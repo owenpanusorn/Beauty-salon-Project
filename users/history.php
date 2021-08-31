@@ -9,9 +9,9 @@ $message = 'คุณไม่มีสิทธิ์เข้าถึงห�
 if (empty($_SESSION["token_uuid"])) {
     echo "<script type='text/javascript'>alert('$message');</script>";
     header("refresh:0;index.php");
-  }
+}
 
-  if (isset($_REQUEST['btn_logout'])) {
+if (isset($_REQUEST['btn_logout'])) {
     try {
         session_unset();
         $_SESSION["token_loing"] = false;
@@ -30,6 +30,17 @@ if (empty($_SESSION["token_uuid"])) {
 //     print_r($stime);
 //     print_r($etime);
 // }
+
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+
+    $uuid_cus = $_SESSION['token_uuid'];
+    $date = date("d-m-Y");
+    
+    $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+    $res5 = $db->query($sql5);
+    $notify = $res5->fetchColumn();
+    
+    }
 
 
 ?>
@@ -77,7 +88,15 @@ if (empty($_SESSION["token_uuid"])) {
     <!-- datatable -->
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
     <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
-    
+
+    <style>
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -120,11 +139,26 @@ if (empty($_SESSION["token_uuid"])) {
                         <a href="#" class="nav-link ">สินค้า</a>
                     </li> -->
                     <li class="nav-item">
-                        <a href="history.php" class="nav-link active" >ประวัติการจอง</a>
-                    </li>                    
-                    <li class="nav-item">
-                        <a href="#" class="nav-link ">ติดต่อ</a>
+                        <a href="#p1" class="nav-link">การจองคิว</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="#p2" class="nav-link ">ประวัติการจอง</a>
+                    </li>
+                    <?php
+                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    ?>
+                    <li class="nav-item">
+                        <a href="history.php" class="nav-link">
+                            <i class="fa fa-bell-o"></i>
+                            <?php if ($notify >=1 ) { ?>
+                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                            <?php } ?>
+                        </a>
+                    </li>
+                    <?php
+                    }
+                    ?>
+
 
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
@@ -219,7 +253,7 @@ if (empty($_SESSION["token_uuid"])) {
                     <nav>
                         <ul class=" changcrumb kanitB">
                             <li class=""><a href="index.php">หน้าแรก / </a></li>
-                            <li class="active kanitB">ประวัติการจอง</li>                            
+                            <li class="active kanitB">ประวัติการจอง</li>
                         </ul>
                     </nav>
                 </div>
@@ -229,11 +263,13 @@ if (empty($_SESSION["token_uuid"])) {
 
     <section>
         <div class="container kanitB">
-            <h5 class="mt-5">ประวัติการจอง</h5>
+            <a name="p1">
+                <h5 class="mt-5">การจองคิว <?php echo $date ?></h5>
+            </a>
             <div class="row mt-4">
                 <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
                     <form action="" method="POST">
-                        <table class="table" id="myTable">
+                        <table class="table" id="myTable1">
                             <thead>
                                 <tr>
                                     <th>ลำดับ</th>
@@ -248,7 +284,7 @@ if (empty($_SESSION["token_uuid"])) {
                             <tbody>
                                 <?php
                                 $uuid_cus = $_SESSION["token_uuid"];
-                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus order by cre_bks_date desc');
+                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus order by books_id desc limit 1');
                                 $result->bindParam(":uuid_cus", $uuid_cus);
                                 $result->execute();
 
@@ -269,19 +305,92 @@ if (empty($_SESSION["token_uuid"])) {
                                         <td><?php echo $row['cre_bks_date'] ?></td>
                                         <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
                                         <?php
-                                            if ($status == 'รอดำเนินการ') {
-                                                $txt_color = 'text-warning';
-                                                $icon = 'fa fa-clock-o';
-                                            } else if ($status == 'จองคิวสำเร็จ'){
-                                                $txt_color = 'text-success';
-                                                $icon = 'fa fa-check';
-                                            }
-                                            else {
-                                                $txt_color = '';
-                                            }
+                                        if ($status == 'รอดำเนินการ') {
+                                            $txt_color = 'text-warning';
+                                            $icon = 'fa fa-clock-o';
+                                        } else if ($status == 'จองคิวสำเร็จ') {
+                                            $txt_color = 'text-success';
+                                            $icon = 'fa fa-check';
+                                        } else {
+                                            $txt_color = '';
+                                        }
 
-                                        echo '<td class="'. $txt_color .'">';
-                                        echo '<i class="'.$icon.'"></i>'.' '.$status;
+                                        echo '<td class="' . $txt_color . '">';
+                                        echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                        echo '</td>';
+                                        ?>
+                                        <td><a href="detail_history.php?books_num=<?php echo $row['books_nlist'] ?>" class="btn btn-primary"><i class="fa fa-info-circle"></i> รายละเอียด</a></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <section>
+        <div class="container kanitB">
+            <a name="p2">
+                <h5 class="mt-5">ประวัติการจอง</h5>
+            </a>
+            <div class="row mt-4">
+                <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
+                    <form action="" method="POST">
+                        <table class="table" id="myTable2">
+                            <thead>
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>เลขที่รายการ</th>
+                                    <th>ช่างทำผม</th>
+                                    <th>วันที่จอง</th>
+                                    <th>เวลาในการจอง</th>
+                                    <th>สถานะ</th>
+                                    <th>รายละเอียด</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $uuid_cus = $_SESSION["token_uuid"];
+                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus and cre_bks_date > :cre_bks_date order by books_id desc');
+                                $result->bindParam(":uuid_cus", $uuid_cus);
+                                $result->bindParam(":cre_bks_date", $date);
+                                $result->execute();
+
+                                $num = 0;
+                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                    $num++;
+
+                                    if ($row['book_st'] == 'wait') {
+                                        $status = 'รอดำเนินการ';
+                                    } else if ($row['book_st'] == 'success') {
+                                        $status = 'จองคิวสำเร็จ';
+                                    }
+                                ?>
+                                    <tr>
+                                        <td><?php echo $num; ?></td>
+                                        <td><?php echo $row['books_nlist'] ?></td>
+                                        <td><?php echo $row['book_emp'] ?></td>
+                                        <td><?php echo $row['cre_bks_date'] ?></td>
+                                        <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
+                                        <?php
+                                        if ($status == 'รอดำเนินการ') {
+                                            $txt_color = 'text-warning';
+                                            $icon = 'fa fa-clock-o';
+                                        } else if ($status == 'จองคิวสำเร็จ') {
+                                            $txt_color = 'text-success';
+                                            $icon = 'fa fa-check';
+                                        } else {
+                                            $txt_color = '';
+                                        }
+
+                                        echo '<td class="' . $txt_color . '">';
+                                        echo '<i class="' . $icon . '"></i>' . ' ' . $status;
                                         echo '</td>';
                                         ?>
                                         <td><a href="detail_history.php?books_num=<?php echo $row['books_nlist'] ?>" class="btn btn-primary"><i class="fa fa-info-circle"></i> รายละเอียด</a></td>
@@ -354,7 +463,8 @@ if (empty($_SESSION["token_uuid"])) {
         });
 
         $(document).ready(function() {
-            $('#myTable').DataTable();
+            $('#myTable1').DataTable();
+            $('#myTable2').DataTable();
 
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
@@ -378,6 +488,32 @@ if (empty($_SESSION["token_uuid"])) {
                 scrollbar: true,
             });
         });
+
+        //Get the button
+        let mybutton = document.getElementById("btn-back-to-top");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (
+                document.body.scrollTop > 20 ||
+                document.documentElement.scrollTop > 20
+            ) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+        // When the user clicks on the button, scroll to the top of the document
+        mybutton.addEventListener("click", backToTop);
+
+        function backToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
     </script>
 </body>
 

@@ -3,8 +3,10 @@ session_start();
 require_once('../../../require/config.php');
 require_once('../../../require/session.php');
 
-if(empty($_SESSION["token_admin_uuid"])){
-    session_unset();
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_emp_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
     header("refresh:0;../../../login.php");
   }
 

@@ -28,12 +28,13 @@ if (isset($_REQUEST['uu_id']) && isset($_REQUEST['fname']) && isset($_REQUEST['s
     $uuid_emp = $_REQUEST['uu_id'];
     $name_emp = $_REQUEST['fname'];
     $bil = "NOIBEAUTI-";
-    $date = $_REQUEST['start_date'];
+    $start_date = $_REQUEST['start_date'];
     $start_time = $_REQUEST['start_time'];
 
 
 
-    $new_date = str_replace("-", "", $date);
+
+    $new_date = str_replace("-", "", $start_date);
     $new_start_time = str_replace(":", "", $start_time);
     $newbil = $bil . $new_date . $new_start_time;
 }
@@ -57,6 +58,9 @@ if (isset($_REQUEST['btn_booking'])) {
         $total_price = $_REQUEST['price'];
         $total_time = $_REQUEST['time'];
         $status = "wait";
+        $endbk = $_REQUEST['timeend'];
+        $new_endbk = str_replace(":", "", $endbk);
+        $newbil = $newbil . $new_endbk;
 
         $insert_book = $db->prepare("INSERT INTO tb_booking(uuid_cus, uuid_emp, books_nlist, book_cus, book_emp, book_serv, books_price, books_hours, book_st, cre_bks_date, cre_bks_time, end_bks_time) 
         VALUES (:uuid_cus, :uuid_emp, :books_nlist, :book_cus, :book_emp, :book_serv, :books_price, :books_hours, :book_st, :cre_bks_date, :cre_bks_time, :end_bks_time )");
@@ -69,9 +73,9 @@ if (isset($_REQUEST['btn_booking'])) {
         $insert_book->bindParam(':books_price', $total_price);
         $insert_book->bindParam(':books_hours', $total_time);
         $insert_book->bindParam(':book_st', $status);
-        $insert_book->bindParam(':cre_bks_date', $date);
+        $insert_book->bindParam(':cre_bks_date', $start_date);
         $insert_book->bindParam(':cre_bks_time', $start_time);
-        $insert_book->bindParam(':end_bks_time', $end_time);
+        $insert_book->bindParam(':end_bks_time', $endbk);
 
 
         if ($insert_book->execute()) {
@@ -82,6 +86,17 @@ if (isset($_REQUEST['btn_booking'])) {
         echo $e->getMessage();
     }
 }
+
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+
+    $uuid_cus = $_SESSION['token_uuid'];
+    $date = date("d-m-Y");
+    
+    $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+    $res5 = $db->query($sql5);
+    $notify = $res5->fetchColumn();
+    
+    }
 
 
 ?>
@@ -172,6 +187,20 @@ if (isset($_REQUEST['btn_booking'])) {
                     <li class="nav-item">
                         <a href="#p1" class="nav-link active" aria-current="page">เลือกรายการบริการ</a>
                     </li>
+                    <?php
+                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    ?>
+                    <li class="nav-item">
+                        <a href="history.php" class="nav-link">
+                            <i class="fa fa-bell-o"></i>
+                            <?php if ($notify >=1 ) { ?>
+                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                            <?php } ?>
+                        </a>
+                    </li>
+                    <?php
+                    }
+                    ?>
 
                     <?php
                     if ($_SESSION["token_loing"] === true) {
@@ -204,7 +233,7 @@ if (isset($_REQUEST['btn_booking'])) {
                 <div class="col-md-12 mt-3">
                     <nav>
                         <ul class=" changcrumb kanitB">
-                            <li class=""><a href="index.html">หน้าแรก / </a></li>
+                            <li class=""><a href="index.php">หน้าแรก / </a></li>
                             <li class="active">รายละเอียดการจอง</li>
                         </ul>
                     </nav>
@@ -259,7 +288,7 @@ if (isset($_REQUEST['btn_booking'])) {
                                 <label for="" class="kanitB ">วันที่จอง</label>
                             </div>
                             <div class="col-12 col-md-3">
-                                <input type="text" class="form-control border" name="" id="" value=" <?php echo $date ?>" disabled>
+                                <input type="text" class="form-control border" name="" id="date_set" value=" <?php echo $start_date ?>" disabled>
                             </div>
                         </div>
                     </div>
@@ -271,6 +300,12 @@ if (isset($_REQUEST['btn_booking'])) {
                             </div>
                             <div class="col-12 col-md-3">
                                 <input type="text" class="form-control border" name="" id="" value=" <?php echo $start_time ?>" disabled>
+                            </div>
+                            <div class="col-12 col-md-1 text-right my-auto">
+                                <label for="" class="kanitB">ถึง</label>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <input type="text" class="form-control border" name="end_time" id="end_time" value=" <?php echo $start_time ?>" disabled>
                             </div>
                         </div>
                     </div>
@@ -378,6 +413,7 @@ if (isset($_REQUEST['btn_booking'])) {
                         </div>
 
                         <input type="hidden" name="services" id="services" value="" />
+                        <input type="hidden" name="timeend" id="timeend" value="" />
 
 
                     </div>
@@ -418,14 +454,15 @@ if (isset($_REQUEST['btn_booking'])) {
                                                     <label for="">วันที่จอง </label>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <p><?php echo $date ?></p>
+                                                    <p><?php echo $start_date ?></p>
                                                 </div>
 
                                                 <div class="col-12 col-md-4">
                                                     <label for="">เวลาที่จอง </label>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <p><?php echo $start_time ?> - <?php echo $end_time ?></p>
+                                                    <p><?php echo $start_time ?> - <span id="end_time_up" name="end_time_up"> </span></p>
+
                                                 </div>
 
                                                 <div class="col-12 col-md-4">
@@ -517,9 +554,19 @@ if (isset($_REQUEST['btn_booking'])) {
     <!--===============================================================================================-->
     <script src="vendor/countdowntime/countdowntime.js"></script>
     <!--===============================================================================================-->
-
+    <script src="https://momentjs.com/downloads/moment.js"></script>
     <script>
         let arr = [];
+
+        function addMinutes(date, minutes) {
+            date = new Date(date.getTime() + minutes * 60000);
+            return date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2)
+        }
+
+        function deMinutes(date, minutes) {
+            date = new Date(date.getTime() - minutes * 60000);
+            return date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2)
+        }
 
         function tick(frm, chk, price, minute) {
             // คำนวณบวกหรือลบจากค่าเริ่มต้น
@@ -528,10 +575,19 @@ if (isset($_REQUEST['btn_booking'])) {
             var total = parseFloat(frm.price.value);
             var list = String(frm.servname.value);
 
+            let timeset = frm.end_time.value
+            timeset = new Date(moment(timeset, 'HH:mm'))
             frm.price.value = chk.checked ? total + parseFloat(price) : total - parseFloat(price);
             frm.time.value = chk.checked ? time + parseFloat(minute) : time - parseFloat(minute);
+            frm.end_time.value = chk.checked ? addMinutes(timeset, minute) : deMinutes(timeset, minute);
+            let newtime = new Date(moment(frm.end_time.value, 'HH:mm'))
 
 
+            // console.log('time', test);
+            // test = addMinutes(test, 60)
+            // console.log(test);
+            // test = deMinutes(test, 60)
+            // console.log(test);
 
 
             if (frm.time.value <= 120) {
@@ -575,6 +631,7 @@ if (isset($_REQUEST['btn_booking'])) {
                 frm.price.value -= parseFloat(price)
                 frm.time.value -= parseFloat(minute)
                 chk.checked = false;
+                frm.end_time.value = deMinutes(newtime, minute)
                 alert('จำกัดเวลาเพียง 2 ขั่วโมง');
             } else {
                 if (frm.time.value > 0) {
@@ -596,7 +653,8 @@ if (isset($_REQUEST['btn_booking'])) {
 
             let cal_price = frm.price.value
             var commas = cal_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
+            document.getElementById("end_time_up").innerHTML = frm.end_time.value
+            frm.timeend.value = frm.end_time.value
             if (frm.price.value > 0) {
                 frm.calprice.value = commas + " บาท"
                 document.getElementById("total_price").innerHTML = frm.calprice.value

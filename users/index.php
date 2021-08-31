@@ -24,6 +24,17 @@ if (isset($_REQUEST['btn_logout'])) {
     }
 }
 
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+
+$uuid_cus = $_SESSION['token_uuid'];
+$date = date("d-m-Y");
+
+$sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+$res5 = $db->query($sql5);
+$notify = $res5->fetchColumn();
+
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,14 +79,7 @@ if (isset($_REQUEST['btn_logout'])) {
     <!-- datepicker -->
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
 
-    <style>
-        #btn-back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-        }
-    </style>
+    
 
 </head>
 
@@ -121,7 +125,21 @@ if (isset($_REQUEST['btn_logout'])) {
                     <li class="nav-item">
                         <a href="#p3" class="nav-link ">แผนที่</a>
                     </li>
-
+                    <?php
+                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    ?>
+                    <li class="nav-item">
+                        <a href="history.php" class="nav-link">
+                            <i class="fa fa-bell-o"></i>
+                            <?php if ($notify >=1 ) { ?>
+                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                            <?php } ?>
+                        </a>
+                    </li>
+                    <?php
+                    }
+                    ?>
+                    
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
                     ?>
@@ -215,7 +233,7 @@ if (isset($_REQUEST['btn_logout'])) {
                     <h2 class="mb-5 kanitB " style="text-shadow: 0 5px 5px #adb5bd">สามารถจองผ่านออนไลน์ได้แล้ววันนี้ !</h2>
                 </div>
 
-                <form action="select_employee.php" method="get">
+                <!-- <form action="select_employee.php" method="get">
                     <div class="row">
                         <div class="col-12 col-md-4 mb-2">
                             <input type="text" class="form-control-lg kanitB" id="datepicker" name="startDate" autocomplete="off" placeholder="เลือกวันที่" required>
@@ -230,8 +248,8 @@ if (isset($_REQUEST['btn_logout'])) {
                         </div>
 
                     </div>
+                </form> -->
             </div>
-            </form>
         </div>
 
     </header>
@@ -244,7 +262,7 @@ if (isset($_REQUEST['btn_logout'])) {
             <div class="row">
                 <div class="col-12 col-md-12 mb-4">
                     <a name="p1">
-                        <h3 class="kanitB">ช่างทำผม</h3>
+                        <h3 class="kanitB">เลือกช่างทำผม</h3>
                     </a>
                 </div>
                 <?php
@@ -256,7 +274,7 @@ if (isset($_REQUEST['btn_logout'])) {
                 ?>
                     <div class="col-12 col-md-3 mb-1">
 
-                        <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>&start_date=<?php echo $date ?>&start_time=&end_time=">
+                        <a href="detail_emp.php?uu_id=<?php echo $row['uuid'] ?>">
 
                             <div class="card mb-3" style="width: 16rem;">
 
@@ -281,7 +299,7 @@ if (isset($_REQUEST['btn_logout'])) {
                                         }
                                         ?>
                                     </p>
-                                    <p class="kanitB text-center mb-1 fw-bold card-text"> ( <?php echo number_format((float)$row['score'], 1, '.', ''); ?>)</p>                                    
+                                    <p class="kanitB text-center mb-1 fw-bold card-text"> ( <?php echo number_format((float)$row['score'], 1, '.', ''); ?>)</p>
                                 </div>
                             </div>
                         </a>
@@ -386,6 +404,7 @@ if (isset($_REQUEST['btn_logout'])) {
     <!--===============================================================================================-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js" integrity="sha512-cp+S0Bkyv7xKBSbmjJR0K7va0cor7vHYhETzm2Jy//ZTQDUvugH/byC4eWuTii9o5HN9msulx2zqhEXWau20Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
     <script>
         var date_start = new Date()
