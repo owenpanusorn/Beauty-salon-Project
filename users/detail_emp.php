@@ -95,10 +95,10 @@ if (isset($_REQUEST['btn_check'])) {
     $chk_bk = $res5->fetchColumn();
 
     if ($chk_bk >= 1) {
-        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !' . $chk_bk;
+        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !';
     } else {
         $chkk_book = true;
-        $insertMsg = 'เวลานี้สามารถจองคิวได้' . $chk_bk;
+        $insertMsg = 'เวลานี้สามารถจองคิวได้';
     }
 }
 
