@@ -22,7 +22,7 @@ if (!empty($_SESSION["token_emp_uuid"])) {
     $date = date("d-m-Y");
     $book_status = 'success';
 
-    $sql = "select count(uuid_emp) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'wait' and cre_bks_date = '$date'";
+    $sql = "select count(uuid_emp) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'wait' and cre_bks_date <= '$date'";
     $res = $db->query($sql);
     $count = $res->fetchColumn();
 
