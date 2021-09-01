@@ -79,7 +79,14 @@ $notify = $res5->fetchColumn();
     <!-- datepicker -->
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
 
-    
+    <style>
+        #btn-back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+        }
+    </style>
 
 </head>
 

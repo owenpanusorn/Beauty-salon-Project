@@ -352,7 +352,7 @@ if (isset($_REQUEST['btn_logout'])) {
                                 <i class="zmdi zmdi-home"></i>
                             </div>
 
-                            <button type="submit" name="btn_singup kanitB" class="btn_regis">ยืนยันสมัครสมาชิก
+                            <button type="submit" name="btn_singup" class="btn_regis">ยืนยันสมัครสมาชิก
                                 <i class="zmdi zmdi-arrow-right"></i>
                             </button>
                         </form>
