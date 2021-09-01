@@ -86,18 +86,19 @@ if (isset($_REQUEST['btn_check'])) {
 
     $etime->setTime($etime->format('H') + 2, $etime->format('i'));
     // 
-    // echo $etime->format('H:i') . "<br>";
     $etimeq = $etime->format('H:i');
+    echo $etimeq;
 
-    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and  bk.cre_bks_date = '$start_date' and bk.cre_bks_time <= '$time_start' and bk.end_bks_time >= '$etimeq'";
+    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp'  and (bk.cre_bks_time BETWEEN '$time_start' and '$etimeq' and  bk.cre_bks_date = '$start_date') or (bk.end_bks_time BETWEEN '$time_start' and '$etimeq' and  bk.cre_bks_date = '$start_date')";
+    // $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and  bk.cre_bks_date = '$start_date' and bk.cre_bks_time >= '$time_start' or bk.end_bks_time <= '$etimeq'";
     $res5 = $db->query($sql5);
     $chk_bk = $res5->fetchColumn();
 
     if ($chk_bk >= 1) {
-        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !';
+        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !' . $chk_bk;
     } else {
         $chkk_book = true;
-        $insertMsg = 'เวลานี้สามารถจองคิวได้';
+        $insertMsg = 'เวลานี้สามารถจองคิวได้' . $chk_bk;
     }
 }
 
@@ -105,12 +106,11 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
     $uuid_cus = $_SESSION['token_uuid'];
     $date = date("d-m-Y");
-    
+
     $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
     $res5 = $db->query($sql5);
     $notify = $res5->fetchColumn();
-    
-    }
+}
 
 
 ?>
@@ -210,16 +210,16 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                         <a href="#p2" class="nav-link ">รายการจองคิว</a>
                     </li>
                     <?php
-                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
-                    <li class="nav-item">
-                        <a href="history.php" class="nav-link">
-                            <i class="fa fa-bell-o"></i>
-                            <?php if ($notify >=1 ) { ?>
-                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
-                            <?php } ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="history.php" class="nav-link">
+                                <i class="fa fa-bell-o"></i>
+                                <?php if ($notify >= 1) { ?>
+                                    <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                                <?php } ?>
+                            </a>
+                        </li>
                     <?php
                     }
                     ?>
@@ -461,7 +461,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                                 <p class="kanitB fw-bolder fs-6 my-2">วันที่จอง</p>
                                             </div>
                                             <div class="col-md-6 mb-1">
-                                                <input type="text" class="form-control-lg kanitB border" id="datepicker" name="startDate" autocomplete="off" placeholder="เลือกวันที่"  required>
+                                                <input type="text" class="form-control-lg kanitB border" id="datepicker" name="startDate" autocomplete="off" placeholder="เลือกวันที่" required>
                                             </div>
                                             <div class="col-md-6 ">
                                                 <p class="kanitB fw-bolder fs-6 my-2">เวลาที่จอง</p>
