@@ -263,7 +263,13 @@ if (isset($_REQUEST['btn_logout'])) {
 
                 $num_per_page = 8;
                 $start_from = ($page - 1) * 8;
-                // echo $start_from;             
+                // echo $start_from;      
+                $pr_query = 'select count(*) as num from tb_product';
+                $pr_result = $db->prepare($pr_query);
+                $pr_result->execute();
+                $total_record = $pr_result->fetch(PDO::FETCH_ASSOC);
+                $numrecords = $total_record['num'];
+                $total_page = ceil($numrecords / $num_per_page);
 
                 // $result = $db->prepare('SELECT * FROM tb_product limit $start_from ');
                 $sql = "SELECT * FROM tb_product limit $start_from,$num_per_page";
@@ -275,7 +281,7 @@ if (isset($_REQUEST['btn_logout'])) {
 
 
                     <div class="col-12 col-md-3 mb-1">
-                        <div class="card mb-3" style="width: 16rem;" >
+                        <div class="card mb-3" style="width: 16rem;">
                             <img src="../Admin/images/prod_img/<?php echo $row["prod_img"] ?>" class="card-img-top" height=225>
                             <div class="card-body">
                                 <h5 class="card-title text-truncate"><?php echo $row["prod_name"] ?></h5>
@@ -286,33 +292,66 @@ if (isset($_REQUEST['btn_logout'])) {
                 <?php } ?>
             </div>
 
-            <?php
-            $pr_query = 'select count(*) as num from tb_product';
-            $pr_result = $db->prepare($pr_query);
-            $pr_result->execute();
-            $total_record = $pr_result->fetch(PDO::FETCH_ASSOC);
-            $numrecords = $total_record['num'];
-            $total_page = ceil($numrecords / $num_per_page);
-            // echo $total_page;
-            if ($page > 1) {
-                echo '<a href="product.php?page='. ($page-1) .'" class="btn btn-danger">Previous</a>';
-            }
+            <div class="row">
+                <div class="col-md-6 pt-4">
+                    <?php
+                    echo '<h6 class="text-secondary">สินค้าทั้งหมดมี ' . $num_per_page . ' รายการ จากทั้งหมด ' . $total_page . ' หน้า</h6>';
+                    ?>
+                </div>
+                <div class="col-md-6">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-lg justify-content-end">
+                            <?php
+                            // echo $total_page;
+                            if ($page == 1) {
+                                echo '  <li class="page-item disabled">
+                        <a class="page-link" href="product.php?page=' . ($page - 1) . '" aria-label="Previous">
+                             <span aria-hidden="true">&laquo;</span>
+                        </a>
+                 </li>';
+                            } else if ($page > 1) {
+                                // echo '<a href="product.php?page=' . ($page - 1) . '" class="btn btn-danger">Previous</a>';
+                                echo '  <li class="page-item">
+                                     <a class="page-link" href="product.php?page=' . ($page - 1) . '" aria-label="Previous">
+                                          <span aria-hidden="true">&laquo;</span>
+                                     </a>
+                              </li>';
+                            }
 
-            $num = 0;
-            for ($i = 0; $i < $total_page; $i++) {
-                $num++;
-                echo '<a href="product.php?page=' . $num . '" class="btn btn-primary">' . $num . '</a>';
-            }
+                            $num = 0;
+                            for ($i = 0; $i < $total_page; $i++) {
+                                $num++;
+                                // echo '<a href="product.php?page=' . $num . '" class="btn btn-primary">' . $num . '</a>';
 
-            if ($num > $page) {
-                echo '<a href="product.php?page='. ($page+1) .'" class="btn btn-danger">Next</a>';
-            }
-            ?>
-
+                                if ($num == $page) {
+                                    echo '<li class="page-item active"><a class="page-link" href="product.php?page=' . $num . '">' . $num . '</a></li>';
+                                } else {
+                                    echo '<li class="page-item"><a class="page-link" href="product.php?page=' . $num . '">' . $num . '</a></li>';
+                                }
+                            }
+                            if ($num == $page) {
+                                echo ' <li class="page-item disabled">
+                        <a class="page-link" href="product.php?page=' . ($page + 1) . '" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>';
+                            } else if ($num > $page) {
+                                // echo '<a href="product.php?page=' . ($page + 1) . '" class="btn btn-danger">Next</a>';
+                                echo ' <li class="page-item">
+                                    <a class="page-link" href="product.php?page=' . ($page + 1) . '" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>';
+                            }
+                            ?>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-light">
+    <footer class="bg-light pt-5">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
