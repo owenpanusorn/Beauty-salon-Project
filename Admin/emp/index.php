@@ -69,6 +69,9 @@ if (!empty($_SESSION["token_emp_uuid"])) {
 
   <link rel="stylesheet" href="../css/fontkanit.css">
   <link rel="icon" href="../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
+
+  <!-- chart js  -->
+  <script scr="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -215,10 +218,10 @@ if (!empty($_SESSION["token_emp_uuid"])) {
           </div>
         </div>
         <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col -->
-          <section class="container-fluid">
+        <section class="container-fluid">
+          <div class="row kanitB">
+            <!-- Left col -->
+
             <!-- Custom tabs (Charts with tabs)-->
             <div class="nav-tabs-custom">
               <!-- Tabs within a box -->
@@ -232,10 +235,11 @@ if (!empty($_SESSION["token_emp_uuid"])) {
               </div>
             </div>
             <!-- /.nav-tabs-custom -->
-        </div>
-        <!-- /.row (main row) -->
+          </div>
+          <!-- /.row (main row) -->
+        </section>
 
-      </section>
+    
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
@@ -248,7 +252,6 @@ if (!empty($_SESSION["token_emp_uuid"])) {
 
     <div class="control-sidebar-bg"></div>
   </div>
-  <!-- ./wrapper -->
 
   <!-- jQuery 3 -->
   <script src="../bower_components/jquery/dist/jquery.min.js"></script>
@@ -258,8 +261,8 @@ if (!empty($_SESSION["token_emp_uuid"])) {
   <script>
     $.widget.bridge('uibutton', $.ui.button);
   </script>
-  <!-- Bootstrap 3.3.7 -->
-  <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+   <!-- Bootstrap 3.3.7 -->
+   <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <!-- Morris.js charts -->
   <script src="../bower_components/raphael/raphael.min.js"></script>
   <script src="../bower_components/morris.js/morris.min.js"></script>
@@ -287,6 +290,19 @@ if (!empty($_SESSION["token_emp_uuid"])) {
   <script src="../dist/js/pages/dashboard.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="../dist/js/demo.js"></script>
+
+
+  <script>
+    $(document). ready(function () {
+      showGraph();
+    });
+
+    function showGraph() {
+      $.post('data.php', function(data){
+        console.log(data);
+      });
+    }
+  </script>
 </body>
 
 </html>

@@ -1,14 +1,14 @@
 <?php
-  session_start();
-  require_once 'require/config.php';
-  require_once 'require/session.php';
+session_start();
+require_once 'require/config.php';
+require_once 'require/session.php';
 
-  $message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
 
-  if (empty($_SESSION["token_admin_uuid"])) {
-    echo "<script type='text/javascript'>alert('$message');</script>";
-    header("refresh:0;login.php");
-  }
+if (empty($_SESSION["token_admin_uuid"])) {
+  echo "<script type='text/javascript'>alert('$message');</script>";
+  header("refresh:0;login.php");
+}
 
 if (isset($_REQUEST['btn_logout'])) {
   try {
@@ -33,9 +33,9 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
   $date = date("d-m-Y");
 
-   $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
-    $res = $db->query($sql);
-    $count = $res->fetchColumn();
+  $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date = '$date'";
+  $res = $db->query($sql);
+  $count = $res->fetchColumn();
 
   $sql1 = "select count(books_nlist) from tb_booking where cre_bks_date = '$date'";
   $res1 = $db->query($sql1);
@@ -44,7 +44,6 @@ if (!empty($_SESSION["token_admin_uuid"])) {
   $sql2 = "select sum(books_price) as price from tb_booking where cre_bks_date = '$date'";
   $res2 = $db->query($sql2);
   $sum_price = $res2->fetchColumn();
- 
 }
 
 
@@ -90,7 +89,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  <link rel="stylesheet" href="css/fontkanit.css"> 
+  <link rel="stylesheet" href="css/fontkanit.css">
   <link rel="icon" href="images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
 </head>
@@ -115,11 +114,11 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
-        
+
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="images/manager/manager.png" class="user-image" alt="User Image">                
+                <img src="images/manager/manager.png" class="user-image" alt="User Image">
                 <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
@@ -132,11 +131,11 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                     <small class="kanitB">ผู้จัดการ</small>
                   </p>
                 </li>
-               
+
                 <!-- Menu Footer-->
-                <li class="user-footer">                 
+                <li class="user-footer">
                   <div class="pull-right">
-                  <form method="post">
+                    <form method="post">
                       <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
                     </form>
                   </div>
@@ -202,8 +201,8 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
           <li>
             <a href="serv/">
-              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -262,7 +261,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1 class="kanitB">
-        แดชบอร์ด
+          แดชบอร์ด
           <!-- <small>Control panel</small> -->
         </h1>
         <ol class="breadcrumb kanitB">
@@ -274,8 +273,8 @@ if (!empty($_SESSION["token_admin_uuid"])) {
       <!-- Main content -->
       <section class="content">
         <!-- Small boxes (Stat box) -->
-        <div class="row kanitB">         
-          
+        <div class="row kanitB">
+
           <!-- ./col -->
           <div class="col-lg-3 col-xs-6">
             <!-- small box -->
@@ -287,10 +286,10 @@ if (!empty($_SESSION["token_admin_uuid"])) {
               </div>
               <div class="icon">
                 <i class="ion ion-person"></i>
-              </div>            
+              </div>
             </div>
-          </div>          
-         
+          </div>
+
           <div class="col-lg-3 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-green">
@@ -302,16 +301,17 @@ if (!empty($_SESSION["token_admin_uuid"])) {
               <div class="icon">
                 <i class="ion ion-cash"></i>
               </div>
-              
+
             </div>
           </div>
-           <!-- ./col -->
+          <!-- ./col -->
         </div>
         <!-- /.row -->
         <!-- Main row -->
-        <div class="row kanitB">
-          <!-- Left col -->
-          <section class="container-fluid">
+        <section class="container-fluid">
+          <div class="row kanitB">
+            <!-- Left col -->
+
             <!-- Custom tabs (Charts with tabs)-->
             <div class="nav-tabs-custom">
               <!-- Tabs within a box -->
@@ -325,11 +325,10 @@ if (!empty($_SESSION["token_admin_uuid"])) {
               </div>
             </div>
             <!-- /.nav-tabs-custom -->
-        </div>
-        <!-- /.row (main row) -->
-
-      </section>
-      <!-- /.content -->
+          </div>
+          <!-- /.row (main row) -->
+        </section>
+        <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
     <footer class="main-footer">

@@ -1,61 +1,8 @@
 <?php
-session_start();
-require_once('../require/config.php');
-require_once('../require/session.php');
+// session_start();
+// require_once('../require/config.php');
+// require_once('../require/session.php');
 
-
-$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
-
-if (empty($_SESSION["token_admin_uuid"])) {
-    echo "<script type='text/javascript'>alert('$message');</script>";
-    header("refresh:0;../login.php");
-}
-
-if (!empty($_SESSION["token_admin_uuid"])) {
-    $uuid_mng = $_SESSION["token_admin_uuid"];
-
-    $select_mng = $db->prepare("select * from tb_manager where uuid = :uuid_mng");
-    $select_mng->bindParam(":uuid_mng", $uuid_mng);
-    $select_mng->execute();
-    $row = $select_mng->fetch(PDO::FETCH_ASSOC);
-    extract($row);
-
-    $date = date("d-m-Y");
-    $book_status = 'success';
-
-    $sql = "select count(uuid_emp) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";
-    $res = $db->query($sql);
-    $count = $res->fetchColumn();
-
-    $sql1 = "select sum(book_score) from tb_booking where book_st = 'success' and book_score is not null";
-    $res1 = $db->query($sql1);
-    $score_all = $res1->fetchColumn();
-
-    $sql2 = "select count(book_score) from tb_booking where book_st = 'success' and book_score is not null";
-    $res2 = $db->query($sql2);
-    $count_score = $res2->fetchColumn();
-
-    $total = $score_all / $count_score;
-
-    if ($total >= 3.5) {
-        $bg = 'bg-green';
-    } else if ($total >= 2) {
-        $bg = 'bg-yellow';
-    } else {
-        $bg = 'bg-red';
-    }
-
-    if (isset($_REQUEST['btn_logout'])) {
-        try {
-            session_unset();
-            $_SESSION["token_admin_loing"] = false;
-            $seMsg = 'ออกจากระบบแล้ว';
-            header("refresh:0;../login.php");
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -64,13 +11,13 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>รายงานการประเมิน | Beautiful Salon</title>
+    <title>พยากรณ์ยอดขาย | Beautiful Salon</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css">
+    <!-- <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css"> -->
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="../bower_components/Ionicons/css/ionicons.min.css">
@@ -86,7 +33,10 @@ if (!empty($_SESSION["token_admin_uuid"])) {
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="../css/fontkanit.css">
     <link rel="icon" href="../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="../plugins/iCheck/all.css">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -229,7 +179,8 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-                            <li class="active"><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <li class="active"><a href="sales_fore.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย</a></li>
                         </ul>
                     </li>
 
@@ -256,7 +207,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
         <div class="content-wrapper">
             <section class="content-header">
                 <h1 class="kanitB">
-                    คะแนนเฉลี่ยทั้งหมด
+                    พยากรณ์ยอดขาย
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
                 </h1>
                 <ol class="breadcrumb kanitB">
@@ -265,92 +216,111 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                 </ol>
             </section>
 
-            <section class="content-header kanitB">
-                <!-- Small boxes (Stat box) -->
-                <div class="row">
-                    <div class="col-lg-3 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box <?php echo $bg; ?>">
-                            <div class="inner">
-                                <h3><?php echo number_format((float)$total, 1, '.', ''); ?></h3>
-                                <p>คะแนนเฉลี่ยของพนักงานทั้งหมด</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-            </section>
 
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <h1 class="kanitB">
-                    รายงานการประเมิน
-                    <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
-                </h1>
-            </section>
 
-            <!-- Main content -->
             <section class="content">
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="box">
                             <div class="box-header">
-                                <!-- <h3 class="box-title kanitB">ตารางการจองคิว</h3> -->
+                                <!-- <h3 class="box-title kanitB">ตารางรายการสินค้า</h3> -->
                                 <div class="box-tools pull-right">
                                     <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                         <i class="fa fa-minus"></i>
                                     </button>
+                                    <!-- <button type="button" class='btn btn-success kanitB' onclick="window.location.href='addproduct/'"> <i class="fa  fa-cart-plus"></i> เพิ่มสินค้า</button> -->
                                 </div>
                             </div>
 
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-3 text-right">
+                                        <h4 class="kanitB">พยากรณ์ด้วยวิธี :</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <!-- <label>Minimal</label> -->
+                                            <select class="form-control select2" style="width: 100%;">
+                                                <option selected="selected">Simple Moving Average</option>
+                                                <option>Linear Weighted Moving Average</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 text-right">
+                                        <h4 class="kanitB">พยากรณ์ข้อมูลตาม :</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- radio -->
+                                        <div class="form-group kanitB">
+                                            <input type="radio" name="r1" class="minimal " checked>
+                                            <label>
+                                                ปี
+                                            </label>
+                                            <input type="radio" name="r1" class="minimal-red">
+                                            <label>
+                                                เดือน
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h4 class="kanitB">โดยใช้ข้อมูลย้อนหลังทั้งหมด (รายการ) : </h4>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="number" class="form-control" min="0" max="12">
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="kanitB">ยอดขายตั้งแต่ปี 2562 จนถึงปี 2563 พร้อมถ่วงน้ำหนัก</h4>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <h4 class="kanitB">1,200,000.00</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด 2 ปี)</h4>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <h4 class="kanitB">600,000.00</h4>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="kanitB"><u>ดังนั้น สามารถสรุปได้ว่าในปี 2564 มีแนวโน้มที่มียอดขายจะอยู่ที่ประมาณ</u></h4>
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <h4 class="kanitB">600,000.00</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr>
 
                             <!-- /.box-header -->
                             <div class="box-body">
-                                <table id="example1" class="table table-bordered table-striped">
+                                <table id="example1" class="table table-bordered table-striped kanitB">
                                     <thead>
-                                        <tr class="kanitB">
-                                            <th>ลำดับ</th>
-                                            <th>ชื่อช่างทำผม</th>
-                                            <th>ผลการประเมิน</th>
-                                            <th>คะแนน</th>
+                                        <tr>
+                                            <th>ปีพุทธศักราช</th>
+                                            <th>กำไร (บาท)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and book_comment is not null and book_score is not null');
-                                        $result->bindParam(":book_st", $book_status);
-                                        $result->execute();
-
-                                        $num = 0;
-                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                            $num++;
-
-                                            if ($row['book_comment'] == null) {
-                                            }
-                                        ?>
-                                            <form method="POST">
-                                                <tr class="kanitB">
-                                                    <td><?php echo $num ?></td>
-                                                    <td><?php echo $row['book_emp']; ?></td>
-                                                    <td><?php echo $row['book_comment']; ?></td>
-                                                    <td>
-                                                        <span style="color : #f0ad4e;">
-                                                            <?php
-                                                            for ($i = 0; $i <  $row['book_score']; $i++) {
-                                                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                                    </svg>';
-                                                            }
-                                                            ?>
-                                                        </span>
-                                                        <?php echo '(' . $row['book_score'] . '.0 คะแนน)' ?>
-                                                    </td>
-                                                </tr>
-                                            </form>
-                                        <?php } ?>
+                                        <tr class="kanitB">
+                                            <td class="text-center">2563</td>
+                                            <td class="text-right">100,000.00</td>
+                                        </tr>
+                                        <tr class="kanitB">
+                                            <td class="text-center">2562</td>
+                                            <td class="text-right">50,000.00</td>
+                                        </tr>
                                     </tbody>
 
                                 </table>
@@ -363,7 +333,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
                 </div>
                 <!-- /.row -->
             </section>
-            <!-- /.content -->
+
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
@@ -395,11 +365,29 @@ if (!empty($_SESSION["token_admin_uuid"])) {
     <!-- AdminLTE for demo purposes -->
     <script src="../dist/js/demo.js"></script>
     <!-- page script -->
+    <!-- iCheck 1.0.1 -->
+    <script src="../plugins/iCheck/icheck.min.js"></script>
     <script>
         $(function() {
             $('#example1').DataTable()
 
         });
+
+        //iCheck for checkbox and radio inputs
+        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+            checkboxClass: 'icheckbox_minimal-blue',
+            radioClass: 'iradio_minimal-blue'
+        })
+        //Red color scheme for iCheck
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red'
+        })
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'iradio_flat-green'
+        })
     </script>
 </body>
 
