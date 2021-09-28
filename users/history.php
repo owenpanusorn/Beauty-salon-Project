@@ -140,16 +140,16 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                         <a href="#" class="nav-link ">สินค้า</a>
                     </li> -->
                     <li class="nav-item">
-                        <a href="#p1" class="nav-link">การจองคิว</a>
+                        <a href="detail_booking.php" class="nav-link">การจองคิว</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#p2" class="nav-link ">ประวัติการจอง</a>
+                        <a href="history.php" class="nav-link ">ประวัติการจอง</a>
                     </li>
                     <?php
                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
                         <li class="nav-item">
-                            <a href="history.php" class="nav-link">
+                            <a href="detail_booking.php" class="nav-link">
                                 <i class="fa fa-bell-o"></i>
                                 <?php if ($notify >= 1) { ?>
                                     <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
@@ -229,7 +229,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                 คุณ <?php echo $_SESSION["token_username"] ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <li><button class="dropdown-item" type="button"><i class="fa fa-book" aria-hidden="true"></i> ประวัติการจอง</button></li>
+                            <li><a href="history.php" class="dropdown-item" type="button"><i class="fa fa-book" aria-hidden="true"></i> ประวัติการจอง</a></li>
                                 <li>
                                     <form method="post">
                                         <button type="submit" name="btn_logout" class="dropdown-item"><i class="fa fa-sign-out" aria-hidden="true"></i> ออกจากระบบ</button>

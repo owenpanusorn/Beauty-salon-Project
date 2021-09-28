@@ -43,6 +43,15 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
     $notify = $res5->fetchColumn();
 }
 
+if (isset($_REQUEST['cre_bks_date']) && isset($_REQUEST['cre_bks_time']) && isset($_REQUEST['end_bks_time'])) {
+    $cre_bks_date = $_REQUEST['cre_bks_date'];
+    $cre_bks_time = $_REQUEST['cre_bks_time'];
+    $end_bks_time = $_REQUEST['end_bks_time'];
+
+}
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -273,59 +282,57 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
             ?>
                 <div class="row mt-4">
                     <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
-                    <form action="" method="POST">
-                                    <div class="row">
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="form-group">
-                                                <label>วันที่เลื่อนนัด </label>
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </div>
-                                                    <input type="text" class="form-control pull-right" data-date="22-08-2021" autocomplete="off" id="datepicker" name="startDate" value="<?php echo $cre_bks_date ?>" placeholder="เลือกวันที่" required>
-                                                </div>
+                        <form action="" method="POST">
+                            <div class="row">
+                                <div class="col-12 col-md-4 mb-2">
+                                    <div class="form-group">
+                                        <label>วันที่เลื่อนนัด </label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
                                             </div>
-                                        </div>
-
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="form-group">
-                                                <label>เวลาเริ่มต้นที่เลื่อนนัด </label>
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-clock-o"></i>
-                                                    </div>
-                                                    <input type="text" class="form-control pull-right" autocomplete="off" id="startTime" name="startTime" value="<?php echo $cre_bks_time ?>" placeholder="เวลาเริ่มต้น" required>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="form-group">
-                                                <label>เวลาสิ้นสุดที่เลื่อนนัด </label>
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-clock-o"></i>
-                                                    </div>
-                                                    <input type="text" class="form-control pull-right" autocomplete="off" id="endTime" name="endTime" value="<?php echo $end_bks_time ?>" placeholder="เวลาสิ้นสุด" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
-                                        <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
-                                    </div>
-                                    <div class="box-footer">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-4">
-                                                    <a href="detail_booking.php" class="btn btn-secondary btn-block">ยกเลิก</a>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <button type="submit" class="btn btn-success btn-block" name="btn_agree"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยันการเลื่อนนัด</button>
-                                                </div>
-                                            </div>
+                                            <input type="text" class="form-control pull-right" data-date="22-08-2021" autocomplete="off" id="datepicker" name="startDate" value="<?php echo $cre_bks_date ?>" placeholder="เลือกวันที่" required>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
+
+                                <div class="col-12 col-md-4 mb-2">
+                                    <div class="form-group">
+                                        <label>เวลาเริ่มต้นที่เลื่อนนัด </label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <input type="text" class="form-control pull-right" autocomplete="off" id="startTime" name="startTime" value="<?php echo $cre_bks_time ?>" placeholder="เวลาเริ่มต้น" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-4 mb-2">
+                                    <div class="form-group">
+                                        <label>เวลาสิ้นสุดที่เลื่อนนัด </label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </div>
+                                            <input type="text" class="form-control pull-right" autocomplete="off" id="endTime" name="endTime" value="<?php echo $end_bks_time ?>" placeholder="เวลาสิ้นสุด" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
+                                <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
+                            </div>
+                            <div class="box-footer">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <a href="detail_booking.php" class="btn btn-secondary btn-block">ยกเลิก</a>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <button type="submit" class="btn btn-success btn-block" name="btn_agree"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยันการเลื่อนนัด</button>
+                                    </div>
+                                </div>                              
+                            </div>
+                        </form>
                     </div>
                 </div>
             <?php
@@ -388,7 +395,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
         date_end.setDate(date_end.getDate() + 30);
 
         $('#datepicker').datepicker({
-            format: 'dd-mm-yyyy',
+            format: 'yyyy-mm-dd',
             language: 'th',
             startDate: date_start,
             endDate: date_end

@@ -3,6 +3,48 @@ session_start();
 require_once '../require/config.php';
 require_once '../require/session.php';
 
+if ($_SESSION["token_admin_uuid"]) {
+    $uuid_mng = $_SESSION["token_admin_uuid"];
+
+    $select_mng = $db->prepare("select * from tb_manager where uuid = :uuid_mng");
+    $select_mng->bindParam(":uuid_mng", $uuid_mng);
+    $select_mng->execute();
+    $row = $select_mng->fetch(PDO::FETCH_ASSOC);
+    extract($row);
+
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
+    $time = date("h:i:sa");
+    $newtime = str_replace(['pm', 'am'], '', $time);
+
+    $book_status = 'success';
+
+    $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";
+    $res = $db->query($sql);
+    $count = $res->fetchColumn();
+
+    if (isset($_REQUEST['num_list'])) {
+        $num_list = $_REQUEST['num_list'];
+
+        $select_time = $db->prepare('select * from tb_booking where books_nlist = :books_nlist');
+        $select_time->bindParam(":books_nlist", $num_list);
+        $select_time->execute();
+        $row1 = $select_time->fetch(PDO::FETCH_ASSOC);
+        extract($row1);
+    }
+
+    if (isset($_REQUEST['btn_logout'])) {
+        try {
+            session_unset();
+            $_SESSION["token_admin_loing"] = false;
+            $seMsg = 'ออกจากระบบแล้ว';
+            header("refresh:0;../login.php");
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+}
+
 $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
 $result->execute();
 
@@ -79,7 +121,7 @@ if (isset($_REQUEST['btn_report'])) {
             $sumindex1 = 0;
             $arr = $result2->fetchAll(PDO::FETCH_ASSOC);
             $numcount = count($arr);
-            echo $numcount;
+            // echo $numcount;
             $index = 0;
             $start_m_y = '';
             $end_m_y_to = '';
@@ -94,12 +136,12 @@ if (isset($_REQUEST['btn_report'])) {
 
                 }
                 echo '<br>';
-                print_r($arr[$i]);
+                // print_r($arr[$i]);
                 echo '<br>';
-                echo $i;
+                // echo $i;
                 $sumindex1 += $i + 1;
                 $sma += $arr[$i]['count'] * ($i + 1);
-                echo $sma;
+                // echo $sma;
                 if (($index) >= $numreport) {
 
                     $start_m_y .= $arr[$i]['Year'];
@@ -321,8 +363,10 @@ if (isset($_REQUEST['btn_report'])) {
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
                             <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
-                            <li class="active"><a href="sales_fore.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย</a></li>
-                            <li class=""><a href="cus_fore.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า</a></li>
+                            <li class=""><a href="sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+                            <li class="active"><a href="cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+                            <li class=""><a href="sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+                            <li class=""><a href="cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
                         </ul>
                     </li>
 
@@ -421,7 +465,7 @@ if (isset($_REQUEST['btn_report'])) {
 
                                     </div>
                                     <div class="col-md-6">
-                                        <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ยอดขาย</button>
+                                        <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ลูกค้า</button>
                                     </div>
                                 </div>
                                 </form>
@@ -480,6 +524,28 @@ if (isset($sumtotal)) {
                                 </table>
                             </div>
                             <!-- /.box-body -->
+
+                             <!-- /.box-header -->
+                             <div class="box-body">
+                                <table id="example2" class="table table-bordered table-striped kanitB">
+                                    <thead>
+                                        <tr>
+                                            <th>เดือน</th>
+                                            <th>กำไร (บาท)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
+                                        <tr class="kanitB">
+                                            <td class="text-center"><?php echo $row["Month"] ?></td>
+                                            <td class="text-right"><?php echo $row["sumprice"] ?></td>
+                                        </tr>
+
+                                        <?php }?>
+                                    </tbody>
+
+                                </table>
+                            </div>
                         </div>
                         <!-- /.box -->
                     </div>
@@ -524,6 +590,7 @@ if (isset($sumtotal)) {
     <script>
         $(function() {
             $('#example1').DataTable()
+            $('#example2').DataTable()
 
         });
 

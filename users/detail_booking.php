@@ -43,8 +43,18 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
     $notify = $res5->fetchColumn();
 }
 
-
-?>
+if (isset($_REQUEST['cancel_id'])) {
+    $id = $_REQUEST['cancel_id'];
+    $st_cancel = 'cancel';
+    // echo $id;
+    $cancel = $db->prepare("update tb_booking set book_st = :book_st where books_nlist = :books_nlist");
+    $cancel->bindParam(":book_st", $st_cancel);
+    $cancel->bindParam(":books_nlist", $id);
+    $cancel->execute();
+  
+    // header('Location:index.php');
+  }
+  ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -302,6 +312,8 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                             $status = 'รอดำเนินการ';
                                         } else if ($row['book_st'] == 'success') {
                                             $status = 'จองคิวสำเร็จ';
+                                        } else {
+                                            $status = 'ยกเลิกการจองคิว';
                                         }
                                     ?>
                                         <tr>
@@ -318,7 +330,8 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                                 $txt_color = 'text-success';
                                                 $icon = 'fa fa-check';
                                             } else {
-                                                $txt_color = '';
+                                                $txt_color = 'text-danger';
+                                                $icon = 'fa fa-close';
                                             }
 
                                             echo '<td class="' . $txt_color . '">';
@@ -328,8 +341,8 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                             <?php 
                                             if ($row['book_st'] == 'wait') {
                                             ?>
-                                            <td><a href="#" class="btn btn-warning"><i class="fa fa-clock-o"></i> เลื่อนนัด</a>
-                                            <a href="#" class="btn btn-danger"><i class="fa fa-close"></i> ยกเลิก</a>
+                                            <td><a href="postpone.php?cre_bks_date=<?php echo $row['cre_bks_date'] ?>&cre_bks_time=<?php echo $row['cre_bks_time'] ?>&end_bks_time=<?php echo $row['end_bks_time'] ?>" class="btn btn-warning"><i class="fa fa-clock-o"></i> เลื่อนนัด</a>
+                                            <a href="?cancel_id=<?php echo $row['books_nlist'] ?>" class="btn btn-danger" onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"><i class="fa fa-close"></i> ยกเลิก</a>
                                         </td>
                                         <?php } else {?>
                                             <td>ไม่สามารถแก้ไขได้</td>

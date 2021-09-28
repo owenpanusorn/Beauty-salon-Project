@@ -38,6 +38,18 @@ if ($_SESSION["token_admin_uuid"]) {
         }
     }
 }
+
+if (isset($_REQUEST['cancel_id'])) {
+    $id = $_REQUEST['cancel_id'];
+    $st_cancel = 'cancel';
+    // echo $id;
+    $cancel = $db->prepare("update tb_booking set book_st = :book_st where books_nlist = :books_nlist");
+    $cancel->bindParam(":book_st", $st_cancel);
+    $cancel->bindParam(":books_nlist", $id);
+    $cancel->execute();
+  
+    // header('Location:index.php');
+  }
 ?>
 
 <!DOCTYPE html>
@@ -298,6 +310,7 @@ if ($_SESSION["token_admin_uuid"]) {
                                             <th>สถานะ</th>
                                             <th>ยืนยัน</th>
                                             <th>เลื่อนนัด</th>
+                                            <th>ยกเลิก</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -339,6 +352,7 @@ if ($_SESSION["token_admin_uuid"]) {
                                                     ?>
                                                     <td><a href="confirm.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยัน</a></td>
                                                     <td><a href="postpone.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-warning btn-block"><i class="fa fa-clock-o"></i> เลื่อนนัด</a></td>
+                                                    <td><a href="?cancel_id=<?php echo $row['books_nlist'] ?>" class="btn btn-danger" onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"><i class="fa fa-close"></i> ยกเลิก</a></td>
                                                 </tr>
                                             </form>
                                         <?php } ?>
@@ -393,6 +407,7 @@ if ($_SESSION["token_admin_uuid"]) {
                                             <th>สถานะ</th>
                                             <th>ยืนยัน</th>
                                             <th>เลื่อนนัด</th>
+                                            <th>ยกเลิก</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -433,6 +448,7 @@ if ($_SESSION["token_admin_uuid"]) {
                                                     ?>
                                                     <td><a href="confirm.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-success btn-block" onClick="return confirm('คุณต้องการยืนยันในการจองหรือไม่ ?');"><i class="fa Example of check-circle-o fa-check-circle-o"></i> ยืนยัน</a></td>
                                                     <td><a href="postpone.php?num_list=<?php echo $row['books_nlist'] ?>" class="btn btn-warning btn-block"><i class="fa fa-clock-o"></i> เลื่อนนัด</a></td>
+                                                    <td><a href="?cancel_id=<?php echo $row['books_nlist'] ?>" class="btn btn-danger" onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"><i class="fa fa-close"></i> ยกเลิก</a></td>
                                                 </tr>
                                             </form>
                                         <?php } ?>

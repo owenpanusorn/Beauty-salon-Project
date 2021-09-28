@@ -54,6 +54,7 @@ if (isset($_REQUEST['uu_id'])) {
 // $date = date("d-m-Y"); //thai
 $date = date("Y-m-d");
 
+
 $sql = "select count(books_nlist) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'success' and book_score is not null";
 $res = $db->query($sql);
 $count_cus = $res->fetchColumn();
@@ -89,7 +90,7 @@ if (isset($_REQUEST['btn_check'])) {
     // 
     $etimeq = $etime->format('H:i');
 
-    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp'  and (bk.cre_bks_time >= '$time_start' and bk.cre_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date') or (bk.end_bks_time > '$time_start' and bk.end_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date')";
+    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and bk.book_st != 'cancel' and (bk.cre_bks_time >= '$time_start' and bk.cre_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date') or (bk.end_bks_time > '$time_start' and bk.end_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date')";
     // $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and  bk.cre_bks_date = '$start_date' and bk.cre_bks_time >= '$time_start' or bk.end_bks_time <= '$etimeq'";
     $res5 = $db->query($sql5);
     $chk_bk = $res5->fetchColumn();
@@ -107,7 +108,7 @@ if (isset($_REQUEST['btn_check'])) {
 if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
     $uuid_cus = $_SESSION['token_uuid'];
-    $date = date("d-m-Y");
+    $date = date("Y-m-d");
 
     $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
     $res5 = $db->query($sql5);
@@ -542,7 +543,6 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
                             </div>
                         </form>
-
                         <table class="table table-hover kanitB">
                             <thead class="">
                                 <tr>
@@ -554,8 +554,10 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                             </thead>
                             <tbody>
                                 <?php
-                                $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :id and cre_bks_date = :stardate');
+                                $st_succes = 'success';
+                                $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :id and book_st = :book_st and cre_bks_date = :stardate');
                                 $result->bindParam(':id', $uuid_emp); //ผูกพารามิเตอรฺ์ 
+                                $result->bindParam(':book_st', $st_succes);
                                 $result->bindParam(':stardate', $date);
                                 $result->execute();
                                 $num = 0;
