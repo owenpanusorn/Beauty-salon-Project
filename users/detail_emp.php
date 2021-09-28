@@ -90,11 +90,11 @@ if (isset($_REQUEST['btn_check'])) {
     // 
     $etimeq = $etime->format('H:i');
 
-    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and bk.book_st != 'cancel' and (bk.cre_bks_time >= '$time_start' and bk.cre_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date') or (bk.end_bks_time > '$time_start' and bk.end_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date')";
+    $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp'  and (bk.cre_bks_time >= '$time_start' and bk.cre_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date' and bk.book_st != 'cancel') or (bk.end_bks_time > '$time_start' and bk.end_bks_time < '$etimeq' and  bk.cre_bks_date = '$start_date' and bk.book_st != 'cancel')";
     // $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where emp.uuid = '$uuid_emp' and  bk.cre_bks_date = '$start_date' and bk.cre_bks_time >= '$time_start' or bk.end_bks_time <= '$etimeq'";
     $res5 = $db->query($sql5);
     $chk_bk = $res5->fetchColumn();
-
+    echo $chk_bk;
     if ($chk_bk >= 1) {
         // $errMsg = 'เวลานี้ได้ทำการจองแล้ว !' . $chk_bk;
         $errMsg = 'เวลานี้ได้ทำการจองแล้ว !';
