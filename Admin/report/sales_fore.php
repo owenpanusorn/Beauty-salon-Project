@@ -259,7 +259,7 @@ if (isset($_REQUEST['btn_report'])) {
                                     <!-- <button type="button" class='btn btn-success kanitB' onclick="window.location.href='addproduct/'"> <i class="fa  fa-cart-plus"></i> เพิ่มสินค้า</button> -->
                                 </div>
                             </div>
-
+                            <form action="" method="POST">
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-md-3 text-right">
@@ -310,6 +310,7 @@ if (isset($_REQUEST['btn_report'])) {
                                         <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ยอดขาย</button>
                                     </div>
                                 </div>
+                                </form>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">

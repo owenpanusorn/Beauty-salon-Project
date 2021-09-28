@@ -67,7 +67,8 @@ if (isset($_REQUEST['btn_singup'])) {
         $singup_nphon = $_REQUEST['nphon'];
         $singup_adder = $_REQUEST['adder'];
         $uuid_in = uuid();
-        $date = date("d/m/Y");
+        // $date = date("d-m-Y"); //thai
+        $date = date("Y-m-d");
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -320,7 +321,7 @@ if (isset($_REQUEST['btn_logout'])) {
                     <div class="col-md-6">
                         <form role="form" method="POST" enctype="multipart/form-data" class="kanitB">
                             <h3>สมัครสมาชิก</h3>
-                          
+
                             <div class="form-group">
                                 <input type="text" placeholder="ชื่อ" name="fname" class="form-control kanitB">
                                 <input type="text" placeholder="นามสกุล" name="lname" class="form-control kanitB">
@@ -338,7 +339,7 @@ if (isset($_REQUEST['btn_logout'])) {
                                 <select name="gender" class="form-control kanitB">
                                     <option value="null" selected>เพศ</option>
                                     <option value="male">ชาย</option>
-                                    <option value="femal">หญิง</option>                                    
+                                    <option value="femal">หญิง</option>
                                 </select>
                                 <i class="zmdi zmdi-caret-down" style="font-size: 17px"></i>
                             </div>

@@ -9,7 +9,7 @@ $message = 'คุณไม่มีสิทธิ์เข้าถึงห�
 if (empty($_SESSION["token_uuid"])) {
     echo "<script type='text/javascript'>alert('$message');</script>";
     header("refresh:0;index.php");
-  }
+}
 
 
 if (isset($_REQUEST['btn_logout'])) {
@@ -46,7 +46,8 @@ if (isset($_REQUEST['books_num'])) {
 if (isset($_REQUEST['btn_comment'])) {
 
     try {
-        $date = date("d/m/Y");
+        // $date = date("d-m-Y"); //thai
+        $date = date("Y-m-d");
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -67,7 +68,7 @@ if (isset($_REQUEST['btn_comment'])) {
                 $insertMsg = "บันทึกสำเร็จ . . .";
                 header("refresh:2;history.php");
             }
-        } 
+        }
         // else {
         //     if (isset($_POST['rate'])) {
         //         $rating =  $_POST['rate'];
@@ -409,19 +410,18 @@ if (isset($_REQUEST['btn_comment'])) {
                                                 if ($status == 'รอดำเนินการ') {
                                                     $txt_color = 'text-warning';
                                                     $icon = 'fa fa-clock-o';
-                                                } else if ($status == 'จองคิวสำเร็จ'){
+                                                } else if ($status == 'จองคิวสำเร็จ') {
                                                     $txt_color = 'text-success';
                                                     $icon = 'fa fa-check';
-                                                }
-                                                else {
+                                                } else {
                                                     $txt_color = '';
                                                 }
 
-                                                echo '<p class="kanitB '. $txt_color .'">';
-                                                echo  '<i class="'.$icon.'"></i>'.' '.$status;
+                                                echo '<p class="kanitB ' . $txt_color . '">';
+                                                echo  '<i class="' . $icon . '"></i>' . ' ' . $status;
                                                 echo '</p>';
                                                 ?>
-                                               
+
                                             </div>
                                         </div>
                                     </div>
@@ -441,108 +441,108 @@ if (isset($_REQUEST['btn_comment'])) {
                                             </div>
                                         </div>
                                     </div>
-                                    <?php 
-                                     if ($row['book_st'] == 'wait') {
+                                    <?php
+                                    if ($row['book_st'] == 'wait') {
                                     ?>
-                                    <div class="form-group">
-                                        <div class="row mb-2">
-                                            <div class="col-md-5">
-                                                <div class="rate">
-                                                    <input type="radio" id="star5"  name="rate" value="5"  disabled />
-                                                    <label for="star5" title="text" disabled>5 stars</label>
-
-                                                    <input type="radio" id="star4"  name="rate" value="4"  disabled />
-                                                    <label for="star4" title="text" disabled>4 stars</label>
-
-                                                    <input type="radio" id="star3"  name="rate" value="3"  disabled/>
-                                                    <label for="star3" title="text" disabled>3 stars</label>
-
-                                                    <input type="radio" id="star2"  name="rate" value="2"  disabled/>
-                                                    <label for="star2" title="text" disabled>2 stars</label>
-
-                                                    <input type="radio" id="star1"  name="rate" value="1"  disabled/>
-                                                    <label for="star1" title="text" disabled>1 star</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="row mb-2">
-                                            <div class="col-md-4  my-auto">
-                                                <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container">
                                         <div class="form-group">
                                             <div class="row mb-2">
-                                                <div class="col-md-12 my-auto">
-                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" disabled><?php echo $book_comment; ?></textarea>
-                                                    <p class="kanitB mt-2">* หากต้องการแสดงความคิดเห็นต้อง "จองคิวสำเร็จ" เท่านั้น</p>
+                                                <div class="col-md-5">
+                                                    <div class="rate">
+                                                        <input type="radio" id="star5" name="rate" value="5" disabled />
+                                                        <label for="star5" title="text" disabled>5 stars</label>
+
+                                                        <input type="radio" id="star4" name="rate" value="4" disabled />
+                                                        <label for="star4" title="text" disabled>4 stars</label>
+
+                                                        <input type="radio" id="star3" name="rate" value="3" disabled />
+                                                        <label for="star3" title="text" disabled>3 stars</label>
+
+                                                        <input type="radio" id="star2" name="rate" value="2" disabled />
+                                                        <label for="star2" title="text" disabled>2 stars</label>
+
+                                                        <input type="radio" id="star1" name="rate" value="1" disabled />
+                                                        <label for="star1" title="text" disabled>1 star</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <?php }?>
-                                    <?php 
-                                     if ($row['book_st'] == 'success') {
-                                    ?>
-                                    <div class="form-group">
-                                        <div class="row mb-2">
-                                            <div class="col-md-5">
-                                                <div class="rate">
-                                                    <input type="radio" id="star5"  name="rate" value="5"   <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 5 ? "checked" : "" ?> />
-                                                    <label for="star5" title="text">5 stars</label>
-                                                    <input type="radio" id="star4"  name="rate" value="4"   <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 4 ? "checked" : "" ?> />
-                                                    <label for="star4" title="text">4 stars</label>
-                                                    <input type="radio" id="star3"  name="rate" value="3"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 3 ? "checked" : "" ?> />
-                                                    <label for="star3" title="text">3 stars</label>
-                                                    <input type="radio" id="star2"  name="rate" value="2"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 2 ? "checked" : "" ?> />
-                                                    <label for="star2" title="text">2 stars</label>
-                                                    <input type="radio" id="star1"  name="rate" value="1"  <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 1 ? "checked" : "" ?> />
-                                                    <label for="star1" title="text">1 star</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <div class="row mb-2">
-                                            <div class="col-md-4  my-auto">
-                                                <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="container">
                                         <div class="form-group">
                                             <div class="row mb-2">
-                                                <div class="col-md-12 my-auto">
-                                                    <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" autocomplete="off"><?php if (!empty($_SESSION["token_uuid"])) echo $book_comment; ?></textarea>
+                                                <div class="col-md-4  my-auto">
+                                                    <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <?php }?>
+
+                                        <div class="container">
+                                            <div class="form-group">
+                                                <div class="row mb-2">
+                                                    <div class="col-md-12 my-auto">
+                                                        <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" disabled><?php echo $book_comment; ?></textarea>
+                                                        <p class="kanitB mt-2">* หากต้องการแสดงความคิดเห็นต้อง "จองคิวสำเร็จ" เท่านั้น</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                    <?php
+                                    if ($row['book_st'] == 'success') {
+                                    ?>
+                                        <div class="form-group">
+                                            <div class="row mb-2">
+                                                <div class="col-md-5">
+                                                    <div class="rate">
+                                                        <input type="radio" id="star5" name="rate" value="5" <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 5 ? "checked" : "" ?> />
+                                                        <label for="star5" title="text">5 stars</label>
+                                                        <input type="radio" id="star4" name="rate" value="4" <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 4 ? "checked" : "" ?> />
+                                                        <label for="star4" title="text">4 stars</label>
+                                                        <input type="radio" id="star3" name="rate" value="3" <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 3 ? "checked" : "" ?> />
+                                                        <label for="star3" title="text">3 stars</label>
+                                                        <input type="radio" id="star2" name="rate" value="2" <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 2 ? "checked" : "" ?> />
+                                                        <label for="star2" title="text">2 stars</label>
+                                                        <input type="radio" id="star1" name="rate" value="1" <?php if (!empty($_SESSION["token_uuid"])) echo $book_score == 1 ? "checked" : "" ?> />
+                                                        <label for="star1" title="text">1 star</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row mb-2">
+                                                <div class="col-md-4  my-auto">
+                                                    <label for="" class="kanitB ">เเสดงความคิดเห็น</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container">
+                                            <div class="form-group">
+                                                <div class="row mb-2">
+                                                    <div class="col-md-12 my-auto">
+                                                        <textarea name="txt_comment" rows="5" class="form-control border" spellcheck="false" autocomplete="off"><?php if (!empty($_SESSION["token_uuid"])) echo $book_comment; ?></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-lg-12 text-right">
                                 <a href="history.php" type="button" class="btn btn-secondary mr-1">ยกเลิก</a>
-                                <?php 
-                                     if ($row['book_st'] == 'wait') {
+                                <?php
+                                if ($row['book_st'] == 'wait') {
                                 ?>
-                                <button type="submit" name="btn_comment" class="btn btn-primary" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
-                                <?php }?>
+                                    <button type="submit" name="btn_comment" class="btn btn-primary" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
+                                <?php } ?>
 
-                                <?php 
-                                     if ($row['book_st'] == 'success') {
+                                <?php
+                                if ($row['book_st'] == 'success') {
                                 ?>
-                                <button type="submit" name="btn_comment" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
-                                <?php }?>
+                                    <button type="submit" name="btn_comment" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> บันทึก</button>
+                                <?php } ?>
                             </div>
                         </div>
                         </form>

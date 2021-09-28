@@ -232,7 +232,7 @@
                                     <!-- <button type="button" class='btn btn-success kanitB' onclick="window.location.href='addproduct/'"> <i class="fa  fa-cart-plus"></i> เพิ่มสินค้า</button> -->
                                 </div>
                             </div>
-
+                            <form action="" method="POST">
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-md-3 text-right">
@@ -283,6 +283,7 @@
                                         <button class="btn btn-success kanitB">เริ่มพยากรณ์ลูกค้า</button>
                                     </div>
                                 </div>
+                                </form>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">

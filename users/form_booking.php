@@ -90,13 +90,13 @@ if (isset($_REQUEST['btn_booking'])) {
 if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
     $uuid_cus = $_SESSION['token_uuid'];
-    $date = date("d-m-Y");
-    
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
+
     $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
     $res5 = $db->query($sql5);
     $notify = $res5->fetchColumn();
-    
-    }
+}
 
 
 ?>
@@ -189,16 +189,16 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                         <a href="#p1" class="nav-link active" aria-current="page">เลือกรายการบริการ</a>
                     </li>
                     <?php
-                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
-                    <li class="nav-item">
-                        <a href="history.php" class="nav-link">
-                            <i class="fa fa-bell-o"></i>
-                            <?php if ($notify >=1 ) { ?>
-                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
-                            <?php } ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="history.php" class="nav-link">
+                                <i class="fa fa-bell-o"></i>
+                                <?php if ($notify >= 1) { ?>
+                                    <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                                <?php } ?>
+                            </a>
+                        </li>
                     <?php
                     }
                     ?>
