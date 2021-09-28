@@ -11,7 +11,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>พยากรณ์ยอดขาย | Beautiful Salon</title>
+    <title>พยากรณ์ลูกค้า | Beautiful Salon</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -180,8 +180,8 @@
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
                             <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
-                            <li class="active"><a href="sales_fore.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย</a></li>
-                            <li class=""><a href="cus_fore.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า</a></li>
+                            <li class=""><a href="sales_fore.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย</a></li>
+                            <li class="active"><a href="cus_fore.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า</a></li>
                         </ul>
                     </li>
 
@@ -280,13 +280,13 @@
 
                                     </div>
                                     <div class="col-md-6">
-                                        <button class="btn btn-success kanitB">เริ่มพยากรณ์ยอดขาย</button>
+                                        <button class="btn btn-success kanitB">เริ่มพยากรณ์ลูกค้า</button>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB">ยอดขายตั้งแต่ปี 2562 จนถึงปี 2563 พร้อมค่าถ่วงน้ำหนัก</h4>
+                                        <h4 class="kanitB">ยอดลูกค้าตั้งแต่ปี 2562 จนถึงปี 2563 พร้อมค่าถ่วงน้ำหนัก</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <h4 class="kanitB">1,200,000.00</h4>
