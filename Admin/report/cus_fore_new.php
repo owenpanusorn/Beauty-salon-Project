@@ -45,8 +45,11 @@ if ($_SESSION["token_admin_uuid"]) {
     }
 }
 
-$result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+$result = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',count(*) as count,sum(books_price) as sumprice from tb_booking  group by Year order by Year desc;");
 $result->execute();
+
+$result_Month = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',strftime('%m',cre_bks_date) as 'Month',count(*) as count,sum(books_price) as sumprice from tb_booking   group by Month,Year order by Year desc,Month asc");
+$result_Month->execute();
 
 if (isset($_REQUEST['btn_report'])) {
     try {
@@ -61,10 +64,10 @@ if (isset($_REQUEST['btn_report'])) {
             $index = 0;
 
             if ($for == 'Year') {
-                $result1 = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data group by Year order by Year desc;");
+                $result1 = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',count(*) as count,sum(books_price) as sumprice from tb_booking group by Year order by Year desc;");
                 $result1->execute();
             } elseif ($for == 'Month') {
-                $result1 = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc ;");
+                $result1 = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',strftime('%m',cre_bks_date) as 'Month',count(*) as count,sum(books_price) as sumprice from tb_booking group by Month,Year order by Year desc,Month asc ;");
                 $result1->execute();
             }
             $end_m_y_to = '';
@@ -97,7 +100,6 @@ if (isset($_REQUEST['btn_report'])) {
                     }
                     break;
                 }
-
             }
             $sumtotal = $sma / $index;
             // echo '<hr>';
@@ -106,12 +108,12 @@ if (isset($_REQUEST['btn_report'])) {
         } elseif ($select_mode == 'Linear Weighted Moving Average') {
 
             if ($for == 'Year') {
-                $result2 = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc limit :limit ;");
+                $result2 = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',count(*) as count,sum(books_price) as sumprice from tb_booking  group by Year order by Year desc limit :limit ;");
                 $result2->bindParam(":limit", $numreport);
 
                 $result2->execute();
             } elseif ($for == 'Month') {
-                $result2 = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data  group by Month,Year order by Year desc,Month asc limit :limit ;");
+                $result2 = $db->prepare("select strftime('%Y',cre_bks_date) as 'Year',strftime('%m',cre_bks_date) as 'Month',count(*) as count,sum(books_price) as sumprice from tb_booking  group by Month,Year order by Year desc,Month asc limit :limit ;");
                 $result2->bindParam(":limit", $numreport);
                 $result2->execute();
             }
@@ -121,27 +123,25 @@ if (isset($_REQUEST['btn_report'])) {
             $sumindex1 = 0;
             $arr = $result2->fetchAll(PDO::FETCH_ASSOC);
             $numcount = count($arr);
-            // echo $numcount;
             $index = 0;
             $start_m_y = '';
             $end_m_y_to = '';
 
             for ($i = $numcount - 1; $i >= 0; $i--) {
                 $index++;
+                echo $index;
                 if ($index == 1) {
                     $end_m_y = $arr[$i]['Year'];
                     if ($for == 'Month') {
                         $end_m_y .= ' เดือน ' . $arr[$i]['Month'];
                     }
-
                 }
-                echo '<br>';
+                // echo '<br>';
                 // print_r($arr[$i]);
-                echo '<br>';
+                // echo '<br>';
                 // echo $i;
                 $sumindex1 += $i + 1;
                 $sma += $arr[$i]['count'] * ($i + 1);
-                // echo $sma;
                 if (($index) >= $numreport) {
 
                     $start_m_y .= $arr[$i]['Year'];
@@ -150,7 +150,8 @@ if (isset($_REQUEST['btn_report'])) {
                     }
                     if ($for == 'Year') {
                         $end_m_y_to .= $arr[$i]['Year'] + 1;
-                    }elseif ($for == 'Month') {
+                    }
+                    if ($for == 'Month') {
                         $end_m_y_to .= $arr[$i]['Year'];
                         $end_m_y_to .= ' เดือน ' . ((int) $arr[$i]['Month'] + 1);
                     }
@@ -163,9 +164,7 @@ if (isset($_REQUEST['btn_report'])) {
             // echo '<hr>';
             // echo 'Linear Weighted Moving Average : ' . $sumtotal;
         } else {
-
         }
-
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
@@ -365,8 +364,8 @@ if (isset($_REQUEST['btn_report'])) {
                             <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
                             <li class=""><a href="sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
                             <li class=""><a href="cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
-                            <li class=""><a href="sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
-                            <li class="active"><a href="cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
+                            <li class="active"><a href="sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+                            <li class=""><a href="cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
                         </ul>
                     </li>
 
@@ -418,59 +417,59 @@ if (isset($_REQUEST['btn_report'])) {
                                 </div>
                             </div>
                             <form action="" method="get">
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-md-3 text-right">
-                                        <h4 class="kanitB">พยากรณ์ด้วยวิธี :</h4>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <!-- <label>Minimal</label> -->
-                                            <select class="form-control select2" name="select_mode" style="width: 100%;">
-                                                <option selected="selected">Simple Moving Average</option>
-                                                <option>Linear Weighted Moving Average</option>
-                                            </select>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3 text-right">
+                                            <h4 class="kanitB">พยากรณ์ด้วยวิธี :</h4>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <!-- <label>Minimal</label> -->
+                                                <select class="form-control select2" name="select_mode" style="width: 100%;">
+                                                    <option selected="selected">Simple Moving Average</option>
+                                                    <option>Linear Weighted Moving Average</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 text-right">
-                                        <h4 class="kanitB">พยากรณ์ข้อมูลตาม :</h4>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <!-- radio -->
-                                        <div class="form-group kanitB">
-                                            <input type="radio" value="Year" name="r1" class="minimal " checked>
-                                            <label>
-                                                ปี
-                                            </label>
-                                            <input type="radio" value="Month" name="r1" class="minimal-red">
-                                            <label>
-                                                เดือน
-                                            </label>
+                                    <div class="row">
+                                        <div class="col-md-3 text-right">
+                                            <h4 class="kanitB">พยากรณ์ข้อมูลตาม :</h4>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <!-- radio -->
+                                            <div class="form-group kanitB">
+                                                <input type="radio" value="Year" name="r1" class="minimal " checked>
+                                                <label>
+                                                    ปี
+                                                </label>
+                                                <input type="radio" value="Month" name="r1" class="minimal-red">
+                                                <label>
+                                                    เดือน
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h4 class="kanitB">โดยใช้ข้อมูลย้อนหลังทั้งหมด (รายการ) : </h4>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <h4 class="kanitB">โดยใช้ข้อมูลย้อนหลังทั้งหมด (รายการ) : </h4>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="number" name="numreport" class="form-control" min="0" max="12">
+                                        </div>
                                     </div>
-                                    <div class="col-md-1">
-                                        <input type="number" name="numreport"  class="form-control" min="0" max="12">
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-md-3">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-3">
 
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ยอดขาย</button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ลูกค้า</button>
-                                    </div>
-                                </div>
-                                </form>
-                                <hr>
-                                <?php
+                            </form>
+                            <hr>
+                            <?php
 if (isset($sumtotal)) {
     ?>
                                 <div class="row">
@@ -483,7 +482,7 @@ if (isset($sumtotal)) {
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?>  ปี)</h4>
+                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?> ปี)</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <h4 class="kanitB"><?php echo $sumtotal ?></h4>
@@ -498,47 +497,48 @@ if (isset($sumtotal)) {
                                         <h4 class="kanitB"><?php echo $sumtotal ?></h4>
                                     </div>
                                 </div>
-                            </div>
-                            <?php }?>
-                            <hr>
+                        </div>
+                    <?php }?>
+                    <hr>
 
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                <table id="example1" class="table table-bordered table-striped kanitB">
-                                    <thead>
-                                        <tr>
-                                            <th>ปีพุทธศักราช</th>
-                                            <th>กำไร (บาท)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
-                                        <tr class="kanitB">
-                                            <td class="text-center"><?php echo $row["Year"] ?></td>
-                                            <td class="text-right"><?php echo $row["sumprice"] ?></td>
-                                        </tr>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="example1" class="table table-bordered table-striped kanitB">
+                            <thead>
+                                <tr>
+                                    <th>ปีพุทธศักราช</th>
+                                    <th>จำนวนลูกค้า</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
+                                    <tr class="kanitB">
+                                        <td class="text-center"><?php echo $row["Year"] ?></td>
+                                        <td class="text-right"><?php echo $row["count"] ?></td>
+                                    </tr>
 
-                                        <?php }?>
-                                    </tbody>
+                                <?php }?>
+                            </tbody>
 
-                                </table>
-                            </div>
-                            <!-- /.box-body -->
-
-                             <!-- /.box-header -->
-                             <div class="box-body">
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <!-- /.box-header -->
+                    <div class="box-body">
                                 <table id="example2" class="table table-bordered table-striped kanitB">
                                     <thead>
                                         <tr>
+                                        <th>ปี</th>
                                             <th>เดือน</th>
-                                            <th>กำไร (บาท)</th>
+                                            <th>จำนวนลูกค้า</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
+                                    <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) {?>
                                         <tr class="kanitB">
-                                            <td class="text-center"><?php echo $row["Month"] ?></td>
-                                            <td class="text-right"><?php echo $row["sumprice"] ?></td>
+                                        <td class="text-center"><?php echo $row2["Year"] ?></td>
+                                            <td class="text-center"><?php echo $row2["Month"] ?></td>
+                                            <td class="text-right"><?php echo $row2["count"] ?></td>
                                         </tr>
 
                                         <?php }?>
@@ -546,26 +546,26 @@ if (isset($sumtotal)) {
 
                                 </table>
                             </div>
-                        </div>
-                        <!-- /.box -->
                     </div>
-                    <!-- /.col -->
+                    <!-- /.box -->
                 </div>
-                <!-- /.row -->
-            </section>
-
+                <!-- /.col -->
         </div>
-        <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            <div class="pull-right hidden-xs kanitB">
-                <b>เวอร์ชั่น</b> 1.0.1
-            </div>
-            <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
-        </footer>
+        <!-- /.row -->
+        </section>
 
-        <!-- /.control-sidebar -->
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs kanitB">
+            <b>เวอร์ชั่น</b> 1.0.1
+        </div>
+        <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
+    </footer>
 
-        <div class="control-sidebar-bg"></div>
+    <!-- /.control-sidebar -->
+
+    <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
 

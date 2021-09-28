@@ -48,6 +48,9 @@ if ($_SESSION["token_admin_uuid"]) {
 $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
 $result->execute();
 
+$result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+$result_Month->execute();
+
 if (isset($_REQUEST['btn_report'])) {
     try {
         $select_mode = $_REQUEST['select_mode'];
@@ -524,15 +527,17 @@ if (isset($_REQUEST['btn_report'])) {
                                 <table id="example2" class="table table-bordered table-striped kanitB">
                                     <thead>
                                         <tr>
+                                        <th>ปี</th>
                                             <th>เดือน</th>
                                             <th>กำไร (บาท)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
+                                    <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) {?>
                                         <tr class="kanitB">
-                                            <td class="text-center"><?php echo $row["Month"] ?></td>
-                                            <td class="text-right"><?php echo $row["sumprice"] ?></td>
+                                        <td class="text-center"><?php echo $row2["Year"] ?></td>
+                                            <td class="text-center"><?php echo $row2["Month"] ?></td>
+                                            <td class="text-right"><?php echo $row2["sumprice"] ?></td>
                                         </tr>
 
                                         <?php }?>
