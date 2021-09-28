@@ -5,10 +5,7 @@ require_once 'require/session.php';
 
 $result = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data  group by Month,Year order by Year ASC,Month desc ;");
 $result->execute();
-$index = 0;
-$sma = 0;
 $lwma = 0;
-$sumindex = 0;
 $sumindex1 = 0;
 $arr = $result->fetchAll(PDO::FETCH_ASSOC);
 $numcount = count($arr) - 1;
@@ -32,6 +29,9 @@ echo '<hr>';
 
 $result1 = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc ;");
 $result1->execute();
+$sumindex = 0;
+$sma = 0;
+$index = 0;
 
 
 while ($row = $result1->fetch(PDO::FETCH_ASSOC)) {
@@ -44,13 +44,5 @@ while ($row = $result1->fetch(PDO::FETCH_ASSOC)) {
 $sma = $sma / $index;
 echo '<hr>';
 
-// echo $index . '<br>';
-// echo "<hr>";
 echo  'simple moving average : ' . $sma;
-// echo "<hr>";
 
-// echo 'Linear Weighted Moving Average : ' . $lwma;
-
-
-// echo '<hr>';
-// echo '<hr>';

@@ -60,7 +60,7 @@ if (isset($_REQUEST['btn_agree'])) {
         $end_min = $_REQUEST['endTimemin'];
 
 
-        echo $dateup . '<br>';
+        // echo $dateup . '<br>';
 
         $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup'))";
         $res5 = $db->query($sql5);

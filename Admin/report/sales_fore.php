@@ -1,7 +1,19 @@
 <?php
-// session_start();
-// require_once('../require/config.php');
-// require_once('../require/session.php');
+session_start();
+require_once '../require/config.php';
+require_once '../require/session.php';
+
+$result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+$result->execute();
+
+if (isset($_REQUEST['btn_report'])) {
+    try {
+        print_r($_REQUEST);
+
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
 
 ?>
 
@@ -66,7 +78,10 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../images/manager/manager.png" class="user-image" alt="User Image">
-                                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
+                                <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) {
+    echo $fname . ' ' . $lname;
+}
+?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -74,7 +89,10 @@
                                     <img src="../images/manager/manager.png" class="img-circle" alt="User Image">
 
                                     <p>
-                                        <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
+                                        <?php if (!empty($_SESSION["token_admin_uuid"])) {
+    echo $fname . ' ' . $lname;
+}
+?>
                                         <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
@@ -103,7 +121,10 @@
                         <img src="../images/manager/manager.png" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
-                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+                        <p><?php if (!empty($_SESSION["token_admin_uuid"])) {
+    echo $fname . ' ' . $lname;
+}
+?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
@@ -123,14 +144,20 @@
                             <i class="fa fa-calendar"></i>
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
-                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
+                                <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) {
+    echo $count;
+}
+?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="../booking/databooking/"><i class="fa  fa-info"></i>ข้อมูลการจองคิว</a></li>
                             <li><a href="../booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $count ?></span>
+                                        <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) {
+    echo $count;
+}
+?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
@@ -255,11 +282,11 @@
                                     <div class="col-md-6">
                                         <!-- radio -->
                                         <div class="form-group kanitB">
-                                            <input type="radio" name="r1" class="minimal " checked>
+                                            <input type="radio" value="Year" name="r1" class="minimal " checked>
                                             <label>
                                                 ปี
                                             </label>
-                                            <input type="radio" name="r1" class="minimal-red">
+                                            <input type="radio" value="Month" name="r1" class="minimal-red">
                                             <label>
                                                 เดือน
                                             </label>
@@ -271,7 +298,7 @@
                                         <h4 class="kanitB">โดยใช้ข้อมูลย้อนหลังทั้งหมด (รายการ) : </h4>
                                     </div>
                                     <div class="col-md-1">
-                                        <input type="number" class="form-control" min="0" max="12">
+                                        <input type="number" name="numreport"  class="form-control" min="0" max="12">
                                     </div>
                                 </div>
                                 <br>
@@ -280,7 +307,7 @@
 
                                     </div>
                                     <div class="col-md-6">
-                                        <button class="btn btn-success kanitB">เริ่มพยากรณ์ยอดขาย</button>
+                                        <button class="btn btn-success kanitB" type="submit" name="btn_report">เริ่มพยากรณ์ยอดขาย</button>
                                     </div>
                                 </div>
                                 <hr>
@@ -310,7 +337,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <hr>
 
                             <!-- /.box-header -->
@@ -323,14 +350,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
                                         <tr class="kanitB">
-                                            <td class="text-center">2563</td>
-                                            <td class="text-right">100,000.00</td>
+                                            <td class="text-center"><?php echo $row["Year"] ?></td>
+                                            <td class="text-right"><?php echo $row["sumprice"] ?></td>
                                         </tr>
-                                        <tr class="kanitB">
-                                            <td class="text-center">2562</td>
-                                            <td class="text-right">50,000.00</td>
-                                        </tr>
+                                        
+                                        <?php }?>
                                     </tbody>
 
                                 </table>
