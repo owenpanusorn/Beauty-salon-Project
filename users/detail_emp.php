@@ -3,23 +3,23 @@ session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
 
-$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+// $message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
 
-if (empty($_SESSION["token_uuid"])) {
-    echo "<script type='text/javascript'>alert('$message');</script>";
-    header("refresh:0;index.php");
-}
+// if (empty($_SESSION["token_uuid"])) {
+//     echo "<script type='text/javascript'>alert('$message');</script>";
+//     header("refresh:0;index.php");
+// }
 
-if (isset($_REQUEST['btn_logout'])) {
-    try {
-        session_unset();
-        $_SESSION["token_loing"] = false;
-        $seMsg = 'ออกจากระบบแล้ว';
-        header("refresh:2;index.php");
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
+// if (isset($_REQUEST['btn_logout'])) {
+//     try {
+//         session_unset();
+//         $_SESSION["token_loing"] = false;
+//         $seMsg = 'ออกจากระบบแล้ว';
+//         header("refresh:2;index.php");
+//     } catch (PDOException $e) {
+//         echo $e->getMessage();
+//     }
+// }
 
 if (isset($_REQUEST['uu_id'])) {
 
@@ -51,7 +51,8 @@ if (isset($_REQUEST['uu_id'])) {
     }
 }
 
-$date = date("d-m-Y");
+// $date = date("d-m-Y"); //thai
+$date = date("Y-m-d");
 
 $sql = "select count(books_nlist) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'success' and book_score is not null";
 $res = $db->query($sql);
@@ -94,10 +95,12 @@ if (isset($_REQUEST['btn_check'])) {
     $chk_bk = $res5->fetchColumn();
 
     if ($chk_bk >= 1) {
-        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !' . $chk_bk;
+        // $errMsg = 'เวลานี้ได้ทำการจองแล้ว !' . $chk_bk;
+        $errMsg = 'เวลานี้ได้ทำการจองแล้ว !';
     } else {
         $chkk_book = true;
-        $insertMsg = 'เวลานี้สามารถจองคิวได้' . $chk_bk;
+        // $insertMsg = 'เวลานี้สามารถจองคิวได้' . $chk_bk;
+        $insertMsg = 'เวลานี้สามารถจองคิวได้';
     }
 }
 
@@ -121,7 +124,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายละเอียดช่างทำผม</title>
+    <title>รายละเอียดช่างทำผม | Beautiful Salon</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -159,6 +162,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
     <link rel="stylesheet" href="jquery/jquery.timepicker.css">
     <!-- datepicker -->
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
     <style>
         #btn-back-to-top {
@@ -227,13 +231,13 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
                     ?>
                         <li class="navbar-item">
-                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Sign In</button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">เข้าสู่ระบบ</button>
 
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header text-center">
-                                            <h5 class="modal-title" id="exampleModalLabel">Sign In</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">เข้าสู่ระบบ</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -275,7 +279,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>>
+                                            </div>
 
                                             <div id="dropDownSelect1"></div>
                                         </div>
@@ -684,7 +688,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
         date_end.setDate(date_end.getDate() + 30);
 
         $('#datepicker').datepicker({
-            format: 'dd-mm-yyyy',
+            format: 'yyyy-mm-dd',
             language: 'th',
             startDate: date_start,
             endDate: date_end

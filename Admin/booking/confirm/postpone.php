@@ -19,7 +19,8 @@ if ($_SESSION["token_admin_uuid"]) {
     $row = $select_mng->fetch(PDO::FETCH_ASSOC);
     extract($row);
 
-    $date = date("d-m-Y");
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -64,7 +65,7 @@ if (isset($_REQUEST['btn_agree'])) {
         $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup'))";
         $res5 = $db->query($sql5);
         $chk_bk = $res5->fetchColumn();
-        echo $chk_bk;
+        // echo $chk_bk;
         if ($chk_bk >= 1) {
             $errorMsg = 'เวลานี้ได้ทำการจองแล้ว !';
         } else {
@@ -295,9 +296,7 @@ if (isset($_REQUEST['btn_agree'])) {
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <?php
+        <?php
                 if (isset($errorMsg)) {
                 ?>
                     <div class="alert alert-danger alert-dismissible kanitB">
@@ -313,6 +312,9 @@ if (isset($_REQUEST['btn_agree'])) {
                         <strong><i class="icon fa fa-check"></i>Success <?php echo $insertMsg ?></strong>
                     </div>
                 <?php } ?>
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+               
                 <h1 class="kanitB">
                     เลื่อนนัดการจอง
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
@@ -443,7 +445,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date <= :cre_bks_date');
+                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date >= :cre_bks_date');
                                         $result->bindParam(":book_st", $book_status);
                                         $result->bindParam(":cre_bks_date", $date);
                                         $result->execute();
@@ -500,7 +502,7 @@ if (isset($_REQUEST['btn_agree'])) {
             </div>
             <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
             reserved.
-            reserved.
+           
         </footer>
 
         <!-- /.control-sidebar -->

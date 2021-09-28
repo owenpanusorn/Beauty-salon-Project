@@ -12,7 +12,8 @@ if (!empty($_SESSION["token_emp_uuid"])) {
   $row = $select_emp->fetch(PDO::FETCH_ASSOC);
   extract($row);
 
-  $date = date("d-m-Y");
+  // $date = date("d-m-Y"); //thai
+  $date = date("Y-m-d");
 
   $sql = "select count(uuid_emp) from tb_booking where uuid_emp = '$uuid_emp' and book_st = 'wait' and cre_bks_date = '$date'";
   $res = $db->query($sql);

@@ -34,13 +34,14 @@ if (isset($_REQUEST['btn_logout'])) {
 if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
     $uuid_cus = $_SESSION['token_uuid'];
-    $date = date("d-m-Y");
-    
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
+
+
     $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
     $res5 = $db->query($sql5);
     $notify = $res5->fetchColumn();
-    
-    }
+}
 
 
 ?>
@@ -51,7 +52,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ประวัติการจอง</title>
+    <title>ประวัติการจอง | Beautiful Salon</title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -145,16 +146,16 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                         <a href="#p2" class="nav-link ">ประวัติการจอง</a>
                     </li>
                     <?php
-                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
-                    <li class="nav-item">
-                        <a href="history.php" class="nav-link">
-                            <i class="fa fa-bell-o"></i>
-                            <?php if ($notify >=1 ) { ?>
-                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
-                            <?php } ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="history.php" class="nav-link">
+                                <i class="fa fa-bell-o"></i>
+                                <?php if ($notify >= 1) { ?>
+                                    <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                                <?php } ?>
+                            </a>
+                        </li>
                     <?php
                     }
                     ?>
@@ -261,78 +262,6 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
         </div>
     </div>
 
-    <section>
-        <div class="container kanitB">
-            <a name="p1">
-                <h5 class="mt-5">การจองคิว <?php echo $date ?></h5>
-            </a>
-            <div class="row mt-4">
-                <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
-                    <form action="" method="POST">
-                        <table class="table" id="myTable1">
-                            <thead>
-                                <tr>
-                                    <th>ลำดับ</th>
-                                    <th>เลขที่รายการ</th>
-                                    <th>ช่างทำผม</th>
-                                    <th>วันที่จอง</th>
-                                    <th>เวลาในการจอง</th>
-                                    <th>สถานะ</th>
-                                    <th>รายละเอียด</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $uuid_cus = $_SESSION["token_uuid"];
-                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus order by books_id desc limit 1');
-                                $result->bindParam(":uuid_cus", $uuid_cus);
-                                $result->execute();
-
-                                $num = 0;
-                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                    $num++;
-
-                                    if ($row['book_st'] == 'wait') {
-                                        $status = 'รอดำเนินการ';
-                                    } else if ($row['book_st'] == 'success') {
-                                        $status = 'จองคิวสำเร็จ';
-                                    }
-                                ?>
-                                    <tr>
-                                        <td><?php echo $num; ?></td>
-                                        <td><?php echo $row['books_nlist'] ?></td>
-                                        <td><?php echo $row['book_emp'] ?></td>
-                                        <td><?php echo $row['cre_bks_date'] ?></td>
-                                        <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
-                                        <?php
-                                        if ($status == 'รอดำเนินการ') {
-                                            $txt_color = 'text-warning';
-                                            $icon = 'fa fa-clock-o';
-                                        } else if ($status == 'จองคิวสำเร็จ') {
-                                            $txt_color = 'text-success';
-                                            $icon = 'fa fa-check';
-                                        } else {
-                                            $txt_color = '';
-                                        }
-
-                                        echo '<td class="' . $txt_color . '">';
-                                        echo '<i class="' . $icon . '"></i>' . ' ' . $status;
-                                        echo '</td>';
-                                        ?>
-                                        <td><a href="detail_history.php?books_num=<?php echo $row['books_nlist'] ?>" class="btn btn-primary"><i class="fa fa-info-circle"></i> รายละเอียด</a></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
-        <i class="fa fa-arrow-up"></i>
-    </button>
 
     <section>
         <div class="container kanitB">
@@ -354,49 +283,58 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                                     <th>รายละเอียด</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                $uuid_cus = $_SESSION["token_uuid"];
-                                $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus and cre_bks_date > :cre_bks_date order by books_id desc');
-                                $result->bindParam(":uuid_cus", $uuid_cus);
-                                $result->bindParam(":cre_bks_date", $date);
-                                $result->execute();
+                            <?php
+                            if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                            ?>
+                                <tbody>
+                                    <?php
+                                    $uuid_cus = $_SESSION["token_uuid"];
+                                    // print_r($uuid_cus);
+                                    $sql_status = 'success';
+                                    $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus and book_st = :book_st order by cre_bks_date desc');
+                                    $result->bindParam(":uuid_cus", $uuid_cus);
+                                    $result->bindParam(":book_st", $sql_status);
+                                    // $result->bindParam(":cre_bks_date", $date);
+                                    $result->execute();
 
-                                $num = 0;
-                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                    $num++;
+                                    $num = 0;
+                                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                        $num++;
 
-                                    if ($row['book_st'] == 'wait') {
-                                        $status = 'รอดำเนินการ';
-                                    } else if ($row['book_st'] == 'success') {
-                                        $status = 'จองคิวสำเร็จ';
-                                    }
-                                ?>
-                                    <tr>
-                                        <td><?php echo $num; ?></td>
-                                        <td><?php echo $row['books_nlist'] ?></td>
-                                        <td><?php echo $row['book_emp'] ?></td>
-                                        <td><?php echo $row['cre_bks_date'] ?></td>
-                                        <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
-                                        <?php
-                                        if ($status == 'รอดำเนินการ') {
-                                            $txt_color = 'text-warning';
-                                            $icon = 'fa fa-clock-o';
-                                        } else if ($status == 'จองคิวสำเร็จ') {
-                                            $txt_color = 'text-success';
-                                            $icon = 'fa fa-check';
-                                        } else {
-                                            $txt_color = '';
+                                        if ($row['book_st'] == 'wait') {
+                                            $status = 'รอดำเนินการ';
+                                        } else if ($row['book_st'] == 'success') {
+                                            $status = 'จองคิวสำเร็จ';
                                         }
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $num; ?></td>
+                                            <td><?php echo $row['books_nlist'] ?></td>
+                                            <td><?php echo $row['book_emp'] ?></td>
+                                            <td><?php echo $row['cre_bks_date'] ?></td>
+                                            <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
+                                            <?php
+                                            if ($status == 'รอดำเนินการ') {
+                                                $txt_color = 'text-warning';
+                                                $icon = 'fa fa-clock-o';
+                                            } else if ($status == 'จองคิวสำเร็จ') {
+                                                $txt_color = 'text-success';
+                                                $icon = 'fa fa-check';
+                                            } else {
+                                                $txt_color = '';
+                                            }
 
-                                        echo '<td class="' . $txt_color . '">';
-                                        echo '<i class="' . $icon . '"></i>' . ' ' . $status;
-                                        echo '</td>';
-                                        ?>
-                                        <td><a href="detail_history.php?books_num=<?php echo $row['books_nlist'] ?>" class="btn btn-primary"><i class="fa fa-info-circle"></i> รายละเอียด</a></td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
+                                            echo '<td class="' . $txt_color . '">';
+                                            echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                            echo '</td>';
+                                            ?>
+                                            <td><a href="detail_history.php?books_num=<?php echo $row['books_nlist'] ?>" class="btn btn-primary"><i class="fa fa-info-circle"></i> รายละเอียด</a></td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            <?php
+                            }
+                            ?>
                         </table>
                     </form>
                 </div>
@@ -404,9 +342,12 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
         </div>
     </section>
 
+    <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </button>
 
     <!-- Footer -->
-    <!-- <footer class="bg-light">
+    <footer class="bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -414,7 +355,7 @@ if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                 </div>
             </div>
         </div>
-    </footer> -->
+    </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

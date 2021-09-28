@@ -19,7 +19,8 @@ if ($_SESSION["token_emp_uuid"]) {
     $row = $select_emp->fetch(PDO::FETCH_ASSOC);
     extract($row);
 
-    $date = date("d-m-Y");
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -379,7 +380,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date < :cre_bks_date');
+                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date > :cre_bks_date');
                                         $result->bindParam(":uuid_emp", $uuid_emp);
                                         $result->bindParam(":book_st", $book_status);
                                         $result->bindParam(":cre_bks_date", $date);                                           
@@ -404,7 +405,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                                     <td><?php echo $row['cre_bks_date'].' '.$row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
                                                     <?php
                                                     if ($status == 'จองคิวสำเร็จ') {
-                                                        $txt_color = 'text-success';
+                                                        $txt_color = '#00A65A';
                                                         $icon = 'fa fa-check';
                                                     } else {
                                                         $txt_color = '';

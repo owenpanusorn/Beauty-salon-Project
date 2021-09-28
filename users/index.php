@@ -347,9 +347,9 @@ $notify = $res5->fetchColumn();
                         </div>
                     </div>
                 <?php } ?>
-                <button class="btn btn-block btn-lg btn_booking kanitB" type="button">
+                <a href="product.php" class="btn btn-block btn-lg btn_booking kanitB" type="button">
                     ดูสินค้าเพิ่มเติม . . .
-                </button>
+                </a>
             </div>
         </div>
     </section>

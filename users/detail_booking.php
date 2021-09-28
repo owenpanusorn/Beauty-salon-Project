@@ -1,7 +1,15 @@
 <?php
+// Start the session
 session_start();
 require_once 'require/config.php';
 require_once 'require/session.php';
+
+$message = 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ !';
+
+if (empty($_SESSION["token_uuid"])) {
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    header("refresh:0;index.php");
+}
 
 if (isset($_REQUEST['btn_logout'])) {
     try {
@@ -13,20 +21,30 @@ if (isset($_REQUEST['btn_logout'])) {
         echo $e->getMessage();
     }
 }
+// if(isset($_REQUEST['btn_booking'])){
+//     $date = $_REQUEST['startDate'];
+//     $stime = $_REQUEST['startTime'];
+//     $etime = $_REQUEST['endTime'];
 
-
-
-// try {
-//     $select_emp = $db->prepare("SELECT * FROM tb_employee"); //เตรียมคำสั่งที่ query
-//     // $select_emp -> bindParam(':uuid', $uuid); //ผูกพารามิเตอรฺ์ โดยใช้ชื่อตัวแปร
-//     $select_emp->execute(); // ประมวลผลคำสัง prepare
-//     $row = $select_emp->fetch(PDO::FETCH_ASSOC);  //ส่งค่ากลับ array index โดยใช้ชื่อ column ในตาราง
-//     extract($row);
-// } catch (PDOException $e) {
-//     $e->getMessage();
+//     print_r($date);
+//     print_r($stime);
+//     print_r($etime);
 // }
-?>
 
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+
+    $uuid_cus = $_SESSION['token_uuid'];
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
+
+
+    $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+    $res5 = $db->query($sql5);
+    $notify = $res5->fetchColumn();
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,9 +52,8 @@ if (isset($_REQUEST['btn_logout'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สินค้า | Beautiful Salon</title>
+    <title>การจองคิว | Beautiful Salon</title>
 
-    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/custom.css">
     <!--===============================================================================================-->
@@ -69,7 +86,9 @@ if (isset($_REQUEST['btn_logout'])) {
     <link rel="stylesheet" href="jquery/jquery.timepicker.css">
     <!-- datepicker -->
     <link rel="stylesheet" href="css/bootstrap-datepicker.min.css" />
-    <link rel="stylesheet" href="css/product.css" />
+    <!-- datatable -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
+    <link rel="icon" href="img/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
     <style>
         #btn-back-to-top {
@@ -79,7 +98,6 @@ if (isset($_REQUEST['btn_logout'])) {
             display: none;
         }
     </style>
-
 </head>
 
 <body>
@@ -102,7 +120,7 @@ if (isset($_REQUEST['btn_logout'])) {
             </div>
         <?php } ?>
 
-        <div class="container ">
+        <div class="container">
             <a href="index.php" class="navbar-brand">Beautiful Salon</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,22 +131,25 @@ if (isset($_REQUEST['btn_logout'])) {
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 kanitB">
 
                     <li class="nav-item">
-                        <a href="index.php" class="nav-link active" aria-current="page">หน้าหลัก</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#p1" class="nav-link ">สินค้าทั้งหมด</a>
+                        <a href="index.php" class="nav-link " aria-current="page">หน้าหลัก</a>
                     </li>
                     <!-- <li class="nav-item">
-                        <a href="#p2" class="nav-link ">สินค้า</a>
+                        <a href="#" class="nav-link ">ช่างทำผม</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#p3" class="nav-link ">แผนที่</a>
+                        <a href="#" class="nav-link ">สินค้า</a>
                     </li> -->
+                    <li class="nav-item">
+                        <a href="detail_booking.php" class="nav-link">การจองคิว</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="history.php" class="nav-link ">ประวัติการจอง</a>
+                    </li>
                     <?php
                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
                         <li class="nav-item">
-                            <a href="history.php" class="nav-link">
+                            <a href="detail_booking.php" class="nav-link">
                                 <i class="fa fa-bell-o"></i>
                                 <?php if ($notify >= 1) { ?>
                                     <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
@@ -138,6 +159,7 @@ if (isset($_REQUEST['btn_logout'])) {
                     <?php
                     }
                     ?>
+
 
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
@@ -162,7 +184,7 @@ if (isset($_REQUEST['btn_logout'])) {
                                                             </span>
                                                             <h5 class="text-center welcome-spacing kanitB">ยินดีต้อนรับ</h5>
                                                             <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Enter username">
-                                                                <input class="input100" type="text" name="username" placeholder="Username" autocomplete="off">
+                                                                <input class="input100" type="text" name="username" placeholder="Username">
                                                                 <!-- <span class="focus-input100" data-placeholder="Username"></span> -->
                                                             </div>
 
@@ -200,7 +222,7 @@ if (isset($_REQUEST['btn_logout'])) {
                             </div>
                         </li>
                     <?php
-                    } else if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    } else if ($_SESSION["token_loing"] === true) {
                     ?>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
@@ -222,8 +244,9 @@ if (isset($_REQUEST['btn_logout'])) {
 
         </div>
     </nav>
+
     <!-- Header -->
-    <div class="container-fluid bcrumb mb-5">
+    <div class="container-fluid bcrumb">
         <div class="container mt-3 bcrumb-in">
             <div class="row">
 
@@ -231,7 +254,7 @@ if (isset($_REQUEST['btn_logout'])) {
                     <nav>
                         <ul class=" changcrumb kanitB">
                             <li class=""><a href="index.php">หน้าแรก / </a></li>
-                            <li class="active kanitB">สินค้าทั้งหมด</li>
+                            <li class="active kanitB">การจองคิว</li>
                         </ul>
                     </nav>
                 </div>
@@ -239,122 +262,97 @@ if (isset($_REQUEST['btn_logout'])) {
         </div>
     </div>
 
-
-
-    <section class="bg-light showbarber">
+    <section>
         <div class="container kanitB">
-            <div class="row">
-                <div class="col-12 col-md-12 mb-4">
-                    <a name="p1"></a>
-                    <h5 class="kanitB">สินค้าทั้งหมด</h5>
-                    </a>
-                </div>
+            <a name="p1">
+                <h5 class="mt-5">การจองคิว <?php echo $date ?></h5>
+            </a>
+            <?php
+            if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+            ?>
+                <div class="row mt-4">
+                    <div class="col-lg-12 shadow p-3 mb-5 bg-body rounded">
+                        <form action="" method="POST">
+                            <table class="table" id="myTable1">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>เลขที่รายการ</th>
+                                        <th>ช่างทำผม</th>
+                                        <th>วันที่จอง</th>
+                                        <th>เวลาในการจอง</th>
+                                        <th>สถานะ</th>
+                                        <!-- <th>รายละเอียด</th> -->
+                                        <th>แก้ไข - ยกเลิก</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $uuid_cus = $_SESSION["token_uuid"];
+                                    $result = $db->prepare('SELECT * from tb_booking where uuid_cus = :uuid_cus and cre_bks_date = :cre_bks_date order by books_id desc');
+                                    $result->bindParam(":uuid_cus", $uuid_cus);
+                                    $result->bindParam(":cre_bks_date", $date);
+                                    $result->execute();
 
-                <?php
+                                    $num = 0;
+                                    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                        $num++;
 
+                                        if ($row['book_st'] == 'wait') {
+                                            $status = 'รอดำเนินการ';
+                                        } else if ($row['book_st'] == 'success') {
+                                            $status = 'จองคิวสำเร็จ';
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $num; ?></td>
+                                            <td><?php echo $row['books_nlist'] ?></td>
+                                            <td><?php echo $row['book_emp'] ?></td>
+                                            <td><?php echo $row['cre_bks_date'] ?></td>
+                                            <td><?php echo $row['cre_bks_time'] ?> - <?php echo $row['end_bks_time'] ?></td>
+                                            <?php
+                                            if ($status == 'รอดำเนินการ') {
+                                                $txt_color = 'text-warning';
+                                                $icon = 'fa fa-clock-o';
+                                            } else if ($status == 'จองคิวสำเร็จ') {
+                                                $txt_color = 'text-success';
+                                                $icon = 'fa fa-check';
+                                            } else {
+                                                $txt_color = '';
+                                            }
 
-                // echo $total_record;
-
-                if (isset($_GET['page'])) {
-                    $page = $_GET['page'];
-                } else {
-                    $page = 1;
-                }
-
-                $num_per_page = 8;
-                $start_from = ($page - 1) * 8;
-                // echo $start_from;      
-                $pr_query = 'select count(*) as num from tb_product';
-                $pr_result = $db->prepare($pr_query);
-                $pr_result->execute();
-                $total_record = $pr_result->fetch(PDO::FETCH_ASSOC);
-                $numrecords = $total_record['num'];
-                $total_page = ceil($numrecords / $num_per_page);
-
-                // $result = $db->prepare('SELECT * FROM tb_product limit $start_from ');
-                $sql = "SELECT * FROM tb_product limit $start_from,$num_per_page";
-                $result = $db->query($sql);
-                $result->execute();
-
-                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-
-
-                    <div class="col-12 col-md-3 mb-1">
-                        <div class="card mb-3" style="width: 16rem;">
-                            <img src="../Admin/images/prod_img/<?php echo $row["prod_img"] ?>" class="card-img-top" height=225>
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate"><?php echo $row["prod_name"] ?></h5>
-                                <p class="kanitB overflow-auto" style="height: 150px;"><?php echo $row["prod_details"] ?></p>
-                            </div>
-                        </div>
+                                            echo '<td class="' . $txt_color . '">';
+                                            echo '<i class="' . $icon . '"></i>' . ' ' . $status;
+                                            echo '</td>';
+                                            ?>
+                                            <?php 
+                                            if ($row['book_st'] == 'wait') {
+                                            ?>
+                                            <td><a href="#" class="btn btn-warning"><i class="fa fa-clock-o"></i> เลื่อนนัด</a>
+                                            <a href="#" class="btn btn-danger"><i class="fa fa-close"></i> ยกเลิก</a>
+                                        </td>
+                                        <?php } else {?>
+                                            <td>ไม่สามารถแก้ไขได้</td>
+                                            <?php }?>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
-                <?php } ?>
-            </div>
-            <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
-                <i class="fa fa-arrow-up"></i>
-            </button>
-
-            <div class="row">
-                <div class="col-md-6 pt-4">
-                    <?php
-                    echo '<h6 class="text-secondary">สินค้าทั้งหมดมี ' . $num_per_page . ' รายการ จากทั้งหมด ' . $total_page . ' หน้า</h6>';
-                    ?>
                 </div>
-                <div class="col-md-6">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination pagination-lg justify-content-end">
-                            <?php
-                            // echo $total_page;
-                            if ($page == 1) {
-                                echo '  <li class="page-item disabled">
-                        <a class="page-link" href="product.php?page=' . ($page - 1) . '" aria-label="Previous">
-                             <span aria-hidden="true">&laquo;</span>
-                        </a>
-                 </li>';
-                            } else if ($page > 1) {
-                                // echo '<a href="product.php?page=' . ($page - 1) . '" class="btn btn-danger">Previous</a>';
-                                echo '  <li class="page-item">
-                                     <a class="page-link" href="product.php?page=' . ($page - 1) . '" aria-label="Previous">
-                                          <span aria-hidden="true">&laquo;</span>
-                                     </a>
-                              </li>';
-                            }
-
-                            $num = 0;
-                            for ($i = 0; $i < $total_page; $i++) {
-                                $num++;
-                                // echo '<a href="product.php?page=' . $num . '" class="btn btn-primary">' . $num . '</a>';
-
-                                if ($num == $page) {
-                                    echo '<li class="page-item active"><a class="page-link" href="product.php?page=' . $num . '">' . $num . '</a></li>';
-                                } else {
-                                    echo '<li class="page-item"><a class="page-link" href="product.php?page=' . $num . '">' . $num . '</a></li>';
-                                }
-                            }
-                            if ($num == $page) {
-                                echo ' <li class="page-item disabled">
-                        <a class="page-link" href="product.php?page=' . ($page + 1) . '" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>';
-                            } else if ($num > $page) {
-                                // echo '<a href="product.php?page=' . ($page + 1) . '" class="btn btn-danger">Next</a>';
-                                echo ' <li class="page-item">
-                                    <a class="page-link" href="product.php?page=' . ($page + 1) . '" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>';
-                            }
-                            ?>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
+        </div>
     </section>
 
+    <button type="button" class="btn btn_booking btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
     <!-- Footer -->
-    <footer class="bg-light pt-5">
+    <footer class="bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -372,6 +370,9 @@ if (isset($_REQUEST['btn_logout'])) {
     <script src="js/rome.js"></script>
     <script src="js/main.js"></script>
     <script src="js/main1.js"></script> -->
+    <!-- datatable -->
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
     <!-- time picker -->
     <script src="jquery/jquery.timepicker.min.js"></script>
     <script src="jquery/jquery.timepicker.js"></script>
@@ -393,7 +394,6 @@ if (isset($_REQUEST['btn_logout'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js" integrity="sha512-cp+S0Bkyv7xKBSbmjJR0K7va0cor7vHYhETzm2Jy//ZTQDUvugH/byC4eWuTii9o5HN9msulx2zqhEXWau20Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-
     <script>
         var date_start = new Date()
         var date_end = new Date()
@@ -409,6 +409,9 @@ if (isset($_REQUEST['btn_logout'])) {
         });
 
         $(document).ready(function() {
+            $('#myTable1').DataTable();
+            $('#myTable2').DataTable();
+
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
                 interval: 30,

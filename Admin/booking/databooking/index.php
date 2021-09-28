@@ -19,7 +19,8 @@ if (!empty($_SESSION["token_admin_uuid"])) {
     $row = $select_mng->fetch(PDO::FETCH_ASSOC);
     extract($row);
 
-    $date = date("d-m-Y");
+    // $date = date("d-m-Y");
+    $date = date("Y-m-d");
     $book_status = 'success';
 
     $sql = "select count(uuid_emp) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";

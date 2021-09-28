@@ -273,6 +273,15 @@
                                         <input type="number" class="form-control" min="0" max="12">
                                     </div>
                                 </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-3">
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button class="btn btn-success kanitB">เริ่มพยากรณ์ยอดขาย</button>
+                                    </div>
+                                </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">
