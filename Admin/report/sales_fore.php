@@ -8,7 +8,121 @@ $result->execute();
 
 if (isset($_REQUEST['btn_report'])) {
     try {
-        print_r($_REQUEST);
+        $select_mode = $_REQUEST['select_mode'];
+        $for = $_REQUEST['r1'];
+        $numreport = $_REQUEST['numreport'];
+
+        if ($select_mode == 'Simple Moving Average') {
+            # code...
+            $sumindex = 0;
+            $sma = 0;
+            $index = 0;
+
+            if ($for == 'Year') {
+                $result1 = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data group by Year order by Year desc;");
+                $result1->execute();
+            } elseif ($for == 'Month') {
+                $result1 = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc ;");
+                $result1->execute();
+            }
+            $end_m_y_to = '';
+
+            while ($row = $result1->fetch(PDO::FETCH_ASSOC)) {
+                $index++;
+                if ($index == 1) {
+                    $start_m_y = $row['Year'];
+
+                    if ($for == 'Month') {
+                        $start_m_y .= ' เดือน ' . $row['Month'];
+                    }
+
+                    if ($for == 'Year') {
+                        $end_m_y_to .= $row['Year'] + 1;
+                    }
+                }
+                // print_r($row);
+                // echo '<br>';
+                $sma += $row['sumprice'];
+                $sumindex += $index;
+                if (($index) >= $numreport) {
+                    $end_m_y = $row['Year'];
+                    if ($for == 'Month') {
+                        $end_m_y .= ' เดือน ' . $row['Month'];
+                    }
+                    if ($for == 'Month') {
+                        $end_m_y_to .= $row['Year'];
+                        $end_m_y_to .= ' เดือน ' . ((int) $row['Month'] + 1);
+                    }
+                    break;
+                }
+
+            }
+            $sumtotal = $sma / $index;
+            // echo '<hr>';
+            // echo 'simple moving average : ' . $sumtotal;
+
+        } elseif ($select_mode == 'Linear Weighted Moving Average') {
+
+            if ($for == 'Year') {
+                $result2 = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc limit :limit ;");
+                $result2->bindParam(":limit", $numreport);
+
+                $result2->execute();
+            } elseif ($for == 'Month') {
+                $result2 = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data  group by Month,Year order by Year desc,Month asc limit :limit ;");
+                $result2->bindParam(":limit", $numreport);
+                $result2->execute();
+            }
+            $arr1 = [];
+            $sma = 0;
+            $lwma = 0;
+            $sumindex1 = 0;
+            $arr = $result2->fetchAll(PDO::FETCH_ASSOC);
+            $numcount = count($arr);
+            $index = 0;
+            $start_m_y = '';
+            $end_m_y_to = '';
+
+            for ($i = $numcount -1; $i >= 0; $i--) {
+                $index++;
+                if ($index == 1) {
+                    $end_m_y = $arr[$i]['Year'];
+                    if ($for == 'Month') {
+                        $end_m_y .= ' เดือน ' . $arr[$i]['Month'];
+                    }
+
+                    
+
+                }
+                // echo '<br>';
+                // print_r($arr[$i]); 
+                // echo '<br>';
+                // echo $i;
+                $sumindex1 += $i +1;
+                $sma += $arr[$i]['sumprice'] *( $i +1);
+                if (($index) >= $numreport) {
+
+                    $start_m_y .= $arr[$i]['Year'];
+                    if ($for == 'Month') {
+                        $start_m_y .= ' เดือน ' . $arr[$i]['Month'];
+                    }
+                    if ($for == 'Year') {
+                        $end_m_y_to .= $arr[$i]['Year'] + 1;
+                    }if ($for == 'Month') {
+                        $end_m_y_to .= $arr[$i]['Year'];
+                        $end_m_y_to .= ' เดือน ' . ((int) $arr[$i]['Month'] + 1);
+                    }
+                    break;
+                }
+            }
+            $sumtotal = $sma / $sumindex1;
+
+            // echo '<br>';
+            // echo '<hr>';
+            // echo 'Linear Weighted Moving Average : ' . $sumtotal;
+        } else {
+
+        }
 
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -259,7 +373,7 @@ if (isset($_REQUEST['btn_report'])) {
                                     <!-- <button type="button" class='btn btn-success kanitB' onclick="window.location.href='addproduct/'"> <i class="fa  fa-cart-plus"></i> เพิ่มสินค้า</button> -->
                                 </div>
                             </div>
-                            <form action="" method="POST">
+                            <form action="" method="get">
                             <div class="box-body">
                                 <div class="row">
                                     <div class="col-md-3 text-right">
@@ -268,7 +382,7 @@ if (isset($_REQUEST['btn_report'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <!-- <label>Minimal</label> -->
-                                            <select class="form-control select2" style="width: 100%;">
+                                            <select class="form-control select2" name="select_mode" style="width: 100%;">
                                                 <option selected="selected">Simple Moving Average</option>
                                                 <option>Linear Weighted Moving Average</option>
                                             </select>
@@ -312,33 +426,36 @@ if (isset($_REQUEST['btn_report'])) {
                                 </div>
                                 </form>
                                 <hr>
+                                <?php
+if (isset($sumtotal)) {
+    ?>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB">ยอดขายตั้งแต่ปี 2562 จนถึงปี 2563 พร้อมค่าถ่วงน้ำหนัก</h4>
+                                        <h4 class="kanitB">ยอดขายตั้งแต่ปี <?php echo $start_m_y ?> จนถึงปี <?php echo $end_m_y ?> พร้อมค่าถ่วงน้ำหนัก</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB">1,200,000.00</h4>
+                                        <h4 class="kanitB"><?php echo $sma ?></h4>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด 2 ปี)</h4>
+                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?>  ปี)</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB">600,000.00</h4>
+                                        <h4 class="kanitB"><?php echo $sumtotal ?></h4>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB"><u>ดังนั้น สามารถสรุปได้ว่าในปี 2564 มีแนวโน้มที่มียอดขายจะอยู่ที่ประมาณ</u></h4>
+                                        <h4 class="kanitB"><u>ดังนั้น สามารถสรุปได้ว่าในปี <?php echo $end_m_y_to ?> มีแนวโน้มที่มียอดขายจะอยู่ที่ประมาณ</u></h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB">600,000.00</h4>
+                                        <h4 class="kanitB"><?php echo $sumtotal ?></h4>
                                     </div>
                                 </div>
                             </div>
-
+                            <?php }?>
                             <hr>
 
                             <!-- /.box-header -->
@@ -356,7 +473,7 @@ if (isset($_REQUEST['btn_report'])) {
                                             <td class="text-center"><?php echo $row["Year"] ?></td>
                                             <td class="text-right"><?php echo $row["sumprice"] ?></td>
                                         </tr>
-                                        
+
                                         <?php }?>
                                     </tbody>
 
