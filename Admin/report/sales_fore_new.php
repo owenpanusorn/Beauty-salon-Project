@@ -446,7 +446,7 @@ if (isset($_REQUEST['btn_report'])) {
                                         <div class="col-md-6">
                                             <!-- radio -->
                                             <div class="form-group kanitB">
-                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo isset($_REQUEST['r1']) == "Year" ? "checked" : "" ?>>
+                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo isset($_REQUEST['r1']) == "Year" ? "checked" : "" ?> required>
                                                 <label>
                                                     ปี
                                                 </label>
@@ -462,7 +462,7 @@ if (isset($_REQUEST['btn_report'])) {
                                             <h4 class="kanitB">โดยใช้ข้อมูลย้อนหลังทั้งหมด (รายการ) : </h4>
                                         </div>
                                         <div class="col-md-1">
-                                            <input type="number" name="numreport" class="form-control" min="0" max="12">
+                                            <input type="number" name="numreport" class="form-control" min="0" max="12" required value="<?php echo isset($_REQUEST['numreport']) ? $numreport : "" ?>">
                                         </div>
                                     </div>
                                     <br>
