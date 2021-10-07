@@ -50,7 +50,7 @@ if ($_SESSION["token_admin_uuid"]) {
 
 // $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
 // $result_Month->execute();
-
+$for = 'Year';
 if (isset($_REQUEST['btn_report'])) {
     try {
         $select_mode = $_REQUEST['select_mode'];
@@ -141,7 +141,7 @@ if (isset($_REQUEST['btn_report'])) {
                 // echo $i;
                 $sumindex1 += $i + 1;
                 $sma += $arr[$i]['sumprice'] * ($i + 1);
-               
+
                 if (($index) >= $numreport) {
 
                     $start_m_y .= $arr[$i]['Year'];
@@ -183,7 +183,6 @@ if (isset($numreport)) {
         $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc limit :limit ");
         $result_Month->bindParam(":limit", $numreport);
     }
-
 } else {
     $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
 
@@ -232,7 +231,13 @@ $result_Month->execute();
             width: 100%;
             height: auto;
         }
+
+        .chart-container {
+            width: 100%;
+            height: 500px;
+        }
     </style>
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -468,11 +473,11 @@ $result_Month->execute();
                                         <div class="col-md-6">
                                             <!-- radio -->
                                             <div class="form-group kanitB">
-                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo isset($_REQUEST['r1']) == "Year" ? "checked" : "" ?> required>
+                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo $for == "Year" ? "checked" : ""; ?>>
                                                 <label>
                                                     ปี
                                                 </label>
-                                                <input type="radio" value="Month" name="r1" class="minimal-red" <?php echo isset($_REQUEST['r1']) == "Month" ? "checked" : "" ?>>
+                                                <input type="radio" value="Month" name="r1" class="minimal-red" <?php echo $for == "Month" ? "checked" : ""; ?>>
                                                 <label>
                                                     เดือน
                                                 </label>
@@ -529,64 +534,158 @@ $result_Month->execute();
                         </div>
                     <?php } ?>
                     <hr>
-
-                    <div class="col-md-6">
-                        <div id="chart-container">
-                            <canvas id="graphCanvas"></canvas>
-                        </div>                       
+                    <!-- <div class="col-md-12">
+                        <div id="barchart" class="chart-container"></div>
                     </div>
+                    <div class="col-md-12">
+                        <div id="barchart1" class="chart-container"></div>
+                    </div> -->
+                    <?php
+                    if (isset($numreport)) {
+                    ?>
+                        <?php
+                        if ($for == 'Year') {
+                        ?>
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <!-- <div id="chart-container">
+                                <canvas id="graphCanvas"></canvas>
+                            </div> -->
+                                    <div id="barchart" class="chart-container"></div>
+                                </div>
+                            </div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <!-- <div id="chart-container">
+                                <canvas id="graphCanvas1"></canvas>
+                            </div> -->
+                                    <div id="barchart1" class="chart-container"></div>
+                                </div>
+                            </div>
 
-                    <div class="col-md-6">
-                        <div id="chart-container">
-                            <canvas id="graphCanvas1"></canvas>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="col-md-6">
+                            <!-- <div id="chart-container">
+                                <canvas id="graphCanvas"></canvas>
+                            </div> -->
+                            <div id="barchart" class="chart-container"></div>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <!-- <div id="chart-container">
+                                <canvas id="graphCanvas1"></canvas>
+                            </div> -->
+                            <div id="barchart1" class="chart-container"></div>
+                        </div>
+                    <?php } ?>
 
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <table id="example1" class="table table-bordered table-striped kanitB">
-                            <thead>
-                                <tr>
-                                    <th>ปีพุทธศักราช</th>
-                                    <th>กำไร (บาท)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
-                                    <tr class="kanitB">
-                                        <td class="text-center"><?php echo $row["Year"] ?></td>
-                                        <td class="text-right"><?php echo $row["sumprice"] ?></td>
-                                    </tr>
+                    <?php
+                    if (isset($numreport)) {
+                    ?>
+                        <!-- /.box-header -->
+                        <?php
+                        if ($for == 'Year') {
+                        ?>
+                            <div class="box-body">
+                                <table id="example1" class="table table-bordered table-striped kanitB">
+                                    <thead>
+                                        <tr>
+                                            <th>ปีพุทธศักราช</th>
+                                            <th>กำไร (บาท)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
+                                            <tr class="kanitB">
+                                                <td class="text-center"><?php echo $row["Year"] ?></td>
+                                                <td class="text-right"><?php echo number_format($row["sumprice"]) ?></td>
+                                            </tr>
 
-                                <?php } ?>
-                            </tbody>
+                                        <?php } ?>
+                                    </tbody>
 
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
-                    <!-- /.box-header -->
-                    <div class="box-body">
+                                </table>
+                            </div>
+                        <?php
+                        } else {
+                        ?>
+                            <!-- /.box-body -->
+                            <!-- /.box-header -->
+                            <div class="box-body">
                                 <table id="example2" class="table table-bordered table-striped kanitB">
                                     <thead>
                                         <tr>
-                                        <th>ปี</th>
+                                            <th>ปี</th>
                                             <th>เดือน</th>
                                             <th>กำไร (บาท)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) {?>
-                                        <tr class="kanitB">
-                                        <td class="text-center"><?php echo $row2["Year"] ?></td>
-                                            <td class="text-center"><?php echo $row2["Month"] ?></td>
-                                            <td class="text-right"><?php echo $row2["sumprice"] ?></td>
-                                        </tr>
+                                        <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) { ?>
+                                            <tr class="kanitB">
+                                                <td class="text-center"><?php echo $row2["Year"] ?></td>
+                                                <td class="text-center"><?php echo $row2["Month"] ?></td>
+                                                <td class="text-right"><?php echo number_format($row2["sumprice"]) ?></td>
+                                            </tr>
 
-                                        <?php }?>
+                                        <?php } ?>
                                     </tbody>
 
                                 </table>
                             </div>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="box-body">
+                            <table id="example1" class="table table-bordered table-striped kanitB">
+                                <thead>
+                                    <tr>
+                                        <th>ปีพุทธศักราช</th>
+                                        <th>กำไร (บาท)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
+                                        <tr class="kanitB">
+                                            <td class="text-center"><?php echo $row["Year"] ?></td>
+                                            <td class="text-right"><?php echo number_format($row["sumprice"]) ?></td>
+                                        </tr>
+
+                                    <?php } ?>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                        <div class="box-body">
+                            <table id="example2" class="table table-bordered table-striped kanitB">
+                                <thead>
+                                    <tr>
+                                        <th>ปี</th>
+                                        <th>เดือน</th>
+                                        <th>กำไร (บาท)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) { ?>
+                                        <tr class="kanitB">
+                                            <td class="text-center"><?php echo $row2["Year"] ?></td>
+                                            <td class="text-center"><?php echo $row2["Month"] ?></td>
+                                            <td class="text-right"><?php echo number_format($row2["sumprice"]) ?></td>
+                                        </tr>
+
+                                    <?php } ?>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    <?php } ?>
                     </div>
                     <!-- /.box -->
                 </div>
@@ -629,8 +728,93 @@ $result_Month->execute();
     <!-- iCheck 1.0.1 -->
     <script src="../plugins/iCheck/icheck.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable([
+                ['Year', 'พยากรณ์ยอดขาย (รายปี)'],
+                <?php
+                if (isset($numreport)) {
+                    # code...
+                    if ($for == 'Year') {
+                        $sql = "select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc limit $numreport ;";
+                        $fire = $db->query($sql);
+                    } else {
+                        $sql = "select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;";
+                        $fire = $db->query($sql);
+                    }
+                } else {
+                    $sql = "select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;";
+                    $fire = $db->query($sql);
+                }
+
+                //  $fire = mysqli_query($con,$sql);
+                while ($result = $fire->fetch(PDO::FETCH_ASSOC)) {
+                    echo "['" . $result['Year'] . "'," . $result['sumprice'] . "],";
+                }
+
+                ?>
+            ]);
+
+            var options = {
+                title: 'พยากรณ์ยอดขาย (รายปี)'
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+
+            chart.draw(data, options);
+        }
+    </script>
+    <script type="text/javascript">
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart1);
+
+        function drawChart1() {
+
+            var data1 = google.visualization.arrayToDataTable([
+                ['Year', 'พยากรณ์ยอดขาย (รายเดือน)'],
+                <?php
+                if (isset($numreport)) {
+                    # code...
+                    if ($for == 'Month') {
+                        $sql1 = "select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc limit $numreport;";
+                        $fire1 = $db->query($sql1);
+                    } else {
+                        $sql = "select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc";
+                        $fire1 = $db->query($sql1);
+                    }
+                } else {
+                    $sql1 = "select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data group by Month,Year order by Year desc,Month asc";
+                    $fire1 = $db->query($sql1);
+                }
+
+                //  $fire = mysqli_query($con,$sql);
+                while ($result1 = $fire1->fetch(PDO::FETCH_ASSOC)) {
+                    echo "['" . $result1['Month'] . "'," . $result1['sumprice'] . "],";
+                }
+
+                ?>
+            ]);
+
+            var options1 = {
+                title: 'พยากรณ์ยอดขาย (รายเดือน)'
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('barchart1'));
+
+            chart.draw(data1, options1);
+        }
+    </script>
     <script>
-$(document).ready(function() {
+        $(document).ready(function() {
             showGraph();
         });
 
