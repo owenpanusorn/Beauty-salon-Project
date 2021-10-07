@@ -446,11 +446,11 @@ if (isset($_REQUEST['btn_report'])) {
                                         <div class="col-md-6">
                                             <!-- radio -->
                                             <div class="form-group kanitB">
-                                                <input type="radio" value="Year" name="r1" class="minimal " checked>
+                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo isset($_REQUEST['r1']) == "Year" ? "checked" : "" ?>>
                                                 <label>
                                                     ปี
                                                 </label>
-                                                <input type="radio" value="Month" name="r1" class="minimal-red">
+                                                <input type="radio" value="Month" name="r1" class="minimal-red" <?php echo isset($_REQUEST['r1']) == "Month" ? "checked" : "" ?>>
                                                 <label>
                                                     เดือน
                                                 </label>
