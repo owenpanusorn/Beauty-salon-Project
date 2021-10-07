@@ -45,12 +45,6 @@ if ($_SESSION["token_admin_uuid"]) {
     }
 }
 
-$result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
-$result->execute();
-
-$result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
-$result_Month->execute();
-
 if (isset($_REQUEST['btn_report'])) {
     try {
         $select_mode = $_REQUEST['select_mode'];
@@ -169,6 +163,29 @@ if (isset($_REQUEST['btn_report'])) {
         echo $e->getMessage();
     }
 }
+if (isset($numreport)) {
+    # code...
+    if ($for == 'Year') {
+        $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc limit :limit ;");
+        $result->bindParam(":limit", $numreport);
+
+        $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+    } else {
+        $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+
+        $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc limit :limit ");
+        $result_Month->bindParam(":limit", $numreport);
+    }
+
+} else {
+    $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+
+    $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+}
+
+$result->execute();
+$result_Month->execute();
+
 
 ?>
 
@@ -241,9 +258,9 @@ if (isset($_REQUEST['btn_report'])) {
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="../images/manager/manager.png" class="user-image" alt="User Image">
                                 <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) {
-                                                            echo $fname . ' ' . $lname;
-                                                        }
-                                                        ?></span>
+    echo $fname . ' ' . $lname;
+}
+?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -252,9 +269,9 @@ if (isset($_REQUEST['btn_report'])) {
 
                                     <p>
                                         <?php if (!empty($_SESSION["token_admin_uuid"])) {
-                                            echo $fname . ' ' . $lname;
-                                        }
-                                        ?>
+    echo $fname . ' ' . $lname;
+}
+?>
                                         <small class="kanitB">พนักงาน</small>
                                     </p>
                                 </li>
@@ -284,9 +301,9 @@ if (isset($_REQUEST['btn_report'])) {
                     </div>
                     <div class="pull-left info">
                         <p><?php if (!empty($_SESSION["token_admin_uuid"])) {
-                                echo $fname . ' ' . $lname;
-                            }
-                            ?></p>
+    echo $fname . ' ' . $lname;
+}
+?></p>
                         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
@@ -307,9 +324,9 @@ if (isset($_REQUEST['btn_report'])) {
                             <span>การจองคิว</span>
                             <span class="pull-right-container">
                                 <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) {
-                                                                                    echo $count;
-                                                                                }
-                                                                                ?></span>
+    echo $count;
+}
+?></span>
                             </span>
                         </a>
                         <ul class="treeview-menu">
@@ -317,9 +334,9 @@ if (isset($_REQUEST['btn_report'])) {
                             <li><a href="../booking/confirm/"><i class="fa  fa-spinner"></i>อนุมัติการจอง
                                     <span class="pull-right-container">
                                         <span class="label label-primary pull-right"><?php if (!empty($_SESSION["token_admin_uuid"])) {
-                                                                                            echo $count;
-                                                                                        }
-                                                                                        ?></span>
+    echo $count;
+}
+?></span>
                                     </span>
                                 </a></li>
                             <li><a href="../booking/history/"><i class="fa fa-history"></i>ประวัติการจอง</a></li>
@@ -477,8 +494,8 @@ if (isset($_REQUEST['btn_report'])) {
                             </form>
                             <hr>
                             <?php
-                            if (isset($sumtotal)) {
-                            ?>
+if (isset($sumtotal)) {
+    ?>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h4 class="kanitB">ยอดลูกค้าตั้งแต่ปี <?php echo $start_m_y ?> จนถึงปี <?php echo $end_m_y ?> พร้อมค่าถ่วงน้ำหนัก</h4>
@@ -505,7 +522,7 @@ if (isset($_REQUEST['btn_report'])) {
                                     </div>
                                 </div>
                         </div>
-                    <?php } ?>
+                    <?php }?>
                     <hr>
 
                     <div class="col-md-6">
@@ -530,13 +547,13 @@ if (isset($_REQUEST['btn_report'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
+                                <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) {?>
                                     <tr class="kanitB">
                                         <td class="text-center"><?php echo $row["Year"] ?></td>
                                         <td class="text-right"><?php echo $row["count"] ?></td>
                                     </tr>
 
-                                <?php } ?>
+                                <?php }?>
                             </tbody>
 
                         </table>
@@ -554,14 +571,14 @@ if (isset($_REQUEST['btn_report'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) { ?>
+                                <?php while ($row2 = $result_Month->fetch(PDO::FETCH_ASSOC)) {?>
                                     <tr class="kanitB">
                                         <td class="text-center"><?php echo $row2["Year"] ?></td>
                                         <td class="text-center"><?php echo $row2["Month"] ?></td>
                                         <td class="text-right"><?php echo $row2["count"] ?></td>
                                     </tr>
 
-                                <?php } ?>
+                                <?php }?>
                             </tbody>
 
                         </table>

@@ -45,11 +45,11 @@ if ($_SESSION["token_admin_uuid"]) {
     }
 }
 
-$result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
-$result->execute();
+// $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+// $result->execute();
 
-$result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
-$result_Month->execute();
+// $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+// $result_Month->execute();
 
 if (isset($_REQUEST['btn_report'])) {
     try {
@@ -169,6 +169,29 @@ if (isset($_REQUEST['btn_report'])) {
         echo $e->getMessage();
     }
 }
+
+if (isset($numreport)) {
+    # code...
+    if ($for == 'Year') {
+        $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc limit :limit ;");
+        $result->bindParam(":limit", $numreport);
+
+        $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+    } else {
+        $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+
+        $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc limit :limit ");
+        $result_Month->bindParam(":limit", $numreport);
+    }
+
+} else {
+    $result = $db->prepare("select strftime('%Y',date) as 'Year',count(*) as count,sum(price) as sumprice from tb_data  group by Year order by Year desc;");
+
+    $result_Month = $db->prepare("select strftime('%Y',date) as 'Year',strftime('%m',date) as 'Month',count(*) as count,sum(price) as sumprice from tb_data   group by Month,Year order by Year desc,Month asc");
+}
+
+$result->execute();
+$result_Month->execute();
 
 ?>
 
