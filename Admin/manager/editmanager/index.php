@@ -74,7 +74,7 @@ if (isset($_REQUEST['btn_update'])) {
     $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
     $lenphone = strlen($newphone);
 
-    $date = date("d/m/Y");
+    $date = date("Y-m-d");
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -108,6 +108,7 @@ if (isset($_REQUEST['btn_update'])) {
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -180,31 +181,31 @@ if (isset($_REQUEST['btn_update'])) {
             <!-- User Account: style can be found in dropdown.less -->
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
+                <img src="../../images/manager/manager.png" class="user-image" alt="User Image">
                 <span class="hidden-xs"><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></span>
               </a>
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+                  <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
 
                   <p>
                     <?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?>
                     <small class="kanitB">ผู้จัดการ</small>
                   </p>
-                </li>               
-                
                 </li>
-                <!-- Menu Footer-->
-                <li class="user-footer">                  
-                  <div class="pull-right">
-                  <form method="post">
-                      <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
-                    </form>
-                  </div>
-                </li>
-              </ul>
+
             </li>
+            <!-- Menu Footer-->
+            <li class="user-footer">
+              <div class="pull-right">
+                <form method="post">
+                  <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
+                </form>
+              </div>
+            </li>
+          </ul>
+          </li>
           </ul>
         </div>
       </nav>
@@ -216,10 +217,10 @@ if (isset($_REQUEST['btn_update'])) {
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-          <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+            <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-          <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+            <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
@@ -263,8 +264,8 @@ if (isset($_REQUEST['btn_update'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -273,7 +274,7 @@ if (isset($_REQUEST['btn_update'])) {
             </a>
           </li>
 
-          
+
 
           <li>
             <a href="../../employee/">
@@ -296,8 +297,12 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -311,7 +316,7 @@ if (isset($_REQUEST['btn_update'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>

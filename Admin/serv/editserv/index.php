@@ -32,7 +32,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
   $row = $select_mng->fetch(PDO::FETCH_ASSOC);
   extract($row);
 
-  $date = date("d-m-Y");
+  $date = date("Y-m-d");
 
   $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";
   $res = $db->query($sql);
@@ -290,8 +290,12 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -305,7 +309,7 @@ if (isset($_REQUEST['btn_update'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="../../pages/layout/top-nav.html"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>

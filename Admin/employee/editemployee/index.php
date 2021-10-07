@@ -82,7 +82,7 @@ if (isset($_REQUEST['btn_update'])) {
     $idcard = $_REQUEST['idcard'];
     $newcard = str_replace(['(', ')', ' ', '-', '_'], '', $idcard);
     $address = $_REQUEST['address'];
-    $date = date("d-m-Y");
+    $date = date("Y-m-d");
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -304,11 +304,11 @@ if (isset($_REQUEST['btn_update'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
-          <li >
+          <li>
             <a href="../../customer/">
               <i class="fa fa-users"></i> <span>ลูกค้า</span>
             </a>
@@ -335,8 +335,12 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -350,7 +354,7 @@ if (isset($_REQUEST['btn_update'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -363,8 +367,8 @@ if (isset($_REQUEST['btn_update'])) {
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <section class="content-header">
-      <h1 class="kanitB">
-        แก้ไขรายชื่อพนักงาน         
+        <h1 class="kanitB">
+          แก้ไขรายชื่อพนักงาน
         </h1>
         <ol class="breadcrumb kanitB">
           <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
@@ -399,8 +403,8 @@ if (isset($_REQUEST['btn_update'])) {
               <!-- Username and Password -->
               <div class="box box-info">
                 <div class="box-header with-border">
-                <h3 class="box-title kanitB">
-                  ชื่อผู้ใช้ และพาสเวิร์ด
+                  <h3 class="box-title kanitB">
+                    ชื่อผู้ใช้ และพาสเวิร์ด
                   </h3>
                 </div>
                 <!-- /.box-header -->
@@ -438,7 +442,7 @@ if (isset($_REQUEST['btn_update'])) {
               <div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title kanitB">
-                  ข้อมูลส่วนตัว
+                    ข้อมูลส่วนตัว
                   </h3>
                 </div>
                 <!-- /.box-header -->
@@ -451,18 +455,18 @@ if (isset($_REQUEST['btn_update'])) {
                   </div>
                   <div class="form-group">
                     <label for="description">นามสกุล</label>
-                    <input type="text" class="form-control" id="lname" name="lname"  autocomplete="off" value="<?php echo $lname; ?>">
+                    <input type="text" class="form-control" id="lname" name="lname" autocomplete="off" value="<?php echo $lname; ?>">
                   </div>
                   <!-- radio -->
                   <div class="form-group">
                     <label for="title">เพศ</label><br>
                     <input type="radio" name="gender" class="minimal" value='male' <?php echo $gender == "male" ? "checked" : "" ?>>
                     <label>
-                    ชาย
+                      ชาย
                     </label>
                     <input type="radio" name="gender" class="minimal-red" value='female' <?php echo $gender == "female" ? "checked" : "" ?>>
                     <label>
-                    หญิง
+                      หญิง
                     </label>
                   </div>
                   <!-- /.form group -->

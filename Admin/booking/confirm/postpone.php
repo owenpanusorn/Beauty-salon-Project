@@ -62,7 +62,7 @@ if (isset($_REQUEST['btn_agree'])) {
 
         // echo $dateup . '<br>';
 
-        $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup'))";
+        $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup' and bk.book_st = 'cancel') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup' and bk.book_st = 'cancel'))";
         $res5 = $db->query($sql5);
         $chk_bk = $res5->fetchColumn();
         // echo $chk_bk;
@@ -270,8 +270,12 @@ if (isset($_REQUEST['btn_agree'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+                            <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
                             <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+                            <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+                            <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+                            <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
                         </ul>
                     </li>
 
@@ -285,7 +289,7 @@ if (isset($_REQUEST['btn_agree'])) {
                         </a>
                         <ul class="treeview-menu">
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-                            <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+                            <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
                         </ul>
                     </li>
                     </li>

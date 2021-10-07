@@ -141,6 +141,7 @@ if (isset($_REQUEST['btn_report'])) {
                 // echo $i;
                 $sumindex1 += $i + 1;
                 $sma += $arr[$i]['sumprice'] * ($i + 1);
+               
                 if (($index) >= $numreport) {
 
                     $start_m_y .= $arr[$i]['Year'];
@@ -203,6 +204,12 @@ if (isset($_REQUEST['btn_report'])) {
     <link rel="icon" href="../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
     <!-- iCheck for checkboxes and radio inputs -->
     <link rel="stylesheet" href="../plugins/iCheck/all.css">
+    <style>
+        #chart-container {
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -359,7 +366,7 @@ if (isset($_REQUEST['btn_report'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+                            <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
                             <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
                             <li class="active"><a href="sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
                             <li class=""><a href="cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
@@ -378,7 +385,7 @@ if (isset($_REQUEST['btn_report'])) {
                         </a>
                         <ul class="treeview-menu">
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-                            <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+                            <li><a href="../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
                         </ul>
                     </li>
                     </li>
@@ -396,7 +403,7 @@ if (isset($_REQUEST['btn_report'])) {
                 </h1>
                 <ol class="breadcrumb kanitB">
                     <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>
-                    <li class="active ">รายงานการประเมิน</li>
+                    <li class="active ">พยากรณ์ยอดขาย</li>
                 </ol>
             </section>
 
@@ -426,7 +433,7 @@ if (isset($_REQUEST['btn_report'])) {
                                                 <!-- <label>Minimal</label> -->
                                                 <select class="form-control select2" name="select_mode" style="width: 100%;">
                                                     <option selected="selected">Simple Moving Average</option>
-                                                    <option>Linear Weighted Moving Average</option>
+                                                    <!-- <option>Linear Weighted Moving Average</option> -->
                                                 </select>
                                             </div>
                                         </div>
@@ -438,11 +445,11 @@ if (isset($_REQUEST['btn_report'])) {
                                         <div class="col-md-6">
                                             <!-- radio -->
                                             <div class="form-group kanitB">
-                                                <input type="radio" value="Year" name="r1" class="minimal " checked>
+                                                <input type="radio" value="Year" name="r1" class="minimal " <?php echo isset($_REQUEST['r1']) == "Year" ? "checked" : "" ?>>
                                                 <label>
                                                     ปี
                                                 </label>
-                                                <input type="radio" value="Month" name="r1" class="minimal-red">
+                                                <input type="radio" value="Month" name="r1" class="minimal-red" <?php echo isset($_REQUEST['r1']) == "Month" ? "checked" : "" ?>>
                                                 <label>
                                                     เดือน
                                                 </label>
@@ -476,7 +483,7 @@ if (isset($_REQUEST['btn_report'])) {
                                         <h4 class="kanitB">ยอดขายตั้งแต่ปี <?php echo $start_m_y ?> จนถึงปี <?php echo $end_m_y ?> พร้อมค่าถ่วงน้ำหนัก</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB"><?php echo $sma ?></h4>
+                                        <h4 class="kanitB"><?php echo number_format($sma) ?></h4>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -484,7 +491,7 @@ if (isset($_REQUEST['btn_report'])) {
                                         <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?> ปี)</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB"><?php echo $sumtotal ?></h4>
+                                        <h4 class="kanitB"><?php echo number_format($sumtotal) ?></h4>
                                     </div>
                                 </div>
                                 <br>
@@ -493,12 +500,24 @@ if (isset($_REQUEST['btn_report'])) {
                                         <h4 class="kanitB"><u>ดังนั้น สามารถสรุปได้ว่าในปี <?php echo $end_m_y_to ?> มีแนวโน้มที่มียอดขายจะอยู่ที่ประมาณ</u></h4>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <h4 class="kanitB"><?php echo $sumtotal ?></h4>
+                                        <h4 class="kanitB"><?php echo number_format($sumtotal) ?></h4>
                                     </div>
                                 </div>
                         </div>
                     <?php } ?>
                     <hr>
+
+                    <div class="col-md-6">
+                        <div id="chart-container">
+                            <canvas id="graphCanvas"></canvas>
+                        </div>                       
+                    </div>
+
+                    <div class="col-md-6">
+                        <div id="chart-container">
+                            <canvas id="graphCanvas1"></canvas>
+                        </div>
+                    </div>
 
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -567,7 +586,7 @@ if (isset($_REQUEST['btn_report'])) {
     <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- jQuery 3 -->
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
@@ -586,7 +605,82 @@ if (isset($_REQUEST['btn_report'])) {
     <!-- page script -->
     <!-- iCheck 1.0.1 -->
     <script src="../plugins/iCheck/icheck.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
     <script>
+$(document).ready(function() {
+            showGraph();
+        });
+
+        function showGraph() {
+            {
+                $.post("data4.php", function(data) {
+                    console.log(data);
+                    let name = [];
+                    let score = [];
+
+                    for (let i in data) {
+                        name.push(data[i].Year);
+                        score.push(data[i].sumprice);
+                    }
+
+                    let chartdata = {
+                        labels: name,
+                        datasets: [{
+                            label: 'Year',
+                            backgroundColor: '#49e2ff',
+                            borderColor: '#46d5f1',
+                            hoverBackgroundColor: '#CCCCCC',
+                            hoverBorderColor: '#666666',
+                            data: score
+                        }]
+                    };
+
+                    let graphTarget = $('#graphCanvas');
+                    let barGraph = new Chart(graphTarget, {
+                        type: 'bar',
+                        data: chartdata
+                    })
+                })
+            }
+        }
+
+        $(document).ready(function() {
+            showGraph1();
+        });
+
+        function showGraph1() {
+            {
+                $.post("data5.php", function(data) {
+                    console.log(data);
+                    let name = [];
+                    let score = [];
+
+                    for (let i in data) {
+                        name.push(data[i].Month);
+                        score.push(data[i].sumprice);
+                    }
+
+                    let chartdata = {
+                        labels: name,
+                        datasets: [{
+                            label: 'Month',
+                            backgroundColor: '#00A65A',
+                            borderColor: '#00A65A',
+                            hoverBackgroundColor: '#CCCCCC',
+                            hoverBorderColor: '#666666',
+                            data: score
+                        }]
+                    };
+
+                    let graphTarget = $('#graphCanvas1');
+                    let barGraph = new Chart(graphTarget, {
+                        type: 'bar',
+                        data: chartdata
+                    })
+                })
+            }
+        }
+
         $(function() {
             $('#example1').DataTable()
             $('#example2').DataTable()

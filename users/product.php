@@ -14,6 +14,17 @@ if (isset($_REQUEST['btn_logout'])) {
     }
 }
 
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+
+    $uuid_cus = $_SESSION['token_uuid'];
+    // $date = date("d-m-Y"); //thai
+    $date = date("Y-m-d");
+    
+    $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+    $res5 = $db->query($sql5);
+    $notify = $res5->fetchColumn();
+    
+    }
 
 
 // try {
@@ -128,7 +139,7 @@ if (isset($_REQUEST['btn_logout'])) {
                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
                         <li class="nav-item">
-                            <a href="history.php" class="nav-link">
+                            <a href="detail_booking.php" class="nav-link">
                                 <i class="fa fa-bell-o"></i>
                                 <?php if ($notify >= 1) { ?>
                                     <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>

@@ -53,43 +53,20 @@ if ($_SESSION["token_admin_uuid"]) {
 }
 
 if (isset($_REQUEST['btn_agree'])) {
-    try {
-        //code...
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
 
     try {
-        $dateup = $_REQUEST['startDate'];
-        $start_timeup = $_REQUEST['endDate'];
-        $end_timeup = $_REQUEST['endTime'];
-        $end_min = $_REQUEST['endTimemin'];
+        $startDate = $_REQUEST['startDate'];
+        $endDate = $_REQUEST['endDate'];
+        $switch = $_REQUEST['switch'];
 
+        $insert_serv = $db->prepare("INSERT INTO tb_onoff(start_date,end_date,status) VALUES (:start_date, :end_date, :status)");
+        $insert_serv->bindParam(':start_date', $startDate);
+        $insert_serv->bindParam(':end_date', $endDate);
+        $insert_serv->bindParam(':status', $switch);
 
-        // echo $dateup . '<br>';
-
-        $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup'))";
-        $res5 = $db->query($sql5);
-        $chk_bk = $res5->fetchColumn();
-        // echo $chk_bk;
-        if ($chk_bk >= 1) {
-            $errorMsg = 'เวลานี้ได้ทำการจองแล้ว !';
-        } else {
-            $chkk_book = true;
-            $insertMsg = 'เวลานี้สามารถจองคิวได้';
-
-            $update_book = $db->prepare('update tb_booking set cre_bks_date = :cre_bks_date, cre_bks_time = :cre_bks_time, end_bks_time = :end_bks_time, up_bks_date = :up_bks_date, up_bks_time = :up_bks_time where books_nlist = :books_nlist');
-            $update_book->bindParam(':cre_bks_date', $dateup);
-            $update_book->bindParam(':cre_bks_time', $start_timeup);
-            $update_book->bindParam(':end_bks_time', $end_timeup);
-            $update_book->bindParam(':up_bks_date', $date);
-            $update_book->bindParam(':up_bks_time', $newtime);
-            $update_book->bindParam(':books_nlist', $num_list);
-
-            if ($update_book->execute()) {
-                $insertMsg = "เลื่อนนัดการจองสำเร็จ . . .";
-                header("refresh:2;index.php");
-            }
+        if ($insert_serv->execute()) {
+            $insertMsg = "บันทึกสำเร็จ . . .";
+            header("refresh:2;index.php");
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -274,8 +251,12 @@ if (isset($_REQUEST['btn_agree'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
-                            <li class=""><a href="index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
+                            <li class=""><a href="../report/index.php"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <li class=""><a href="../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+                            <li class=""><a href="../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+                            <li class=""><a href="../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+                            <li class=""><a href="../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
                         </ul>
                     </li>
 
@@ -377,7 +358,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                                 <label>เลือก </label>
                                                 <div class="form-group">
                                                     <!-- <label>Minimal</label> -->
-                                                    <select class="form-control select2" style="width: 100%;">
+                                                    <select class="form-control select2" name="switch" style="width: 100%;">
                                                         <option selected="selected" value="off">ปิด</option>
                                                         <option value="on">เปิด</option>
                                                     </select>
@@ -437,51 +418,33 @@ if (isset($_REQUEST['btn_agree'])) {
                                     <thead>
                                         <tr class="kanitB">
                                             <th>ลำดับ</th>
-                                            <th>เลขที่รายการ</th>
-                                            <th>ชื่อลูกค้า</th>
-                                            <th>รายละเอียดบริการ</th>
-                                            <th>ราคา</th>
-                                            <th>เวลาในการบริการ</th>
-                                            <th>ว/ด/ป เวลา</th>
+                                            <th>ตั้งแต่</th>
+                                            <th>จนถึง</th>
                                             <th>สถานะ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date >= :cre_bks_date');
-                                        $result->bindParam(":book_st", $book_status);
-                                        $result->bindParam(":cre_bks_date", $date);
+                                        $result = $db->prepare('SELECT * from tb_onoff order by id desc limit 1');
                                         $result->execute();
 
                                         $num = 0;
                                         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $num++;
 
-                                            if ($row['book_st'] == 'success') {
-                                                $status = 'จองคิวสำเร็จ';
+                                            if ($row['status'] == 'off') {
+                                                $status = 'ปิด';
+                                            } else {
+                                                $status = 'เปิด';
                                             }
+
                                         ?>
                                             <form method="POST">
                                                 <tr class="kanitB">
                                                     <td><?php echo $num ?></td>
-                                                    <td><?php echo $row['books_nlist'] ?></td>
-                                                    <td><?php echo $row['book_cus'] ?></td>
-                                                    <td><?php echo $row['book_serv'] ?></td>
-                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
-                                                    <td><?php echo $row['books_hours'] ?></td>
-                                                    <td><?php echo $row['cre_bks_date'] . ' ' . $row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
-                                                    <?php
-                                                    if ($status == 'จองคิวสำเร็จ') {
-                                                        $txt_color = 'text-success';
-                                                        $icon = 'fa fa-check';
-                                                    } else {
-                                                        $txt_color = '';
-                                                    }
-
-                                                    echo '<td style="color : ' . $txt_color . '">';
-                                                    echo '<i class="' . $icon . '"></i>' . ' ' . $status;
-                                                    echo '</td>';
-                                                    ?>
+                                                    <td><?php echo $row['start_date'] ?></td>
+                                                    <td><?php echo $row['end_date'] ?></td>
+                                                    <td><?php echo $status ?></td>
                                                 </tr>
                                             </form>
                                         <?php } ?>

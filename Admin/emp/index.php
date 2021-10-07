@@ -71,8 +71,12 @@ if (!empty($_SESSION["token_emp_uuid"])) {
   <link rel="stylesheet" href="../css/fontkanit.css">
   <link rel="icon" href="../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 
-  <!-- chart js  -->
-  <script scr="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+  <style>
+    #chart-container {
+      width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -232,7 +236,13 @@ if (!empty($_SESSION["token_emp_uuid"])) {
               </ul>
               <div class="tab-content no-padding">
                 <!-- Morris chart - Sales -->
-                <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
+                <div class="chart tab-pane active" id="revenue-chart" style="position: relative;">
+                <div class="col-md-8">
+                  <div id="chart-container">
+                    <canvas id="graphCanvas"></canvas>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
             <!-- /.nav-tabs-custom -->
@@ -254,54 +264,66 @@ if (!empty($_SESSION["token_emp_uuid"])) {
     <div class="control-sidebar-bg"></div>
   </div>
 
+   <!-- ./wrapper -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- jQuery 3 -->
   <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-  <!-- jQuery UI 1.11.4 -->
-  <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
-  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <script>
-    $.widget.bridge('uibutton', $.ui.button);
-  </script>
-   <!-- Bootstrap 3.3.7 -->
-   <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- Morris.js charts -->
-  <script src="../bower_components/raphael/raphael.min.js"></script>
-  <script src="../bower_components/morris.js/morris.min.js"></script>
-  <!-- Sparkline -->
-  <script src="../bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
-  <!-- jvectormap -->
-  <script src="../plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-  <script src="../plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-  <!-- jQuery Knob Chart -->
-  <script src="../bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
-  <!-- daterangepicker -->
-  <script src="../bower_components/moment/min/moment.min.js"></script>
-  <script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-  <!-- datepicker -->
-  <script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-  <!-- Bootstrap WYSIHTML5 -->
-  <script src="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-  <!-- Slimscroll -->
+  <!-- Bootstrap 3.3.7 -->
+  <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- DataTables -->
+  <script src="../bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <!-- SlimScroll -->
   <script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
   <!-- FastClick -->
   <script src="../bower_components/fastclick/lib/fastclick.js"></script>
   <!-- AdminLTE App -->
   <script src="../dist/js/adminlte.min.js"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="../dist/js/pages/dashboard.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="../dist/js/demo.js"></script>
+  <!-- page script -->
+  <!-- iCheck 1.0.1 -->
+  <script src="../plugins/iCheck/icheck.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
 
 
   <script>
-    $(document). ready(function () {
+    $(document).ready(function() {
       showGraph();
     });
 
     function showGraph() {
-      $.post('data.php', function(data){
-        console.log(data);
-      });
+      {
+        $.post("data.php", function(data) {
+          console.log(data);
+          let name = [];
+          let name1 = [];
+          let score = [];
+
+          for (let i in data) {
+            name.push(data[i].Day + "/" + data[i].Month);
+            score.push(data[i].count);
+          }
+
+          let chartdata = {
+            labels: name,
+            datasets: [{
+              label: 'ลูกค้า',
+              backgroundColor: '#49e2ff',
+              borderColor: '#46d5f1',
+              hoverBackgroundColor: '#CCCCCC',
+              hoverBorderColor: '#666666',
+              data: score
+            }]
+          };
+
+          let graphTarget = $('#graphCanvas');
+          let barGraph = new Chart(graphTarget, {
+            type: 'bar',
+            data: chartdata
+          })
+        })
+      }
     }
   </script>
 </body>

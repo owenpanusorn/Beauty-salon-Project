@@ -1,16 +1,12 @@
 <?php 
-session_start();
     header('Content-Type: application/json');
 
     require_once '../require/config.php';
-    require_once('../require/session.php');
 
     // $sqlQuery = "SELECT * FROM student ORDER BY id";
     // $result = mysqli_query($conn, $sqlQuery);
-    if (!empty($_SESSION["token_emp_uuid"])) {
-      $uuid_emp = $_SESSION["token_emp_uuid"];
 
-    $sql = "select strftime('%d',cre_bks_date) as Day ,strftime('%m',cre_bks_date) as Month,count(*) as count from tb_booking where uuid_emp = '$uuid_emp' group by Day,Month order by Day desc;";
+    $sql = "select strftime('%Y',cre_bks_date) as 'Year',count(*) as count,sum(books_price) as sumprice from tb_booking  group by Year order by Year desc;";
     $result = $db->query($sql);
 
     $data = array();
@@ -21,5 +17,4 @@ session_start();
     // mysqli_close($conn);
 
     echo json_encode($data);
-
-  }
+?>

@@ -78,7 +78,7 @@ if (isset($_REQUEST['btn_insert'])) {
   $newname = substr(str_shuffle("0123456789"), 0, 5) . $image_file;
   $path = "../../images/employee/" . $newname;
 
-  $date = date("d/m/Y");
+  $date = date("Y-m-d");
   $time = date("h:i:sa");
   $newtime = str_replace(['pm', 'am'], '', $time);
   $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
@@ -205,7 +205,7 @@ if (isset($_REQUEST['btn_insert'])) {
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-  <link rel="stylesheet" href="../../css/fontkanit.css"> 
+  <link rel="stylesheet" href="../../css/fontkanit.css">
   <link rel="icon" href="../../images/hairsalon-icon.png" type="image/gif" sizes="16x16">
 </head>
 
@@ -318,8 +318,8 @@ if (isset($_REQUEST['btn_insert'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -349,8 +349,12 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -364,7 +368,7 @@ if (isset($_REQUEST['btn_insert'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -377,8 +381,8 @@ if (isset($_REQUEST['btn_insert'])) {
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <section class="content-header">
-      <h1 class="kanitB">
-          เพิ่มรายชื่อพนักงาน         
+        <h1 class="kanitB">
+          เพิ่มรายชื่อพนักงาน
         </h1>
         <ol class="breadcrumb kanitB">
           <li><a href="../../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>

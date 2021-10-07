@@ -24,16 +24,16 @@ if (isset($_REQUEST['btn_logout'])) {
     }
 }
 
-if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
-
-$uuid_cus = $_SESSION['token_uuid'];
-// $date = date("d-m-Y"); //thai
 $date = date("Y-m-d");
 
-$sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
-$res5 = $db->query($sql5);
-$notify = $res5->fetchColumn();
+if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
 
+    $uuid_cus = $_SESSION['token_uuid'];
+    // $date = date("d-m-Y"); //thai
+
+    $sql5 = "SELECT count(*) FROM tb_booking where uuid_cus = '$uuid_cus' and book_st = 'success' and  cre_bks_date = '$date' ORDER BY end_bks_time DESC";
+    $res5 = $db->query($sql5);
+    $notify = $res5->fetchColumn();
 }
 
 ?>
@@ -134,20 +134,20 @@ $notify = $res5->fetchColumn();
                         <a href="#p3" class="nav-link ">แผนที่</a>
                     </li>
                     <?php
-                     if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
+                    if (!empty($_SESSION["token_loing"]) && $_SESSION["token_loing"] === true) {
                     ?>
-                    <li class="nav-item">
-                        <a href="detail_booking.php" class="nav-link">
-                            <i class="fa fa-bell-o"></i>
-                            <?php if ($notify >=1 ) { ?>
-                            <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
-                            <?php } ?>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="detail_booking.php" class="nav-link">
+                                <i class="fa fa-bell-o"></i>
+                                <?php if ($notify >= 1) { ?>
+                                    <span class="bg-warning rounded-3 p-1"><?php echo $notify ?></span>
+                                <?php } ?>
+                            </a>
+                        </li>
                     <?php
                     }
                     ?>
-                    
+
                     <?php
                     if (empty($_SESSION["token_loing"]) || $_SESSION["token_loing"] === false) {
                     ?>
@@ -269,15 +269,38 @@ $notify = $res5->fetchColumn();
         <div class="container p-0">
             <div class="row">
                 <div class="col-12 col-md-12 mb-4">
-                    <a name="p1">
-                        <h3 class="kanitB">เลือกช่างทำผม</h3>
-                    </a>
+                    <?php
+                    $sql = "SELECT start_date from tb_onoff order by id desc LIMIT 1";
+                    $res = $db->query($sql);
+                    $start = $res->fetchColumn();
+
+                    $sql1 = "SELECT end_date from tb_onoff order by id desc LIMIT 1";
+                    $res1 = $db->query($sql1);
+                    $end = $res1->fetchColumn();
+
+                    $sql2 = "SELECT status from tb_onoff order by id desc LIMIT 1";
+                    $res2 = $db->query($sql2);
+                    $st = $res2->fetchColumn();
+
+                    // echo $date;
+                    // $date = '2021-10-01';
+                    if ($date >= $start && $date <= $end && $st == 'off') {
+                    ?>
+                        <a name="p1">
+                            <h3 class="kanitB text-center">ร้านปิดตั้งแต่ <?php echo $start ?> จนถึง <?php echo $end ?></h3>
+                        </a>
+                    <?php
+                    } else {
+                    ?>
+                        <a name="p1">
+                            <h3 class="kanitB">เลือกช่างทำผม</h3>
+                        </a>
                 </div>
                 <?php
-                $result = $db->prepare('SELECT emp.*,coalesce(sum(book_score) / count(book_score),0) as score FROM tb_employee emp left JOIN tb_booking bk ON emp.uuid = bk.uuid_emp  GROUP by emp.uuid ORDER BY cre_emp_date ASC');
-                $result->execute();
+                        $result = $db->prepare('SELECT emp.*,coalesce(sum(book_score) / count(book_score),0) as score FROM tb_employee emp left JOIN tb_booking bk ON emp.uuid = bk.uuid_emp  GROUP by emp.uuid ORDER BY cre_emp_date ASC');
+                        $result->execute();
 
-                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 
                 ?>
                     <div class="col-12 col-md-3 mb-1">
@@ -312,7 +335,9 @@ $notify = $res5->fetchColumn();
                             </div>
                         </a>
                     </div>
-                <?php } ?>
+            <?php }
+                    } ?>
+
             </div>
         </div>
     </section>

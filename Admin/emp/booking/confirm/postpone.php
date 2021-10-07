@@ -57,18 +57,33 @@ if (isset($_REQUEST['btn_agree'])) {
         $dateup = $_REQUEST['startDate'];
         $start_timeup = $_REQUEST['startTime'];
         $end_timeup = $_REQUEST['endTime'];
+        $end_min = $_REQUEST['endTimemin'];
 
-        $update_book = $db->prepare('update tb_booking set cre_bks_date = :cre_bks_date, cre_bks_time = :cre_bks_time, end_bks_time = :end_bks_time, up_bks_date = :up_bks_date, up_bks_time = :up_bks_time where books_nlist = :books_nlist');
-        $update_book->bindParam(':cre_bks_date', $dateup);
-        $update_book->bindParam(':cre_bks_time', $start_timeup);
-        $update_book->bindParam(':end_bks_time', $end_timeup);
-        $update_book->bindParam(':up_bks_date', $date);
-        $update_book->bindParam(':up_bks_time', $newtime);
-        $update_book->bindParam(':books_nlist', $num_list);
 
-        if ($update_book->execute()) {
-            $insertMsg = "เลื่อนนัดการจองสำเร็จ . . .";
-            header("refresh:2;index.php");
+        // echo $dateup . '<br>';
+
+        $sql5 = "SELECT count(*) FROM tb_employee emp INNER JOIN tb_booking bk ON emp.uuid = bk.uuid_emp where books_nlist != '$num_list' and  emp.uuid = '$uuid_emp'  and ((bk.cre_bks_time >= '$start_timeup' and bk.cre_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup' and bk.book_st != 'cancel') or (bk.end_bks_time > '$start_timeup' and bk.end_bks_time < '$end_timeup' and  bk.cre_bks_date = '$dateup' and bk.book_st != 'cancel'))";
+        $res5 = $db->query($sql5);
+        $chk_bk = $res5->fetchColumn();
+        // echo $chk_bk;
+        if ($chk_bk >= 1) {
+            $errorMsg = 'เวลานี้ได้ทำการจองแล้ว !';
+        } else {
+            $chkk_book = true;
+            $insertMsg = 'เวลานี้สามารถจองคิวได้';
+
+            $update_book = $db->prepare('update tb_booking set cre_bks_date = :cre_bks_date, cre_bks_time = :cre_bks_time, end_bks_time = :end_bks_time, up_bks_date = :up_bks_date, up_bks_time = :up_bks_time where books_nlist = :books_nlist');
+            $update_book->bindParam(':cre_bks_date', $dateup);
+            $update_book->bindParam(':cre_bks_time', $start_timeup);
+            $update_book->bindParam(':end_bks_time', $end_timeup);
+            $update_book->bindParam(':up_bks_date', $date);
+            $update_book->bindParam(':up_bks_time', $newtime);
+            $update_book->bindParam(':books_nlist', $num_list);
+
+            if ($update_book->execute()) {
+                $insertMsg = "เลื่อนนัดการจองสำเร็จ . . .";
+                header("refresh:2;index.php");
+            }
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -262,8 +277,8 @@ if (isset($_REQUEST['btn_agree'])) {
                 </ol>
             </section>
 
-            <!-- Main content -->
-            <section class="content">
+             <!-- Main content -->
+             <section class="content">
                 <div class="row kanitB">
                     <div class="col-xs-12">
                         <div class="box">
@@ -316,6 +331,8 @@ if (isset($_REQUEST['btn_agree'])) {
                                                 </div>
                                             </div>
                                         </div>
+                                        <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
+                                        <input type="hidden" id="endTimemin" name="endTimemin" value="<?php echo $books_hours ?>">
                                     </div>
                                     <div class="box-footer">
                                         <div class="row">
@@ -340,12 +357,11 @@ if (isset($_REQUEST['btn_agree'])) {
                 <!-- /.row -->
             </section>
             <!-- /.content -->
-
-            <section class="content-header">             
+            <section class="content-header">
                 <h1 class="kanitB">
                     การจองล่องหน้า
                     <!-- <small class="kanitB"><b>การจองคิว</b></small> -->
-                </h1>               
+                </h1>
             </section>
 
             <!-- Main content -->
@@ -375,37 +391,36 @@ if (isset($_REQUEST['btn_agree'])) {
                                             <th>ราคา</th>
                                             <th>เวลาในการบริการ</th>
                                             <th>ว/ด/ป เวลา</th>
-                                            <th>สถานะ</th>                                           
+                                            <th>สถานะ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $result = $db->prepare('SELECT * from tb_booking where uuid_emp = :uuid_emp and book_st = :book_st and cre_bks_date > :cre_bks_date');
-                                        $result->bindParam(":uuid_emp", $uuid_emp);
+                                        $result = $db->prepare('SELECT * from tb_booking where book_st = :book_st and cre_bks_date >= :cre_bks_date');
                                         $result->bindParam(":book_st", $book_status);
-                                        $result->bindParam(":cre_bks_date", $date);                                           
+                                        $result->bindParam(":cre_bks_date", $date);
                                         $result->execute();
 
                                         $num = 0;
-                                        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                        while ($row3 = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $num++;
 
-                                            if ($row['book_st'] == 'success') {
+                                            if ($row3['book_st'] == 'success') {
                                                 $status = 'จองคิวสำเร็จ';
                                             }
                                         ?>
                                             <form method="POST">
                                                 <tr class="kanitB">
                                                     <td><?php echo $num ?></td>
-                                                    <td><?php echo $row['books_nlist'] ?></td>
-                                                    <td><?php echo $row['book_cus'] ?></td>
-                                                    <td><?php echo $row['book_serv'] ?></td>
-                                                    <td class="text-right"><?php echo $row['books_price'] ?></td>
-                                                    <td><?php echo $row['books_hours'] ?></td>
-                                                    <td><?php echo $row['cre_bks_date'].' '.$row['cre_bks_time'] . '-' . $row['end_bks_time'] ?></td>
+                                                    <td><?php echo $row3['books_nlist'] ?></td>
+                                                    <td><?php echo $row3['book_cus'] ?></td>
+                                                    <td><?php echo $row3['book_serv'] ?></td>
+                                                    <td class="text-right"><?php echo $row3['books_price'] ?></td>
+                                                    <td><?php echo $row3['books_hours'] ?></td>
+                                                    <td><?php echo $row3['cre_bks_date'] . ' ' . $row3['cre_bks_time'] . '-' . $row3['end_bks_time'] ?></td>
                                                     <?php
                                                     if ($status == 'จองคิวสำเร็จ') {
-                                                        $txt_color = '#00A65A';
+                                                        $txt_color = 'text-success';
                                                         $icon = 'fa fa-check';
                                                     } else {
                                                         $txt_color = '';
@@ -414,7 +429,7 @@ if (isset($_REQUEST['btn_agree'])) {
                                                     echo '<td style="color : ' . $txt_color . '">';
                                                     echo '<i class="' . $icon . '"></i>' . ' ' . $status;
                                                     echo '</td>';
-                                                    ?>                                                    
+                                                    ?>
                                                 </tr>
                                             </form>
                                         <?php } ?>
@@ -438,7 +453,7 @@ if (isset($_REQUEST['btn_agree'])) {
             </div>
             <strong>Copyright &copy; 2021 By BIS.</strong> For educational purposes only.
             reserved.
-            reserved.
+           
         </footer>
 
         <!-- /.control-sidebar -->
@@ -449,9 +464,9 @@ if (isset($_REQUEST['btn_agree'])) {
 
     <!-- time picker -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
-    <script src="../../jquery/jquery.timepicker.min.js"></script>
-    <script src="../../jquery/jquery.timepicker.js"></script>
+    <script src="../../../emp/js/bootstrap.min.js"></script>
+    <script src="../../../emp/jquery/jquery.timepicker.min.js"></script>
+    <script src="../../../emp/jquery/jquery.timepicker.js"></script>
     <!-- jQuery 3 -->
     <!-- <script src="../../../bower_components/jquery/dist/jquery.min.js"></script> -->
     <!-- Bootstrap 3.3.7 -->
@@ -470,15 +485,25 @@ if (isset($_REQUEST['btn_agree'])) {
     <!-- page script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.th.min.js" integrity="sha512-cp+S0Bkyv7xKBSbmjJR0K7va0cor7vHYhETzm2Jy//ZTQDUvugH/byC4eWuTii9o5HN9msulx2zqhEXWau20Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
 
     <script>
+        function addMinutes(date, minutes) {
+            date = new Date(date.getTime() + minutes * 60000);
+            return date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2)
+        }
+
+        function deMinutes(date, minutes) {
+            date = new Date(date.getTime() - minutes * 60000);
+            return date.getHours() + ':' + ("0" + date.getMinutes()).slice(-2)
+        }
         var date_start = new Date()
         var date_end = new Date()
         date_start.setDate(date_start.getDate());
         date_end.setDate(date_end.getDate() + 30);
 
         $(function() {
-            $('#example1').DataTable()           
+            $('#example1').DataTable()
         })
 
         $('#datepicker').datepicker({
@@ -488,7 +513,7 @@ if (isset($_REQUEST['btn_agree'])) {
             endDate: date_end,
         });
 
-        $(document).ready(function() {
+        $(document).ready(function(v) {
             $('#startTime').timepicker({
                 timeFormat: 'HH:mm',
                 interval: 30,
@@ -498,7 +523,16 @@ if (isset($_REQUEST['btn_agree'])) {
                 dynamic: false,
                 dropdown: true,
                 scrollbar: true,
+                change: function() {
+                    var firstDate = new Date(moment($(this).val(), 'HH:mm'));
+                    let mtimemin = document.getElementById("endTimemin").value;
+                    let retime = addMinutes(firstDate, mtimemin)
+                    // console.log(retime);
+                    document.getElementById("endTime").value = retime
+                }
             });
+
+
 
             $('#endTime').timepicker({
                 timeFormat: 'HH:mm',

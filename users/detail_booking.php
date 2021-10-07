@@ -293,7 +293,7 @@ if (isset($_REQUEST['cancel_id'])) {
                                         <th>เวลาในการจอง</th>
                                         <th>สถานะ</th>
                                         <!-- <th>รายละเอียด</th> -->
-                                        <th>แก้ไข - ยกเลิก</th>
+                                        <th>ยกเลิก</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -341,7 +341,8 @@ if (isset($_REQUEST['cancel_id'])) {
                                             <?php 
                                             if ($row['book_st'] == 'wait') {
                                             ?>
-                                            <td><a href="postpone.php?cre_bks_date=<?php echo $row['cre_bks_date'] ?>&cre_bks_time=<?php echo $row['cre_bks_time'] ?>&end_bks_time=<?php echo $row['end_bks_time'] ?>" class="btn btn-warning"><i class="fa fa-clock-o"></i> เลื่อนนัด</a>
+                                            <td>
+                                               
                                             <a href="?cancel_id=<?php echo $row['books_nlist'] ?>" class="btn btn-danger" onClick="return confirm('คุณต้องการที่จะลบข้อมูลนี้หรือไม่ ?');"><i class="fa fa-close"></i> ยกเลิก</a>
                                         </td>
                                         <?php } else {?>

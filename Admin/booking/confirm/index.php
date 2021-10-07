@@ -225,8 +225,12 @@ if (isset($_REQUEST['cancel_id'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+                            <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
                             <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+                            <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+                            <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+                            <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+                            <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
                         </ul>
                     </li>
 
@@ -240,7 +244,7 @@ if (isset($_REQUEST['cancel_id'])) {
                         </a>
                         <ul class="treeview-menu">
                             <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-                            <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+                            <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
                         </ul>
                     </li>
                     </li>
@@ -400,6 +404,7 @@ if (isset($_REQUEST['cancel_id'])) {
                                             <th>ลำดับ</th>
                                             <th>เลขที่รายการ</th>
                                             <th>ชื่อลูกค้า</th>
+                                            <th>ชื่อช่างทำผม</th>
                                             <th>รายละเอียดบริการ</th>
                                             <th>ราคา</th>
                                             <th>เวลาในการบริการ</th>
@@ -430,6 +435,7 @@ if (isset($_REQUEST['cancel_id'])) {
                                                     <td><?php echo $num ?></td>
                                                     <td><?php echo $row['books_nlist'] ?></td>
                                                     <td><?php echo $row['book_cus'] ?></td>
+                                                    <td><?php echo $row['book_emp'] ?></td>
                                                     <td><?php echo $row['book_serv'] ?></td>
                                                     <td class="text-right"><?php echo $row['books_price'] ?></td>
                                                     <td><?php echo $row['books_hours'] ?></td>

@@ -14,7 +14,7 @@ if (isset($_REQUEST['num_list'])) {
     $numlist = $_REQUEST['num_list'];
 
     try {
-        $date = date("d-m-Y");
+        $date = date("Y-m-d");
         $time = date("h:i:sa");
         $newtime = str_replace(['pm', 'am'], '', $time);
 

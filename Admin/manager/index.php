@@ -30,7 +30,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
   $row = $select_mng->fetch(PDO::FETCH_ASSOC);
   extract($row);
 
-  $date = date("d-m-Y");
+  $date = date("Y-m-d");
 
   $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";
   $res = $db->query($sql);
@@ -157,10 +157,10 @@ if (isset($_REQUEST['del_id'])) {
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-          <img src="../images/manager/manager.png" class="img-circle" alt="User Image">
+            <img src="../images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-          <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+            <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
@@ -204,8 +204,8 @@ if (isset($_REQUEST['del_id'])) {
 
           <li>
             <a href="../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -214,9 +214,9 @@ if (isset($_REQUEST['del_id'])) {
             </a>
           </li>
 
-          
 
-          <li >
+
+          <li>
             <a href="../employee/">
               <i class="fa fa-smile-o"></i> <span>พนักงาน</span>
             </a>
@@ -237,8 +237,12 @@ if (isset($_REQUEST['del_id'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -252,7 +256,7 @@ if (isset($_REQUEST['del_id'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -266,7 +270,7 @@ if (isset($_REQUEST['del_id'])) {
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1 class="kanitB">
-          ผู้จัดการ         
+          ผู้จัดการ
         </h1>
         <ol class="breadcrumb kanitB">
           <li><a href="../index.php"><i class="fa fa-home"></i> หน้าแรก</a></li>

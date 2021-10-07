@@ -64,7 +64,7 @@ if (isset($_REQUEST['btn_insert'])) {
   $fname = $_REQUEST['fname'];
   $lname = $_REQUEST['lname'];
   $numberphone = $_REQUEST['numberphone'];
-  $date = date("d/m/Y");
+  $date = date("Y-m-d");
   $time = date("h:i:sa");
   $newtime = str_replace(['pm', 'am'], '', $time);
   $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
@@ -220,10 +220,10 @@ if (isset($_REQUEST['btn_insert'])) {
         <!-- Sidebar user panel -->
         <div class="user-panel">
           <div class="pull-left image">
-          <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
+            <img src="../../images/manager/manager.png" class="img-circle" alt="User Image">
           </div>
           <div class="pull-left info">
-          <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
+            <p><?php if (!empty($_SESSION["token_admin_uuid"])) echo $fname . ' ' . $lname; ?></p>
             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
           </div>
         </div>
@@ -267,8 +267,8 @@ if (isset($_REQUEST['btn_insert'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li>
@@ -277,7 +277,7 @@ if (isset($_REQUEST['btn_insert'])) {
             </a>
           </li>
 
-          
+
 
           <li>
             <a href="../../employee/">
@@ -300,8 +300,12 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -315,7 +319,7 @@ if (isset($_REQUEST['btn_insert'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>

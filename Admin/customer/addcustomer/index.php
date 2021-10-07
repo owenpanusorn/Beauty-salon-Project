@@ -30,7 +30,7 @@ if (!empty($_SESSION["token_admin_uuid"])) {
   $row = $select_mng->fetch(PDO::FETCH_ASSOC);
   extract($row);
 
-  $date = date("d-m-Y");
+  $date = date("Y-m-d");
 
   $sql = "select count(books_nlist) from tb_booking where book_st = 'wait' and cre_bks_date >= '$date'";
   $res = $db->query($sql);
@@ -64,14 +64,14 @@ if (isset($_REQUEST['btn_insert'])) {
 
   $fname = $_REQUEST['fname'];
   $lname = $_REQUEST['lname'];
-  $gender = $_REQUEST['gender']; 
+  $gender = $_REQUEST['gender'];
   $numberphone = $_REQUEST['numberphone'];
   $address = $_REQUEST['address'];
   $date = date("d-m-Y");
   $time = date("h:i:sa");
   $newtime = str_replace(['pm', 'am'], '', $time);
-  $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone); 
-  $lenphone = strlen($newphone);  
+  $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
+  $lenphone = strlen($newphone);
 
   if (empty($username)) {
     $errorMsg = "กรุณากรอกชื่อผู้ใช้";
@@ -87,14 +87,11 @@ if (isset($_REQUEST['btn_insert'])) {
     $errorMsg = "กรุณากรอกเบอร์โทร";
   } else if ($lenphone < 10) {
     $errorMsg = "กรุณากรอกเบอร์โทร";
-  }  
-  else if (empty($address)) {
-    $errorMsg = "กรุณากรอกที่อยู่";   
-  } 
-  
-  else {
+  } else if (empty($address)) {
+    $errorMsg = "กรุณากรอกที่อยู่";
+  } else {
     try {
-      if (!isset($errorMsg)) {       
+      if (!isset($errorMsg)) {
 
         $insert_emp = $db->prepare("INSERT INTO tb_customer(uuid, username, password,fname, lname, gender, nphone, address, cre_cus_date, cre_cus_time) VALUES (:uuid, :user, :password,:firname, :lasname, :ggender, :nnphone, :aaddress, :cre_cus_date, :cre_cus_time)");
         $insert_emp->bindParam(':uuid', $myuuid);
@@ -102,9 +99,9 @@ if (isset($_REQUEST['btn_insert'])) {
         $insert_emp->bindParam(':password', $hashed_password);
         $insert_emp->bindParam(':firname', $fname);
         $insert_emp->bindParam(':lasname', $lname);
-        $insert_emp->bindParam(':ggender', $gender);    
-        $insert_emp->bindParam(':nnphone', $newphone);       
-        $insert_emp->bindParam(':aaddress', $address);       
+        $insert_emp->bindParam(':ggender', $gender);
+        $insert_emp->bindParam(':nnphone', $newphone);
+        $insert_emp->bindParam(':aaddress', $address);
         $insert_emp->bindParam(':cre_cus_date', $date);
         $insert_emp->bindParam(':cre_cus_time', $newtime);
 
@@ -213,7 +210,7 @@ if (isset($_REQUEST['btn_insert'])) {
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-right">
-                   <form method="post">
+                    <form method="post">
                       <button class="btn btn-default btn-flat kanitB" type="submit" name="btn_logout">ออกจากระบบ</button>
                     </form>
                   </div>
@@ -278,8 +275,8 @@ if (isset($_REQUEST['btn_insert'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li class="active">
@@ -310,8 +307,12 @@ if (isset($_REQUEST['btn_insert'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -325,7 +326,7 @@ if (isset($_REQUEST['btn_insert'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>

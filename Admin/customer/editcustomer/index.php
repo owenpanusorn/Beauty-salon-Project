@@ -74,7 +74,7 @@ if (isset($_REQUEST['btn_update'])) {
     $numberphone = $_REQUEST['numberphone'];
     $newphone = str_replace(['(', ')', ' ', '-', '_'], '', $numberphone);
     $address = $_REQUEST['address'];
-    $date = date("d-m-Y");
+    $date = date("Y-m-d");
     $time = date("h:i:sa");
     $newtime = str_replace(['pm', 'am'], '', $time);
 
@@ -261,8 +261,8 @@ if (isset($_REQUEST['btn_update'])) {
 
           <li>
             <a href="../../serv/">
-              <i class="fa fa-thumbs-up" ></i> <span>บริการ</span>             
-            </a>            
+              <i class="fa fa-thumbs-up"></i> <span>บริการ</span>
+            </a>
           </li>
 
           <li class="active">
@@ -292,8 +292,12 @@ if (isset($_REQUEST['btn_update'])) {
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li>
+              <!-- <li><a href="#"><i class="fa fa-file-o"></i>รายงานการจองคิว</a></li> -->
               <li><a href="../../report/"><i class="fa  fa-paperclip"></i>รายงานแบบประเมิน</a></li>
+              <li class=""><a href="../../report/sales_fore_old.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (เก่า)</a></li>
+              <li class=""><a href="../../report/cus_fore_old.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (เก่า)</a></li>
+              <li class=""><a href="../../report/sales_fore_new.php"><i class="fa fa-bar-chart"></i>พยากรณ์ยอดขาย (ใหม่)</a></li>
+              <li class=""><a href="../../report/cus_fore_new.php"><i class="fa fa-area-chart"></i>พยากรณ์ลูกค้า (ใหม่)</a></li>
             </ul>
           </li>
 
@@ -307,7 +311,7 @@ if (isset($_REQUEST['btn_update'])) {
             </a>
             <ul class="treeview-menu">
               <!-- <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-user"></i>กำหนดจำนวนลูกค้าต่อวัน</a></li> -->
-              <li><a href="#"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
+              <li><a href="../../setting/"><i class="fa fa-power-off"></i>กำหนดวันเปิด - ปิดร้าน</a></li>
             </ul>
           </li>
           </li>
@@ -445,7 +449,7 @@ if (isset($_REQUEST['btn_update'])) {
                 <!-- /.box-body -->
 
                 <div class="box-footer">
-                  <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> อัปเดตรายชื่อพนักงาน</button>
+                  <button type="submit" name="btn_update" class="btn btn-success"> <i class="fa fa-pencil-square-o"></i> อัปเดตรายชื่อลูกค้า</button>
                 </div>
               </div>
               <!-- /ข้อมูลส้วนตัว -->
