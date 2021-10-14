@@ -524,7 +524,7 @@ if (isset($sumtotal)) {
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?> ปี)</h4>
+                                        <h4 class="kanitB">นำยอดขายมาหารด้วยผลรวมของค่าถ่วงน้ำหนัก (ทั้งหมด <?php echo $index ?> <?php echo $for == "Month" ? "เดือน" : "ปี"; ?>)</h4>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <h4 class="kanitB"><?php echo number_format($sumtotal) ?></h4>
